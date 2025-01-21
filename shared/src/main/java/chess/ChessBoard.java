@@ -8,8 +8,11 @@ package chess;
  */
 public class ChessBoard {
 
+    // Use 2d array to store board
+    private char[][] chessBoard = new char[8][8];
+
     public ChessBoard() {
-        
+        resetBoard();
     }
 
     /**
@@ -38,6 +41,19 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        // helper arrays
+        char[] startingBaseRow = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
+
+        char[] startingEndRow[8];
+        for (int i = 0; i < 8; i ++) {
+            startingEndRow[i] = startingBaseRow[-1 - i];
+        }
+
+        // set base row and end row
+        chessBoard[0] = startingBaseRow;
+        chessBoard[-1] = startingEndRow;
+
+        //
+
     }
 }

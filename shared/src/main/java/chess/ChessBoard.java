@@ -2,7 +2,6 @@ package chess;
 
 import java.util.Arrays;
 import java.util.Objects;
-import ChessPiece;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -13,7 +12,7 @@ import ChessPiece;
 public class ChessBoard {
 
     // Use 2d array to store board
-    private PieceType[][] chessBoard = new PieceType[8][8];
+    private ChessPiece[][] chessBoard = new ChessPiece[8][8];
 
     public ChessBoard() {
         this.resetBoard();
@@ -26,8 +25,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-
-        throw new RuntimeException("Not implemented");
+        this.chessBoard[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -37,7 +35,8 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
-    public ChessPiece getPiece(ChessPosition position) { throw new RuntimeException("Not implemented");
+    public ChessPiece getPiece(ChessPosition position) {
+        return this.chessBoard[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -45,28 +44,32 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        // clear board
+        this.chessBoard = new ChessPiece[8][8];
+
         // helper array
-        PieceType[] startingBaseRow = {PieceType.ROOK, chess.ChessPiece.PieceType.KNIGHT, 'B', 'Q', 'K', 'B', 'N', 'R'};
+        ChessPiece.PieceType helperArray [] = {
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.ROOK
+        };
 
         // fill in board
-        for (int i = 0; i < 8; i ++) {
+        for (int i = 0; i < 8; i++) {
             // base row
-            this.chessBoard[0][i] = startingBaseRow[i];
+            this.chessBoard[0][i] = new ChessPiece(ChessGame.TeamColor.WHITE, helperArray[i]);
 
-            // pawn row
-            this.chessBoard[1][i] = 'P';
+            // pawn rows
+            this.chessBoard[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            this.chessBoard[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
 
-            // 4 empty spaces
-            this.chessBoard[2][i] = ' ';
-            this.chessBoard[3][i] = ' ';
-            this.chessBoard[4][i] = ' ';
-            this.chessBoard[5][i] = ' ';
-
-            // pawn row
-            this.chessBoard[6][i] = 'P';
-
-            // end row, which is startingBaseRow but backwards
-            this.chessBoard[7][i] = startingBaseRow[7 - i];
+            // end row
+            this.chessBoard[7][7-i] = new ChessPiece(ChessGame.TeamColor.BLACK, helperArray[7-i]);
         }
     }
 

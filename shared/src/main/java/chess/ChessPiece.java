@@ -11,6 +11,7 @@ import java.util.Collection;
 public class ChessPiece {
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+
     }
 
     /**
@@ -25,11 +26,16 @@ public class ChessPiece {
         PAWN
     }
 
+    public enum TeamColor {
+        WHITE,
+        BLACK
+    }
+
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return this.teamColor;
     }
 
     /**

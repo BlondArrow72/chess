@@ -33,27 +33,57 @@ public class BishopMovesCalculator implements ChessPieceMovesCalculator{
         // bishops can move up and to the left
         for (int i = 1; i < 7; i++) {
             ChessPosition upLeft = new ChessPosition(currentRow+i, currentCol-i);
+            ChessMove newMove = new ChessMove(myPosition, upLeft);
+
             if (isInBounds(upLeft)) {
-                ChessMove newMove = new ChessMove(myPosition, upLeft);
-                possibleMoves.add(newMove);
+                if (canCapture(board, myPosition, upLeft)) {
+                    possibleMoves.add(newMove);
+                    break;
+                }
+                else if (isBlocked(board, myPosition, upLeft)) {
+                    break;
+                }
+                else {
+                    possibleMoves.add(newMove);
+                }
             }
         }
 
         // bishops can move down and to the right
         for (int i = 1; i < 7; i++) {
             ChessPosition downRight = new ChessPosition(currentRow-i, currentCol+i);
+            ChessMove newMove = new ChessMove(myPosition, downRight);
+
             if (isInBounds(downRight)) {
-                ChessMove newMove = new ChessMove(myPosition, downRight);
-                possibleMoves.add(newMove);
+                if (canCapture(board, myPosition, downRight)) {
+                    possibleMoves.add(newMove);
+                    break;
+                }
+                else if (isBlocked(board, myPosition, downRight)) {
+                    break;
+                }
+                else {
+                    possibleMoves.add(newMove);
+                }
             }
         }
 
         // bishops can move down and to the left
         for (int i = 1; i < 7; i++) {
             ChessPosition downLeft = new ChessPosition(currentRow-i, currentCol-i);
+            ChessMove newMove = new ChessMove(myPosition, downLeft);
+
             if (isInBounds(downLeft)) {
-                ChessMove newMove = new ChessMove(myPosition, downLeft);
-                possibleMoves.add(newMove);
+                if (canCapture(board, myPosition, downLeft)) {
+                    possibleMoves.add(newMove);
+                    break;
+                }
+                else if (isBlocked(board, myPosition, downLeft)) {
+                    break;
+                }
+                else {
+                    possibleMoves.add(newMove);
+                }
             }
         }
 

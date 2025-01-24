@@ -56,7 +56,7 @@ public class ChessPiece {
         ChessPieceMovesCalculator moves = switch(getPieceType()) {
             case BISHOP -> new BishopMovesCalculator();
             case KING -> new KingMovesCalculator();
-            case KNIGHT -> new BishopMovesCalculator();
+            case KNIGHT -> new KnightMovesCalculator();
             case PAWN -> new BishopMovesCalculator();
             case QUEEN -> new QueenMovesCalculator();
             case ROOK -> new RookMovesCalculator();

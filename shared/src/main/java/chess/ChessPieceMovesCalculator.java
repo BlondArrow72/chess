@@ -9,8 +9,11 @@ package chess;
  * </p>
  */
 public interface ChessPieceMovesCalculator {
-    public pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        adsf
-    }
-
+    /**
+     *
+     * @param board
+     * @param myPosition
+     * @return
+     */
+    public int[][] pieceMoves(ChessBoard board, ChessPosition myPosition) { return validMoves; }
 }

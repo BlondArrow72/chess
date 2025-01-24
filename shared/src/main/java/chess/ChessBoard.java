@@ -12,10 +12,11 @@ import java.util.Objects;
 public class ChessBoard {
 
     // Use 2d array to store board
-    private ChessPiece[][] chessBoard = new ChessPiece[8][8];
+    private ChessPiece[][] chessBoard;
+    private final int nRowCol = 8;
 
     public ChessBoard() {
-        this.resetBoard();
+        this.chessBoard = new ChessPiece[nRowCol][nRowCol];
     }
 
     /**
@@ -45,10 +46,10 @@ public class ChessBoard {
      */
     public void resetBoard() {
         // clear board
-        this.chessBoard = new ChessPiece[8][8];
+        this.chessBoard = new ChessPiece[nRowCol][nRowCol];
 
         // helper array
-        ChessPiece.PieceType helperArray [] = {
+        ChessPiece.PieceType [] helperArray = {
                 ChessPiece.PieceType.ROOK,
                 ChessPiece.PieceType.KNIGHT,
                 ChessPiece.PieceType.BISHOP,

@@ -19,6 +19,17 @@ public interface ChessPieceMovesCalculator {
      */
     Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
+    default Collection<ChessMove> evaluateMove(Collection<ChessMove> possibleMoves, ChessBoard board, ChessMove newMove) {
+        ChessPosition myPosition = newMove.getStartPosition();
+        ChessPosition targetPosition = newMove.getEndPosition();
+
+        if (isInBounds(targetPosition) && !isBlocked(board, myPosition, targetPosition)) {
+            possibleMoves.add(newMove);
+        }
+
+        return possibleMoves;
+    }
+
     default boolean isInBounds(ChessPosition myPosition) {
         return (myPosition.getRow() >= 1) && (myPosition.getRow() <= 8) && (myPosition.getColumn() >= 1) && (myPosition.getColumn() <= 8);
     }

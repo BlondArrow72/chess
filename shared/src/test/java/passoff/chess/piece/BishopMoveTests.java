@@ -1,10 +1,11 @@
 package passoff.chess.piece;
 
+import chess.ChessPieceMovesCalculator;
 import chess.ChessPosition;
 import org.junit.jupiter.api.Test;
 import passoff.chess.TestUtilities;
 
-public class BishopMoveTests {
+public class BishopMoveTests implements ChessPieceMovesCalculator {
 
     @Test
     public void bishopMoveUntilEdge() {

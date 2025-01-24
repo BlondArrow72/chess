@@ -15,5 +15,5 @@ public interface ChessPieceMovesCalculator {
      * @param myPosition
      * @return
      */
-    public int[][] pieceMoves(ChessBoard board, ChessPosition myPosition) { return validMoves; }
+    public int[][] pieceMoves(ChessBoard board, ChessPosition myPosition);
 }

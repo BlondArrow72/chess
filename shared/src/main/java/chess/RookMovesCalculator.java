@@ -2,7 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 
-public class BishopMovesCalculator implements ChessPieceMovesCalculator{
+public class RookMovesCalculator implements ChessPieceMovesCalculator {
     public int[][] pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
         ArrayList<int[]> possibleMoves = new ArrayList<>();

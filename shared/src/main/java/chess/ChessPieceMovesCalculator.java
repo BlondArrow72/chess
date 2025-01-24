@@ -15,7 +15,7 @@ public interface ChessPieceMovesCalculator {
      * @param myPosition
      * @return
      */
-    public int[][] pieceMoves(ChessBoard board, ChessPosition myPosition);
+    public Collection<chess.ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
     public boolean isInBounds(ChessPosition myPosition);
 }

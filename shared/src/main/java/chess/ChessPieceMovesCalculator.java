@@ -13,11 +13,43 @@ import java.util.Collection;
 public interface ChessPieceMovesCalculator {
     /**
      *
-     * @param board
-     * @param myPosition
-     * @return
+     * @param board ChessBoard object of the chess game
+     * @param myPosition Position of my piece on the chess board
+     * @return Collection of possible moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
+    Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
-    public boolean isInBounds(ChessPosition myPosition);
+    default boolean isInBounds(ChessPosition myPosition) {
+        return (myPosition.getRow() >= 1) && (myPosition.getRow() <= 8) && (myPosition.getColumn() >= 1) && (myPosition.getColumn() <= 8);
+    }
+
+    default boolean canCapture(ChessBoard board, ChessPosition myPosition, ChessPosition targetPosition) {
+        ChessPiece targetPiece = board.getPiece(targetPosition);
+
+        // find other piece if available
+        if (targetPiece == null) {
+            return false;
+        }
+
+        // find team colors
+        ChessGame.TeamColor myTeam = board.getPiece(myPosition).getTeamColor();
+        ChessGame.TeamColor targetTeam = targetPiece.getTeamColor();
+
+        return myTeam != targetTeam;
+    }
+
+    default boolean isBlocked(ChessBoard board, ChessPosition myPosition, ChessPosition targetPosition) {
+        ChessPiece targetPiece = board.getPiece(targetPosition);
+
+        // find other piece if available
+        if (targetPiece == null) {
+            return false;
+        }
+
+        // find team colors
+        ChessGame.TeamColor myTeam = board.getPiece(myPosition).getTeamColor();
+        ChessGame.TeamColor targetTeam = targetPiece.getTeamColor();
+
+        return myTeam == targetTeam;
+    }
 }

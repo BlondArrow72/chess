@@ -14,9 +14,19 @@ public class BishopMovesCalculator implements ChessPieceMovesCalculator{
         // bishops can move up and to the right
         for (int i = 1; i < 7; i++) {
             ChessPosition upRight = new ChessPosition(currentRow+i, currentCol+i);
+            ChessMove newMove = new ChessMove(myPosition, upRight);
+
             if (isInBounds(upRight)) {
-                ChessMove newMove = new ChessMove(myPosition, upRight);
-                possibleMoves.add(newMove);
+                if (canCapture(board, myPosition, upRight)) {
+                    possibleMoves.add(newMove);
+                    break;
+                }
+                else if (isBlocked(board, myPosition, upRight)) {
+                    break;
+                }
+                else {
+                    possibleMoves.add(newMove);
+                }
             }
         }
 
@@ -48,9 +58,5 @@ public class BishopMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         return possibleMoves;
-    }
-
-    public boolean isInBounds(ChessPosition myPosition) {
-        return (myPosition.getRow() >= 1) && (myPosition.getRow() <= 8) && (myPosition.getColumn() >= 1) && (myPosition.getColumn() <= 8);
     }
 }

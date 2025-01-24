@@ -59,7 +59,7 @@ public class ChessPiece {
             case KNIGHT -> new BishopMovesCalculator();
             case PAWN -> new BishopMovesCalculator();
             case QUEEN -> new BishopMovesCalculator();
-            case ROOK -> new BishopMovesCalculator();
+            case ROOK -> new RookMovesCalculator();
         };
 
         return moves.pieceMoves(board, myPosition);

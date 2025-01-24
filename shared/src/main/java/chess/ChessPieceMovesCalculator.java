@@ -17,5 +17,5 @@ public interface ChessPieceMovesCalculator {
      */
     public int[][] pieceMoves(ChessBoard board, ChessPosition myPosition);
 
-    public boolean isInBounds(int row, int col);
+    public boolean isInBounds(ChessPosition myPosition);
 }

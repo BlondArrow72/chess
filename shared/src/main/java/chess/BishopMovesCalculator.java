@@ -10,22 +10,22 @@ public class BishopMovesCalculator implements ChessPieceMovesCalculator{
         for (int i = 1; i < 8; i++) {
             // bishops can move diagonally
             int[] upRight = {myPosition.getRow() + i, myPosition.getColumn() + i};
-            if (upRight[0] <= 8 && upRight[1] <= 8) {
+            if (isInBounds(myPosition)) {
                 possibleMoves.add(upRight);
             }
 
             int[] upLeft = {myPosition.getRow() + i, myPosition.getColumn() - i};
-            if (upRight[0] <= 8 && upRight[1] >= 1) {
+            if (isInBounds(myPosition)) {
                 possibleMoves.add(upLeft);
             }
 
             int[] downRight = {myPosition.getRow() - i, myPosition.getColumn() + i};
-            if (upRight[0] >= 1 && upRight[1] <= 8) {
+            if (isInBounds(myPosition)) {
                 possibleMoves.add(downRight);
             }
 
             int[] downLeft = {myPosition.getRow() - i, myPosition.getColumn() - i};
-            if (upRight[0] >= 1 && upRight[1] >= 1) {
+            if (isInBounds(myPosition)) {
                 possibleMoves.add(downLeft);
             }
         }
@@ -33,7 +33,7 @@ public class BishopMovesCalculator implements ChessPieceMovesCalculator{
         return possibleMoves.toArray(new int[0][]);
     }
 
-    public boolean isInBounds(int row, int col) {
-        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+    public boolean isInBounds(ChessPosition myPosition) {
+        return myPosition.getRow() >= 1 && myPosition.getRow() <= 8 && myPosition.getColumn() >= 1 && myPosition.getColumn() <= 8;
     }
 }

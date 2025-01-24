@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Collection;
+
 /**
  * Interface to calculate piece moves for the game of chess
  * <p>
@@ -15,7 +17,7 @@ public interface ChessPieceMovesCalculator {
      * @param myPosition
      * @return
      */
-    public Collection<chess.ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
     public boolean isInBounds(ChessPosition myPosition);
 }

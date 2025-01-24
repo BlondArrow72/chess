@@ -32,4 +32,8 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator {
 
         return possibleMoves.toArray(new int[0][]);
     }
+
+    public boolean isInBounds(int row, int col) {
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+    }
 }

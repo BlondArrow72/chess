@@ -5,7 +5,7 @@ import chess.ChessPosition;
 import org.junit.jupiter.api.Test;
 import passoff.chess.TestUtilities;
 
-public class BishopMoveTests implements ChessPieceMovesCalculator {
+public class BishopMoveTests {
 
     @Test
     public void bishopMoveUntilEdge() {

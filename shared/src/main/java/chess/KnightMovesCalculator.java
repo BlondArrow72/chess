@@ -42,12 +42,12 @@ public class KnightMovesCalculator implements ChessPieceMovesCalculator{
         possibleMoves = evaluateMove(possibleMoves, board, downLeftLeftMove);
 
         // knights can move up 1 and left 2
-        ChessPosition upLeftLeftPosition = new ChessPosition(currentRow, currentCol-1);
+        ChessPosition upLeftLeftPosition = new ChessPosition(currentRow+1, currentCol-2);
         ChessMove upLeftLeftMove = new ChessMove(myPosition, upLeftLeftPosition);
         possibleMoves = evaluateMove(possibleMoves, board, upLeftLeftMove);
 
         // knights can move up 2 and left 1
-        ChessPosition upUpLeftPosition = new ChessPosition(currentRow+1, currentCol-1);
+        ChessPosition upUpLeftPosition = new ChessPosition(currentRow+2, currentCol-1);
         ChessMove upUpLeftMove = new ChessMove(myPosition, upUpLeftPosition);
         possibleMoves = evaluateMove(possibleMoves, board, upUpLeftMove);
 

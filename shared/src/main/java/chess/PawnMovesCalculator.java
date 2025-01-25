@@ -22,12 +22,28 @@ public class PawnMovesCalculator implements ChessPieceMovesCalculator{
             possibleMoves.add(upMove);
         }
 
+        // pawns can move up twice if white and second row
+        ChessPosition upUpPosition = new ChessPosition(currentRow+2, currentCol);
+        ChessMove upUpMove = new ChessMove(myPosition, upUpPosition);
+
+        if (isInBounds(upUpPosition) && !isBlocked(board, myPosition, upUpPosition) && !canCapture(board, myPosition, upUpPosition) && (myTeam == ChessGame.TeamColor.WHITE) && (currentRow == 2)) {
+            possibleMoves.add(upUpMove);
+        }
+
         // pawns can move down if black
         ChessPosition downPosition = new ChessPosition(currentRow-1, currentCol);
         ChessMove downMove = new ChessMove(myPosition, downPosition);
 
         if (isInBounds(downPosition) && !isBlocked(board, myPosition, downPosition) && !canCapture(board, myPosition, downPosition) && (myTeam == ChessGame.TeamColor.BLACK)) {
             possibleMoves.add(downMove);
+        }
+
+        // pawns can move down twice if black and seventh row
+        ChessPosition downDownPosition = new ChessPosition(currentRow-2, currentCol);
+        ChessMove downDownMove = new ChessMove(myPosition, downDownPosition);
+
+        if (isInBounds(downDownPosition) && !isBlocked(board, myPosition, downDownPosition) && !canCapture(board, myPosition, downDownPosition) && (myTeam == ChessGame.TeamColor.BLACK) && (currentRow == 7)) {
+            possibleMoves.add(downDownMove);
         }
 
         // pawns can capture up and to the right if white

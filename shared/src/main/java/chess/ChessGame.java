@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -102,7 +103,19 @@ public class ChessGame {
         }
 
         // iterate through otherTeamMoves
-        return true;
+        Iterator<ChessMove> movesIterator = otherTeamMoves.iterator();
+        while (movesIterator.hasNext()) {
+            ChessMove currentMove = movesIterator.next();
+            ChessPosition targetPosition = currentMove.getEndPosition();
+
+            if (targetPosition == kingPosition) {
+                return true;
+            }
+
+            movesIterator.remove();
+        }
+
+        return false;
     }
 
     /**

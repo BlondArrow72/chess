@@ -10,7 +10,7 @@ import java.util.Iterator;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessGame {
+public class ChessGame implements Cloneable {
 
     private ChessBoard board = new ChessBoard();
     private TeamColor teamTurn;
@@ -59,8 +59,22 @@ public class ChessGame {
             return null;
         }
 
+        // get all possible moves
         ChessPiece startPiece = board.getPiece(startPosition);
-        return startPiece.pieceMoves(board, startPosition);
+        Collection<ChessMove> possibleMoves = startPiece.pieceMoves(board, startPosition);
+
+        // Iterate through possible moves, adding them to valid moves if they don't place team in check
+        Iterator<ChessMove> chessMoveIterator = possibleMoves.iterator();
+        Collection<ChessMove> validMoves = new ArrayList<>();
+        while (chessMoveIterator.hasNext()) {
+            ChessMove currentMove = chessMoveIterator.next();
+
+            // make each move and confirm King is not in check
+
+            chessMoveIterator.remove();
+        }
+
+        return possibleMoves;
     }
 
     /**

@@ -94,4 +94,16 @@ public class ChessBoard {
                 "chessBoard=" + Arrays.toString(chessBoard) +
                 '}';
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        try {
+            ChessBoard cloneBoard = (ChessBoard) super.clone();
+
+            return cloneBoard;
+        }
+        catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

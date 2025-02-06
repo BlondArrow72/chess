@@ -56,4 +56,17 @@ public class ChessBoardTests {
         }
     }
 
+    @Test
+    @DisplayName("Clone Chess Board")
+    public void cloneChessBoard() {
+        var originalBoard = new ChessBoard();
+        var cloneBoard = originalBoard.clone();
+
+        ChessPosition newPosition = new ChessPosition(1, 1);
+        ChessPiece newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        originalBoard.addPiece(newPosition, newPiece);
+
+        Assertions.assertNotEquals(originalBoard, cloneBoard);
+    }
+
 }

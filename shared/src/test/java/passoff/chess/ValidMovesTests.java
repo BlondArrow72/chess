@@ -165,7 +165,8 @@ public class ValidMovesTests {
     }
 
     private static void assertMoves(ChessGame game, List<ChessMove> validMoves, ChessPosition position) {
-        var generatedMoves = game.validMoves(position);
+        var generatedMoves = game.
+                validMoves(position);
         var actualMoves = new ArrayList<>(generatedMoves);
         TestUtilities.validateMoves(validMoves, actualMoves);
     }

@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -51,8 +52,13 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessBoard board = getBoard();
-        ChessPiece startPiece = board.getPiece(startPosition);
 
+        // check if piece at startPosition
+        if (board.getPiece(startPosition) == null) {
+            return null;
+        }
+
+        ChessPiece startPiece = board.getPiece(startPosition);
         return startPiece.pieceMoves(board, startPosition);
     }
 
@@ -73,7 +79,30 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // Iterate through board
+        ChessPosition kingPosition = null;
+        Collection<ChessMove> otherTeamMoves = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition currentPosition = new ChessPosition(i, j);
+                ChessPiece currentPiece = board.getPiece(currentPosition);
+
+                // get king position
+                if ((currentPiece.getTeamColor() == teamColor) && (currentPiece.getPieceType() == ChessPiece.PieceType.KING)) {
+                    kingPosition = currentPosition;
+                }
+
+                // get valid moves for all pieces on other team
+                if (currentPiece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> currentPieceMoves = currentPiece.pieceMoves(board, currentPosition);
+
+                    otherTeamMoves.addAll(currentPieceMoves);
+                }
+            }
+        }
+
+        // iterate through otherTeamMoves
+        return true;
     }
 
     /**

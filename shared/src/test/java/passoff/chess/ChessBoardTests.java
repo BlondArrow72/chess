@@ -58,7 +58,7 @@ public class ChessBoardTests {
 
     @Test
     @DisplayName("Clone Chess Board")
-    public void cloneChessBoard() {
+    public void cloneChessBoard() throws CloneNotSupportedException {
         var originalBoard = new ChessBoard();
         var cloneBoard = originalBoard.clone();
 

@@ -70,6 +70,8 @@ public class ChessGame implements Cloneable {
             ChessMove currentMove = chessMoveIterator.next();
 
             // make each move and confirm King is not in check
+            ChessBoard cloneBoard = board.clone();
+
 
             chessMoveIterator.remove();
         }

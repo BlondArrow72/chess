@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class ChessGame implements Cloneable {
 
-    private ChessBoard board = new ChessBoard();
+    private ChessBoard board;
     private TeamColor teamTurn;
 
     public ChessGame() {
@@ -102,8 +102,9 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        ChessPosition kingPosition = getKingPosition(teamColor);
+
         // Get all possible moves on board and King's position
-        ChessPosition kingPosition = null;
         Collection<ChessMove> otherTeamMoves = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
@@ -112,11 +113,6 @@ public class ChessGame implements Cloneable {
 
                 if (currentPiece == null) {
                     continue;
-                }
-
-                // get king position
-                if ((currentPiece.getTeamColor() == teamColor) && (currentPiece.getPieceType() == ChessPiece.PieceType.KING)) {
-                    kingPosition = currentPosition;
                 }
 
                 // get valid moves for all pieces on other team
@@ -151,7 +147,10 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // get King position
+        ChessPosition kingPosition = getKingPosition(teamColor);
+
+        return false;
     }
 
     /**
@@ -181,6 +180,31 @@ public class ChessGame implements Cloneable {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    /**
+     * Gets the King's position
+     *
+     * @param teamColor which team's King we want to find
+     * @return ChessPosition position of King on ChessBoard
+     */
+    private ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition currentPosition = new ChessPosition(i, j);
+                ChessPiece currentPiece = board.getPiece(currentPosition);
+
+                if (currentPiece == null) {
+                    continue;
+                }
+
+                if ((currentPiece.pieceColor == teamColor) && (currentPiece.type == ChessPiece.PieceType.KING)) {
+                    return currentPosition;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override

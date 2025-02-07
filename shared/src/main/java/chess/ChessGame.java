@@ -174,6 +174,29 @@ public class ChessGame implements Cloneable {
             }
         }
 
+        // check if capture will escape checkmate
+        // get all moves that attack King
+        TeamColor otherTeam;
+        if (teamColor == TeamColor.WHITE) {
+            otherTeam = TeamColor.BLACK;
+        }
+        else {
+            otherTeam = TeamColor.WHITE;
+        }
+
+        Collection<ChessMove> otherTeamMoves = getTeamMoves(otherTeam);
+        Collection<ChessMove> attackingMoves = new ArrayList<>();
+        for (ChessMove currentMove : otherTeamMoves) {
+            if (currentMove.getEndPosition() == kingPosition) {
+                attackingMoves.add(currentMove);
+            }
+        }
+
+        // get all moves from my team
+        Collection<ChessMove> myTeamMoves = getTeamMoves(teamColor);
+
+
+
         return true;
     }
 
@@ -227,8 +250,34 @@ public class ChessGame implements Cloneable {
                 }
             }
         }
-
         return null;
+    }
+
+    /**
+     * Gets all moves for the team color
+     *
+     * @param teamColor which team's moves to return
+     * @return Collection<ChessMove> all moves possible for the team
+     */
+     private Collection<ChessMove> getTeamMoves(ChessGame.TeamColor teamColor){
+         Collection<ChessMove> teamMoves = new ArrayList<>();
+         for (int i = 1; i <= 8; i++) {
+             for (int j = 1; j <= 8; j++) {
+                 ChessPosition currentPosition = new ChessPosition(i, j);
+                 ChessPiece currentPiece = board.getPiece(currentPosition);
+
+                 if (currentPiece == null) {
+                     continue;
+                 }
+
+                 if (currentPiece.getTeamColor() != teamColor) {
+                     continue;
+                 }
+
+                 teamMoves.addAll(currentPiece.pieceMoves(board, currentPosition));
+             }
+         }
+         return teamMoves;
     }
 
     @Override

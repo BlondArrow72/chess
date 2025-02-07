@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -16,7 +17,7 @@ public class ChessGame implements Cloneable {
     private TeamColor teamTurn;
 
     public ChessGame() {
-        board.resetBoard();
+        board = new ChessBoard();
         teamTurn = TeamColor.WHITE;
     }
 
@@ -72,6 +73,11 @@ public class ChessGame implements Cloneable {
             // make each move and confirm King is not in check
             ChessBoard cloneBoard = board.clone();
 
+            // get piece from start position
+            ChessPiece movePiece = cloneBoard.getPiece(currentMove.getStartPosition());
+
+            // place piece at end position
+            cloneBoard.addPiece(currentMove.getEndPosition(), movePiece);
 
             chessMoveIterator.remove();
         }
@@ -96,13 +102,17 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        // Iterate through board
+        // Get all possible moves on board and King's position
         ChessPosition kingPosition = null;
         Collection<ChessMove> otherTeamMoves = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition currentPosition = new ChessPosition(i, j);
                 ChessPiece currentPiece = board.getPiece(currentPosition);
+
+                if (currentPiece == null) {
+                    continue;
+                }
 
                 // get king position
                 if ((currentPiece.getTeamColor() == teamColor) && (currentPiece.getPieceType() == ChessPiece.PieceType.KING)) {
@@ -124,7 +134,7 @@ public class ChessGame implements Cloneable {
             ChessMove currentMove = movesIterator.next();
             ChessPosition targetPosition = currentMove.getEndPosition();
 
-            if (targetPosition == kingPosition) {
+            if (targetPosition.equals(kingPosition)) {
                 return true;
             }
 
@@ -161,7 +171,7 @@ public class ChessGame implements Cloneable {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
+        this.board = board;
     }
 
     /**
@@ -171,5 +181,40 @@ public class ChessGame implements Cloneable {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    @Override
+    public ChessGame clone() {
+        try {
+            ChessGame cloneGame = (ChessGame) super.clone();
+            cloneGame.board = board.clone();
+
+            return cloneGame;
+        }
+        catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(board, chessGame.board) && teamTurn == chessGame.teamTurn;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, teamTurn);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "board=" + board +
+                ", teamTurn=" + teamTurn +
+                '}';
     }
 }

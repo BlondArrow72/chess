@@ -187,15 +187,23 @@ public class ChessGame implements Cloneable {
         Collection<ChessMove> otherTeamMoves = getTeamMoves(otherTeam);
         Collection<ChessMove> attackingMoves = new ArrayList<>();
         for (ChessMove currentMove : otherTeamMoves) {
-            if (currentMove.getEndPosition() == kingPosition) {
+            ChessPosition attackingPosition = currentMove.getEndPosition();
+            if (attackingPosition.equals(kingPosition)) {
                 attackingMoves.add(currentMove);
             }
         }
 
         // get all moves from my team
         Collection<ChessMove> myTeamMoves = getTeamMoves(teamColor);
-
-
+        for (ChessMove myCurrentMove : myTeamMoves) {
+            for (ChessMove otherCurrentMove : attackingMoves) {
+                ChessPosition myAttackPosition = myCurrentMove.getEndPosition();
+                ChessPosition attackingPiecePosition = otherCurrentMove.getStartPosition();
+                if (myAttackPosition.equals(attackingPiecePosition)) {
+                    return false;
+                }
+            }
+        }
 
         return true;
     }

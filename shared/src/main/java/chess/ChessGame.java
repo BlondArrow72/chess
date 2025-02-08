@@ -135,8 +135,9 @@ public class ChessGame implements Cloneable {
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece.PieceType promotionType = move.getPromotionPiece();
 
+        // check to see if there is a piece to be moved
         if (board.getPiece(startPosition) == null) {
-            return;
+            throw new InvalidMoveException("No piece at starting position.");
         }
 
         // ensure move is valid
@@ -148,6 +149,11 @@ public class ChessGame implements Cloneable {
         // get current piece
         ChessPiece chessPiece = board.getPiece(startPosition);
         ChessGame.TeamColor pieceColor = chessPiece.pieceColor;
+
+        // ensure correct team is moving
+        if (teamTurn != pieceColor) {
+            throw new InvalidMoveException("Other team's turn, please wait.");
+        }
 
         // get new piece
         ChessPiece newPiece;
@@ -161,6 +167,14 @@ public class ChessGame implements Cloneable {
         // make the move
         board.addPiece(endPosition, newPiece);
         board.addPiece(startPosition, null);
+
+        // change turn
+        if (teamTurn == TeamColor.WHITE) {
+            teamTurn = TeamColor.BLACK;
+        }
+        else {
+            teamTurn = TeamColor.WHITE;
+        }
     }
 
     /**

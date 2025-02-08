@@ -16,16 +16,6 @@ public class ChessGame implements Cloneable {
     private ChessBoard board = new ChessBoard();
     private TeamColor teamTurn;
 
-    // Castling support
-    private boolean whiteKingMove = false;
-    private boolean blackKingMove = false;
-
-    private boolean leftWhiteRookMove = false;
-    private boolean rightWhiteRookMove = false;
-    private boolean leftBlackRookMove = false;
-    private boolean rightBlackRookMove = false;
-
-
     public ChessGame() {
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
@@ -131,111 +121,6 @@ public class ChessGame implements Cloneable {
             }
         }
 
-        // Castling
-        if (pieceTeam == TeamColor.WHITE) {
-            if (!whiteKingMove && !isInCheck(TeamColor.WHITE)) {
-                ChessPosition whiteKingPosition = new ChessPosition(1, 5);
-                ChessPiece whiteKing = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING);
-
-                // check if left rook can castle
-                if (!leftWhiteRookMove) {
-                    // there are no pieces between the King and the rook
-                    ChessPosition col2 = new ChessPosition(1, 2);
-                    ChessPosition col3 = new ChessPosition(1, 3);
-                    ChessPosition col4 = new ChessPosition(1, 4);
-                    if ((board.getPiece(col2) == null) && (board.getPiece(col3) == null) && (board.getPiece(col4) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol3 = clone();
-                        cloneGameCol3.board.addPiece(col3, whiteKing);
-                        cloneGameCol3.board.addPiece(whiteKingPosition, null);
-
-                        ChessGame cloneGameCol4 = clone();
-                        cloneGameCol4.board.addPiece(col4, whiteKing);
-                        cloneGameCol4.board.addPiece(whiteKingPosition, null);
-
-                        if ((!cloneGameCol3.isInCheck(TeamColor.WHITE)) && (!cloneGameCol4.isInCheck(TeamColor.WHITE))) {
-                            ChessMove whiteKingCastleLeft = new ChessMove(whiteKingPosition, col3);
-                            validMoves.add(whiteKingCastleLeft);
-                        }
-                    }
-                }
-
-                // check if right rook can castle
-                if (!rightWhiteRookMove) {
-                    // there are no pieces between the King and the rook
-                    ChessPosition col6 = new ChessPosition(1, 6);
-                    ChessPosition col7 = new ChessPosition(1, 7);
-                    if ((board.getPiece(col6) == null) && (board.getPiece(col7) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol6 = clone();
-                        cloneGameCol6.board.addPiece(col6, whiteKing);
-                        cloneGameCol6.board.addPiece(whiteKingPosition, null);
-
-                        ChessGame cloneGameCol7 = clone();
-                        cloneGameCol7.board.addPiece(col7, whiteKing);
-                        cloneGameCol7.board.addPiece(whiteKingPosition, null);
-
-                        if ((!cloneGameCol6.isInCheck(TeamColor.WHITE)) && (!cloneGameCol7.isInCheck(TeamColor.WHITE))) {
-                            ChessMove whiteKingCastleRight = new ChessMove(whiteKingPosition, col7);
-                            validMoves.add(whiteKingCastleRight);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (pieceTeam == TeamColor.BLACK) {
-            if (!blackKingMove && !isInCheck(TeamColor.BLACK)) {
-                ChessPosition blackKingPosition = new ChessPosition(8, 5);
-                ChessPiece blackKing = new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING);
-
-                // check if left rook can castle
-                if (!leftBlackRookMove) {
-                    // there are no pieces between the King and the rook
-                    ChessPosition col2 = new ChessPosition(8, 2);
-                    ChessPosition col3 = new ChessPosition(8, 3);
-                    ChessPosition col4 = new ChessPosition(8, 4);
-                    if ((board.getPiece(col2) == null) && (board.getPiece(col3) == null) && (board.getPiece(col4) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol3 = clone();
-                        cloneGameCol3.board.addPiece(col3, blackKing);
-                        cloneGameCol3.board.addPiece(blackKingPosition, null);
-
-                        ChessGame cloneGameCol4 = clone();
-                        cloneGameCol4.board.addPiece(col4, blackKing);
-                        cloneGameCol4.board.addPiece(blackKingPosition, null);
-
-                        if ((!cloneGameCol3.isInCheck(TeamColor.BLACK)) && (!cloneGameCol4.isInCheck(TeamColor.BLACK))) {
-                            ChessMove blackKingCastleLeft = new ChessMove(blackKingPosition, col3);
-                            validMoves.add(blackKingCastleLeft);
-                        }
-                    }
-                }
-
-                // check if right rook can castle
-                if (!rightBlackRookMove) {
-                    // there are no pieces between the King and the rook
-                    ChessPosition col6 = new ChessPosition(8, 6);
-                    ChessPosition col7 = new ChessPosition(8, 7);
-                    if ((board.getPiece(col6) == null) && (board.getPiece(col7) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol6 = clone();
-                        cloneGameCol6.board.addPiece(col6, blackKing);
-                        cloneGameCol6.board.addPiece(blackKingPosition, null);
-
-                        ChessGame cloneGameCol7 = clone();
-                        cloneGameCol7.board.addPiece(col7, blackKing);
-                        cloneGameCol7.board.addPiece(blackKingPosition, null);
-
-                        if ((!cloneGameCol6.isInCheck(TeamColor.BLACK)) && (!cloneGameCol7.isInCheck(TeamColor.BLACK))) {
-                            ChessMove blackKingCastleRight = new ChessMove(blackKingPosition, col7);
-                            validMoves.add(blackKingCastleRight);
-                        }
-                    }
-                }
-            }
-        }
-
         return validMoves;
     }
 
@@ -268,222 +153,6 @@ public class ChessGame implements Cloneable {
         // ensure correct team is moving
         if (teamTurn != pieceColor) {
             throw new InvalidMoveException("Other team's turn, please wait.");
-        }
-
-        // Check castling
-        if (teamTurn == TeamColor.WHITE) {
-            if (!whiteKingMove && !isInCheck(TeamColor.WHITE)) {
-                ChessPosition whiteKingPosition = new ChessPosition(1, 5);
-                ChessPiece whiteKing = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING);
-
-                // check if left rook can castle
-                if (!leftWhiteRookMove) {
-                    ChessPosition leftWhiteRookPosition = new ChessPosition(1, 1);
-                    ChessPiece leftWhiteRook = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-
-                    // there are no pieces between the King and the rook
-                    ChessPosition col2 = new ChessPosition(1, 2);
-                    ChessPosition col3 = new ChessPosition(1, 3);
-                    ChessPosition col4 = new ChessPosition(1, 4);
-                    if ((board.getPiece(col2) == null) && (board.getPiece(col3) == null) && (board.getPiece(col4) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol3 = clone();
-                        cloneGameCol3.board.addPiece(col3, whiteKing);
-                        cloneGameCol3.board.addPiece(whiteKingPosition, null);
-
-                        ChessGame cloneGameCol4 = clone();
-                        cloneGameCol4.board.addPiece(col4, whiteKing);
-                        cloneGameCol4.board.addPiece(whiteKingPosition, null);
-
-                        if ((!cloneGameCol3.isInCheck(TeamColor.WHITE)) && (!cloneGameCol4.isInCheck(TeamColor.WHITE))) {
-                            ChessMove whiteKingCastleLeft = new ChessMove(whiteKingPosition, col3);
-
-                            // if King moves or left Rook moves
-                            if (move.equals(whiteKingCastleLeft)) {
-                                board.addPiece(col3, whiteKing);
-                                board.addPiece(whiteKingPosition, null);
-                                whiteKingMove = true;
-
-                                board.addPiece(col4, leftWhiteRook);
-                                board.addPiece(leftWhiteRookPosition, null);
-                                leftWhiteRookMove = true;
-
-                                // change turn
-                                teamTurn = TeamColor.BLACK;
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                // check if right rook can castle
-                if (!rightWhiteRookMove) {
-                    ChessPosition rightWhiteRookPosition = new ChessPosition(1, 8);
-                    ChessPiece rightWhiteRook = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-
-                    // there are no pieces between the King and the rook
-                    ChessPosition col6 = new ChessPosition(1, 6);
-                    ChessPosition col7 = new ChessPosition(1, 7);
-                    if ((board.getPiece(col6) == null) && (board.getPiece(col7) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol6 = clone();
-                        cloneGameCol6.board.addPiece(col6, whiteKing);
-                        cloneGameCol6.board.addPiece(whiteKingPosition, null);
-
-                        ChessGame cloneGameCol7 = clone();
-                        cloneGameCol7.board.addPiece(col7, whiteKing);
-                        cloneGameCol7.board.addPiece(whiteKingPosition, null);
-
-                        if ((!cloneGameCol6.isInCheck(TeamColor.WHITE)) && (!cloneGameCol7.isInCheck(TeamColor.WHITE))) {
-                            ChessMove whiteKingCastleRight = new ChessMove(whiteKingPosition, col7);
-
-                            // if King moves or right Rook moves
-                            if (move.equals(whiteKingCastleRight)) {
-                                board.addPiece(col7, whiteKing);
-                                board.addPiece(whiteKingPosition, null);
-                                whiteKingMove = true;
-
-                                board.addPiece(col6, rightWhiteRook);
-                                board.addPiece(rightWhiteRookPosition, null);
-                                rightWhiteRookMove = true;
-
-                                // change turn
-                                teamTurn = TeamColor.BLACK;
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (teamTurn == TeamColor.BLACK) {
-            if (!blackKingMove && !isInCheck(TeamColor.BLACK)) {
-                ChessPosition blackKingPosition = new ChessPosition(8, 5);
-                ChessPiece blackKing = new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING);
-
-                // check if left rook can castle
-                if (!leftBlackRookMove) {
-                    ChessPosition leftBlackRookPosition = new ChessPosition(8, 1);
-                    ChessPiece leftBlackRook = new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-
-                    // there are no pieces between the King and the rook
-                    ChessPosition col2 = new ChessPosition(8, 2);
-                    ChessPosition col3 = new ChessPosition(8, 3);
-                    ChessPosition col4 = new ChessPosition(8, 4);
-                    if ((board.getPiece(col2) == null) && (board.getPiece(col3) == null) && (board.getPiece(col4) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol3 = clone();
-                        cloneGameCol3.board.addPiece(col3, blackKing);
-                        cloneGameCol3.board.addPiece(blackKingPosition, null);
-
-                        ChessGame cloneGameCol4 = clone();
-                        cloneGameCol4.board.addPiece(col4, blackKing);
-                        cloneGameCol4.board.addPiece(blackKingPosition, null);
-
-                        if ((!cloneGameCol3.isInCheck(TeamColor.BLACK)) && (!cloneGameCol4.isInCheck(TeamColor.BLACK))) {
-                            ChessMove blackKingCastleLeft = new ChessMove(blackKingPosition, col3);
-
-                            // if King moves or left Rook moves
-                            if (move.equals(blackKingCastleLeft)) {
-                                board.addPiece(col3, blackKing);
-                                board.addPiece(blackKingPosition, null);
-                                blackKingMove = true;
-
-                                board.addPiece(col4, leftBlackRook);
-                                board.addPiece(leftBlackRookPosition, null);
-                                leftBlackRookMove = true;
-
-                                // change turn
-                                teamTurn = TeamColor.WHITE;
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                // check if right rook can castle
-                if (!rightBlackRookMove) {
-                    ChessPosition rightBlackRookPosition = new ChessPosition(8, 8);
-                    ChessPiece rightBlackRook = new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-
-                    // there are no pieces between the King and the rook
-                    ChessPosition col6 = new ChessPosition(8, 6);
-                    ChessPosition col7 = new ChessPosition(8, 7);
-                    if ((board.getPiece(col6) == null) && (board.getPiece(col7) == null)) {
-                        // King is not in check in any of the spaces
-                        ChessGame cloneGameCol6 = clone();
-                        cloneGameCol6.board.addPiece(col6, blackKing);
-                        cloneGameCol6.board.addPiece(blackKingPosition, null);
-
-                        ChessGame cloneGameCol7 = clone();
-                        cloneGameCol7.board.addPiece(col7, blackKing);
-                        cloneGameCol7.board.addPiece(blackKingPosition, null);
-
-                        if ((!cloneGameCol6.isInCheck(TeamColor.BLACK)) && (!cloneGameCol7.isInCheck(TeamColor.BLACK))) {
-                            ChessMove blackKingCastleRight = new ChessMove(blackKingPosition, col7);
-
-                            // if King moves or left Rook moves
-                            if (move.equals(blackKingCastleRight)) {
-                                board.addPiece(col7, blackKing);
-                                board.addPiece(blackKingPosition, null);
-                                blackKingMove = true;
-
-                                board.addPiece(col6, rightBlackRook);
-                                board.addPiece(rightBlackRookPosition, null);
-                                rightBlackRookMove = true;
-
-                                // change turn
-                                teamTurn = TeamColor.WHITE;
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // if any King or Rook moves, update
-        if (!whiteKingMove) {
-            ChessPosition whiteKingPosition = new ChessPosition(1, 5);
-            if (startPosition.equals(whiteKingPosition)) {
-                whiteKingMove = true;
-            }
-        }
-
-        if (!blackKingMove) {
-            ChessPosition blackKingPosition = new ChessPosition(8, 5);
-            if (startPosition.equals(blackKingPosition)) {
-                blackKingMove = true;
-            }
-        }
-
-        if (!leftWhiteRookMove) {
-            ChessPosition leftWhiteRookPosition = new ChessPosition(1, 1);
-            if (startPosition.equals(leftWhiteRookPosition)) {
-                leftWhiteRookMove = true;
-            }
-        }
-
-        if (!rightWhiteRookMove) {
-            ChessPosition rightWhiteRookPosition = new ChessPosition(1, 8);
-            if (startPosition.equals(rightWhiteRookPosition)) {
-                rightWhiteRookMove = true;
-            }
-        }
-
-        if (!leftBlackRookMove) {
-            ChessPosition leftBlackRookPosition = new ChessPosition(8, 1);
-            if (startPosition.equals(leftBlackRookPosition)) {
-                leftBlackRookMove = true;
-            }
-        }
-
-        if (!rightBlackRookMove) {
-            ChessPosition rightBlackRookPosition = new ChessPosition(8, 8);
-            if (startPosition.equals(rightBlackRookPosition)) {
-                rightBlackRookMove = true;
-            }
         }
 
         // get new piece
@@ -646,14 +315,6 @@ public class ChessGame implements Cloneable {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
-
-        whiteKingMove = false;
-        blackKingMove = false;
-
-        leftWhiteRookMove = false;
-        rightWhiteRookMove = false;
-        leftBlackRookMove = false;
-        rightBlackRookMove = false;
     }
 
     /**
@@ -735,12 +396,12 @@ public class ChessGame implements Cloneable {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return whiteKingMove == chessGame.whiteKingMove && blackKingMove == chessGame.blackKingMove && leftWhiteRookMove == chessGame.leftWhiteRookMove && rightWhiteRookMove == chessGame.rightWhiteRookMove && leftBlackRookMove == chessGame.leftBlackRookMove && rightBlackRookMove == chessGame.rightBlackRookMove && Objects.equals(board, chessGame.board) && teamTurn == chessGame.teamTurn;
+        return Objects.equals(board, chessGame.board) && teamTurn == chessGame.teamTurn;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, teamTurn, whiteKingMove, blackKingMove, leftWhiteRookMove, rightWhiteRookMove, leftBlackRookMove, rightBlackRookMove);
+        return Objects.hash(board, teamTurn);
     }
 
     @Override
@@ -748,12 +409,6 @@ public class ChessGame implements Cloneable {
         return "ChessGame{" +
                 "board=" + board +
                 ", teamTurn=" + teamTurn +
-                ", whiteKingMove=" + whiteKingMove +
-                ", blackKingMove=" + blackKingMove +
-                ", leftWhiteRookMove=" + leftWhiteRookMove +
-                ", rightWhiteRookMove=" + rightWhiteRookMove +
-                ", leftBlackRookMove=" + leftBlackRookMove +
-                ", rightBlackRookMove=" + rightBlackRookMove +
                 '}';
     }
 }

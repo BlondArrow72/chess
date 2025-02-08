@@ -12,7 +12,7 @@ public class RookMovesCalculator implements ChessPieceMovesCalculator{
         int currentCol = myPosition.getColumn();
 
         // rooks can move up
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 8; i++) {
             ChessPosition up = new ChessPosition(currentRow+i, currentCol);
             ChessMove newMove = new ChessMove(myPosition, up);
 
@@ -31,7 +31,7 @@ public class RookMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // rooks can move to the right
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition right = new ChessPosition(currentRow, currentCol+i);
             ChessMove newMove = new ChessMove(myPosition, right);
 
@@ -50,7 +50,7 @@ public class RookMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // rooks can move down
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition down = new ChessPosition(currentRow-i, currentCol);
             ChessMove newMove = new ChessMove(myPosition, down);
 
@@ -69,7 +69,7 @@ public class RookMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // rooks can move to the left
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition left = new ChessPosition(currentRow, currentCol-i);
             ChessMove newMove = new ChessMove(myPosition, left);
 

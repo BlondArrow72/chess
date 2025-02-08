@@ -12,7 +12,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         int currentCol = myPosition.getColumn();
 
         // queens can move up
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition up = new ChessPosition(currentRow+i, currentCol);
             ChessMove newMove = new ChessMove(myPosition, up);
 
@@ -31,7 +31,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move up and to the right
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition upRight = new ChessPosition(currentRow+i, currentCol+i);
             ChessMove newMove = new ChessMove(myPosition, upRight);
 
@@ -50,7 +50,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move to the right
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition right = new ChessPosition(currentRow, currentCol+i);
             ChessMove newMove = new ChessMove(myPosition, right);
 
@@ -69,7 +69,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move down and to the right
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition downRight = new ChessPosition(currentRow-i, currentCol+i);
             ChessMove newMove = new ChessMove(myPosition, downRight);
 
@@ -88,7 +88,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move down
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition down = new ChessPosition(currentRow-i, currentCol);
             ChessMove newMove = new ChessMove(myPosition, down);
 
@@ -107,7 +107,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move down and to the left
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition downLeft = new ChessPosition(currentRow-i, currentCol-i);
             ChessMove newMove = new ChessMove(myPosition, downLeft);
 
@@ -126,7 +126,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move to the left
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition left = new ChessPosition(currentRow, currentCol-i);
             ChessMove newMove = new ChessMove(myPosition, left);
 
@@ -145,7 +145,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         // queens can move up and to the left
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             ChessPosition upLeft = new ChessPosition(currentRow+i, currentCol-i);
             ChessMove newMove = new ChessMove(myPosition, upLeft);
 

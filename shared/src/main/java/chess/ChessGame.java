@@ -185,25 +185,67 @@ public class ChessGame implements Cloneable {
         }
 
         Collection<ChessMove> otherTeamMoves = getTeamMoves(otherTeam);
-        Collection<ChessMove> attackingMoves = new ArrayList<>();
+        Collection<ChessMove> attackMoves = new ArrayList<>();
         for (ChessMove currentMove : otherTeamMoves) {
             ChessPosition attackingPosition = currentMove.getEndPosition();
             if (attackingPosition.equals(kingPosition)) {
-                attackingMoves.add(currentMove);
+                attackMoves.add(currentMove);
             }
         }
 
         // get all moves from my team
         Collection<ChessMove> myTeamMoves = getTeamMoves(teamColor);
-        for (ChessMove myCurrentMove : myTeamMoves) {
-            for (ChessMove otherCurrentMove : attackingMoves) {
-                ChessPosition myAttackPosition = myCurrentMove.getEndPosition();
-                ChessPosition attackingPiecePosition = otherCurrentMove.getStartPosition();
-                if (myAttackPosition.equals(attackingPiecePosition)) {
-                    return false;
+
+        // Iterate through each attacking move
+        Iterator<ChessMove> attackingMoves = attackMoves.iterator();
+        while (attackingMoves.hasNext()) {
+            ChessMove attackMove = attackingMoves.next();
+            ChessPosition attackPiecePosition = attackMove.getStartPosition();
+
+            // iterate through myTeamMoves to see if I can make a move to capture the attacking piece
+            for (ChessMove defendingMove : myTeamMoves) {
+                ChessPosition defendingMoveEndPosition = defendingMove.getEndPosition();
+
+                // if my defending move can capture the attacking piece, might not be in check
+                if (defendingMoveEndPosition.equals(attackPiecePosition)) {
+                    // remove the attacking move
+                    attackMoves.remove(attackMove);
                 }
             }
         }
+
+        /*
+        for (ChessMove myCurrentMove : myTeamMoves) {
+            for (ChessMove otherCurrentMove : otherTeamMoves) {
+                ChessPosition myAttackPosition = myCurrentMove.getEndPosition();
+                ChessPosition attackingPiecePosition = otherCurrentMove.getStartPosition();
+                if (myAttackPosition.equals(attackingPiecePosition)) {
+                    ChessPosition attackStartPosition = otherCurrentMove.getStartPosition();
+                    ChessPosition attackEndPosition = otherCurrentMove.getEndPosition();
+                    ChessPiece.PieceType attackPromotionPieceType = otherCurrentMove.getPromotionPiece();
+
+                    attackMoves.remove(otherCurrentMove);
+                    if (attackPromotionPieceType != null) {
+                        ChessMove bishopAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.BISHOP);
+                        attackMoves.remove(bishopAttackingMove);
+
+                        ChessMove knightAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.KNIGHT);
+                        attackMoves.remove(knightAttackingMove);
+
+                        ChessMove queenAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.QUEEN);
+                        otherTeamMoves.remove(queenAttackingMove);
+
+                        ChessMove rookAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.ROOK);
+                        otherTeamMoves.remove(rookAttackingMove);
+                    }
+
+                    if (otherTeamMoves.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        */
 
         return true;
     }

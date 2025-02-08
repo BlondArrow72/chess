@@ -175,7 +175,6 @@ public class ChessGame implements Cloneable {
         }
 
         // check if capture will escape checkmate
-        // get all moves that attack King
         TeamColor otherTeam;
         if (teamColor == TeamColor.WHITE) {
             otherTeam = TeamColor.BLACK;
@@ -184,6 +183,7 @@ public class ChessGame implements Cloneable {
             otherTeam = TeamColor.WHITE;
         }
 
+        // get all moves that attack King
         Collection<ChessMove> otherTeamMoves = getTeamMoves(otherTeam);
         Collection<ChessMove> attackMoves = new ArrayList<>();
         for (ChessMove currentMove : otherTeamMoves) {
@@ -196,11 +196,19 @@ public class ChessGame implements Cloneable {
         // get all moves from my team
         Collection<ChessMove> myTeamMoves = getTeamMoves(teamColor);
 
+        // get all startingAttackPositions
+        Collection<ChessPosition> attackPositions = new ArrayList<>();
+        for (ChessMove currentMove : attackMoves) {
+            ChessPosition currentStartPosition = currentMove.getStartPosition();
+            if (!attackPositions.contains(currentStartPosition)) {
+                attackPositions.add(currentStartPosition);
+            }
+        }
+
         // Iterate through each attacking move
-        Iterator<ChessMove> attackingMoves = attackMoves.iterator();
-        while (attackingMoves.hasNext()) {
-            ChessMove attackMove = attackingMoves.next();
-            ChessPosition attackPiecePosition = attackMove.getStartPosition();
+        Iterator<ChessPosition> attackingPositions = attackPositions.iterator();
+        while (attackingPositions.hasNext()) {
+            ChessPosition attackPiecePosition = attackingPositions.next();
 
             // iterate through myTeamMoves to see if I can make a move to capture the attacking piece
             for (ChessMove defendingMove : myTeamMoves) {
@@ -209,44 +217,13 @@ public class ChessGame implements Cloneable {
                 // if my defending move can capture the attacking piece, might not be in check
                 if (defendingMoveEndPosition.equals(attackPiecePosition)) {
                     // remove the attacking move
-                    attackMoves.remove(attackMove);
-                }
-            }
-        }
-
-        /*
-        for (ChessMove myCurrentMove : myTeamMoves) {
-            for (ChessMove otherCurrentMove : otherTeamMoves) {
-                ChessPosition myAttackPosition = myCurrentMove.getEndPosition();
-                ChessPosition attackingPiecePosition = otherCurrentMove.getStartPosition();
-                if (myAttackPosition.equals(attackingPiecePosition)) {
-                    ChessPosition attackStartPosition = otherCurrentMove.getStartPosition();
-                    ChessPosition attackEndPosition = otherCurrentMove.getEndPosition();
-                    ChessPiece.PieceType attackPromotionPieceType = otherCurrentMove.getPromotionPiece();
-
-                    attackMoves.remove(otherCurrentMove);
-                    if (attackPromotionPieceType != null) {
-                        ChessMove bishopAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.BISHOP);
-                        attackMoves.remove(bishopAttackingMove);
-
-                        ChessMove knightAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.KNIGHT);
-                        attackMoves.remove(knightAttackingMove);
-
-                        ChessMove queenAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.QUEEN);
-                        otherTeamMoves.remove(queenAttackingMove);
-
-                        ChessMove rookAttackingMove = new ChessMove(attackStartPosition, attackEndPosition, ChessPiece.PieceType.ROOK);
-                        otherTeamMoves.remove(rookAttackingMove);
-                    }
-
-                    if (otherTeamMoves.isEmpty()) {
-                        return false;
+                    attackMoves.remove(attackingPositions);
+                    if (attackingPositions.hasNext()) {
+                        return true;
                     }
                 }
             }
         }
-        */
-
         return true;
     }
 

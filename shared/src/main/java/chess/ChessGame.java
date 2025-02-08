@@ -53,36 +53,89 @@ public class ChessGame implements Cloneable {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessBoard board = getBoard();
-
-        // check if piece at startPosition
-        if (board.getPiece(startPosition) == null) {
+        // if no piece at location, return null
+        if (startPosition == null) {
             return null;
         }
 
-        // get all possible moves
+        // get empty validMoves
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        // get piece at start location
         ChessPiece startPiece = board.getPiece(startPosition);
+        ChessGame.TeamColor pieceTeam = startPiece.getTeamColor();
+
+        // get all possible moves for the piece
         Collection<ChessMove> possibleMoves = startPiece.pieceMoves(board, startPosition);
 
-        // Iterate through possible moves, adding them to valid moves if they don't place team in check
-        Iterator<ChessMove> chessMoveIterator = possibleMoves.iterator();
-        Collection<ChessMove> validMoves = new ArrayList<>();
-        while (chessMoveIterator.hasNext()) {
-            ChessMove currentMove = chessMoveIterator.next();
+        // if King is in check, block it
+        if (isInCheck(pieceTeam)) {
+            // loop through possibleMoves and see if it blocks check
+            for (ChessMove currentMove : possibleMoves) {
+                ChessPosition endPosition = currentMove.getEndPosition();
+                ChessPiece.PieceType promotionType = currentMove.getPromotionPiece();
+                ChessPiece newPiece;
 
-            // make each move and confirm King is not in check
-            ChessBoard cloneBoard = board.clone();
+                if (promotionType != null) {
+                    newPiece = new ChessPiece(pieceTeam, promotionType);
+                }
+                else {
+                    newPiece = startPiece;
+                }
 
-            // get piece from start position
-            ChessPiece movePiece = cloneBoard.getPiece(currentMove.getStartPosition());
+                // clone game and make move
+                ChessGame cloneGame = clone();
+                cloneGame.board.addPiece(endPosition, newPiece);
+                cloneGame.board.addPiece(startPosition, null);
 
-            // place piece at end position
-            cloneBoard.addPiece(currentMove.getEndPosition(), movePiece);
-
-            chessMoveIterator.remove();
+                // if move saved from check, add to valid moves
+                if (!cloneGame.isInCheck(pieceTeam)) {
+                    validMoves.add(currentMove);
+                }
+            }
+            return validMoves;
         }
 
-        return possibleMoves;
+        return validMoves;
+
+        /*
+        // setup validMoves
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        // get possible moves
+        ChessPiece currentPiece = board.getPiece(startPosition);
+        Collection<ChessMove> possibleMoves = currentPiece.pieceMoves(board, startPosition);
+        for (ChessMove currentMove : possibleMoves) {
+            ChessPosition endPosition = currentMove.getEndPosition();
+            ChessPiece.PieceType promotionPiece = currentMove.getPromotionPiece();
+
+            ChessPiece newPiece;
+            if (promotionPiece != null) {
+                newPiece = new ChessPiece(currentPiece.getTeamColor(), promotionPiece);
+            }
+            else {
+                newPiece = currentPiece;
+            }
+
+            // clone board
+            ChessGame cloneGame = clone();
+
+            // make the move
+            cloneGame.board.addPiece(endPosition, newPiece);
+            cloneGame.board.addPiece(startPosition, null);
+
+            // verify King not in check
+            if (isInCheck(currentPiece.getTeamColor())) {
+                continue;
+            }
+
+            // add move to validMoves
+            validMoves.add(currentMove);
+        }
+
+        return validMoves;
+
+         */
     }
 
     /**

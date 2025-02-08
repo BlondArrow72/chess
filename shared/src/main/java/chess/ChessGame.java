@@ -13,11 +13,11 @@ import java.util.Objects;
  */
 public class ChessGame implements Cloneable {
 
-    private ChessBoard board;
+    private ChessBoard board = new ChessBoard();
     private TeamColor teamTurn;
 
     public ChessGame() {
-        board = new ChessBoard();
+        board.resetBoard();
         teamTurn = TeamColor.WHITE;
     }
 
@@ -216,8 +216,6 @@ public class ChessGame implements Cloneable {
 
                 // if my defending move can capture the attacking piece, might not be in check
                 if (defendingMoveEndPosition.equals(attackPiecePosition)) {
-                    // remove the attacking move
-                    attackMoves.remove(attackingPositions);
                     if (attackingPositions.hasNext()) {
                         return true;
                     }
@@ -235,7 +233,40 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // King must be safe
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+
+        // King must not be able to move
+        ChessPosition kingPosition = getKingPosition(teamColor);
+        Collection<ChessMove> kingMoves = board.getPiece(kingPosition).pieceMoves(board, kingPosition);
+        for (ChessMove move : kingMoves) {
+            ChessGame cloneGame = clone();
+            ChessPosition newKingPosition = move.getEndPosition();
+            cloneGame.board.addPiece(newKingPosition, new ChessPiece(teamColor, ChessPiece.PieceType.KING));
+            cloneGame.board.addPiece(kingPosition, null);
+
+            if (isInCheck(teamColor)) {
+                return false;
+            }
+        }
+
+        // team must have no moves
+        Collection<ChessMove> teamMoves = getTeamMoves(teamColor);
+        Iterator<ChessMove> teamMovesIterator = teamMoves.iterator();
+        while (teamMovesIterator.hasNext()) {
+            ChessMove nextMove = teamMovesIterator.next();
+            if (nextMove.getStartPosition().equals(kingPosition)) {
+                teamMovesIterator.remove();
+            }
+        }
+
+        if (teamMoves.isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

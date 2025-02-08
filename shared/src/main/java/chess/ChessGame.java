@@ -131,7 +131,36 @@ public class ChessGame implements Cloneable {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece.PieceType promotionType = move.getPromotionPiece();
+
+        if (board.getPiece(startPosition) == null) {
+            return;
+        }
+
+        // ensure move is valid
+        Collection<ChessMove> currentValidMoves = validMoves(startPosition);
+        if (!currentValidMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move. Try a different move.");
+        }
+
+        // get current piece
+        ChessPiece chessPiece = board.getPiece(startPosition);
+        ChessGame.TeamColor pieceColor = chessPiece.pieceColor;
+
+        // get new piece
+        ChessPiece newPiece;
+        if (promotionType != null) {
+            newPiece = new ChessPiece(pieceColor, promotionType);
+        }
+        else {
+            newPiece = chessPiece;
+        }
+
+        // make the move
+        board.addPiece(endPosition, newPiece);
+        board.addPiece(startPosition, null);
     }
 
     /**
@@ -194,73 +223,30 @@ public class ChessGame implements Cloneable {
         // get King position
         ChessPosition kingPosition = getKingPosition(teamColor);
 
-        // get King piece
-        ChessPiece kingPiece = board.getPiece(kingPosition);
+        // if King can move anywhere and not be in check, not in checkmate
+        Collection<ChessMove> validKingMoves = validMoves(kingPosition);
+        if (!validKingMoves.isEmpty()) {
+            return false;
+        }
 
-        // get King possibleMoves
-        Collection<ChessMove> kingMoves = kingPiece.pieceMoves(board, kingPosition);
-
-        for (ChessMove currentMove : kingMoves) {
+        // if piece can capture or block, then not in checkmate
+        Collection<ChessMove> validTeamMoves = getTeamMoves(teamColor);
+        Collection<ChessMove> safeTeamMoves = new ArrayList<>();
+        for (ChessMove validMove : validTeamMoves) {
+            // get a cloned game
             ChessGame cloneGame = clone();
 
-            // Make move in cloned game
-            ChessPosition newPosition = currentMove.getEndPosition();
-            cloneGame.board.addPiece(newPosition, kingPiece);
-            cloneGame.board.addPiece(kingPosition, null);
-
-            if (!cloneGame.isInCheck(teamColor)) {
-                return false;
-            }
-        }
-
-        // check if capture will escape checkmate
-        TeamColor otherTeam;
-        if (teamColor == TeamColor.WHITE) {
-            otherTeam = TeamColor.BLACK;
-        }
-        else {
-            otherTeam = TeamColor.WHITE;
-        }
-
-        // get all moves that attack King
-        Collection<ChessMove> otherTeamMoves = getTeamMoves(otherTeam);
-        Collection<ChessMove> attackMoves = new ArrayList<>();
-        for (ChessMove currentMove : otherTeamMoves) {
-            ChessPosition attackingPosition = currentMove.getEndPosition();
-            if (attackingPosition.equals(kingPosition)) {
-                attackMoves.add(currentMove);
-            }
-        }
-
-        // get all moves from my team
-        Collection<ChessMove> myTeamMoves = getTeamMoves(teamColor);
-
-        // get all startingAttackPositions
-        Collection<ChessPosition> attackPositions = new ArrayList<>();
-        for (ChessMove currentMove : attackMoves) {
-            ChessPosition currentStartPosition = currentMove.getStartPosition();
-            if (!attackPositions.contains(currentStartPosition)) {
-                attackPositions.add(currentStartPosition);
-            }
-        }
-
-        // Iterate through each attacking move
-        Iterator<ChessPosition> attackingPositions = attackPositions.iterator();
-        while (attackingPositions.hasNext()) {
-            ChessPosition attackPiecePosition = attackingPositions.next();
-
-            // iterate through myTeamMoves to see if I can make a move to capture the attacking piece
-            for (ChessMove defendingMove : myTeamMoves) {
-                ChessPosition defendingMoveEndPosition = defendingMove.getEndPosition();
-
-                // if my defending move can capture the attacking piece, might not be in check
-                if (defendingMoveEndPosition.equals(attackPiecePosition)) {
-                    if (attackingPositions.hasNext()) {
-                        return true;
-                    }
+            // make the move
+            try {
+                cloneGame.makeMove(validMove);
+                if (!cloneGame.isInCheck(teamColor)) {
+                    return false;
                 }
+            } catch (InvalidMoveException e) {
+
             }
         }
+
         return true;
     }
 
@@ -371,7 +357,7 @@ public class ChessGame implements Cloneable {
                      continue;
                  }
 
-                 teamMoves.addAll(currentPiece.pieceMoves(board, currentPosition));
+                 teamMoves.addAll(validMoves(currentPosition));
              }
          }
          return teamMoves;

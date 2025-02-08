@@ -96,25 +96,16 @@ public class ChessGame implements Cloneable {
             return validMoves;
         }
 
-        return validMoves;
-
-        /*
-        // setup validMoves
-        Collection<ChessMove> validMoves = new ArrayList<>();
-
-        // get possible moves
-        ChessPiece currentPiece = board.getPiece(startPosition);
-        Collection<ChessMove> possibleMoves = currentPiece.pieceMoves(board, startPosition);
+        // if King is not in check, add moves that don't put it in check
         for (ChessMove currentMove : possibleMoves) {
             ChessPosition endPosition = currentMove.getEndPosition();
             ChessPiece.PieceType promotionPiece = currentMove.getPromotionPiece();
 
             ChessPiece newPiece;
             if (promotionPiece != null) {
-                newPiece = new ChessPiece(currentPiece.getTeamColor(), promotionPiece);
-            }
-            else {
-                newPiece = currentPiece;
+                newPiece = new ChessPiece(startPiece.getTeamColor(), promotionPiece);
+            } else {
+                newPiece = startPiece;
             }
 
             // clone board
@@ -124,18 +115,13 @@ public class ChessGame implements Cloneable {
             cloneGame.board.addPiece(endPosition, newPiece);
             cloneGame.board.addPiece(startPosition, null);
 
-            // verify King not in check
-            if (isInCheck(currentPiece.getTeamColor())) {
-                continue;
+            // if King is not in check, add move
+            if (!cloneGame.isInCheck(startPiece.getTeamColor())) {
+                validMoves.add(currentMove);
             }
-
-            // add move to validMoves
-            validMoves.add(currentMove);
         }
 
         return validMoves;
-
-         */
     }
 
     /**

@@ -1,24 +1,22 @@
 package dataaccess;
 
+import model.UserData;
+
 import java.util.HashMap;
 
 public class UserDataAccess {
-    private HashMap<String, UserData> userDataDatabase = new HashMap<>();
+    private final HashMap<String, UserData> userDataDatabase = new HashMap<>();
 
-    public void addUserData(String username, String password, String email) {
-        UserData newUserData = new UserData(username, password, email);
-        userDataDatabase.put(username, newUserData);
+    public void createUser(String username, String password, String email) {
+        UserData newUser = new UserData(username, password, email);
+        userDataDatabase.put(username, newUser);
     }
 
-    public UserData getUserData(String username) {
+    public UserData getUser(String username) {
         return userDataDatabase.get(username);
     }
 
-    public void deleteUserData(String username) {
-        userDataDatabase.remove(username);
-    }
-
-    public void deleteAllUserData() {
+    public void clearUserData() {
         userDataDatabase.clear();
     }
 }

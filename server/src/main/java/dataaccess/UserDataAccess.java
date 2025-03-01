@@ -4,7 +4,7 @@ import model.UserData;
 
 import java.util.HashMap;
 
-public class UserDataAccess {
+public class UserDataAccess implements DataAccessObject{
     private final HashMap<String, UserData> userDataDatabase = new HashMap<>();
 
     public void createUser(String username, String password, String email) {
@@ -16,7 +16,7 @@ public class UserDataAccess {
         return userDataDatabase.get(username);
     }
 
-    public void clearUserData() {
+    public void clear() {
         userDataDatabase.clear();
     }
 }

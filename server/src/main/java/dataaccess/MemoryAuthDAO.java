@@ -4,7 +4,7 @@ import model.AuthData;
 
 import java.util.HashMap;
 
-public class AuthDataAccess implements DataAccessObject{
+public class MemoryAuthDAO implements AuthDAO{
     private final HashMap<String, AuthData> authDataDatabase = new HashMap<>();
 
     public void createAuth(String authToken, String username) {

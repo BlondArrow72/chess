@@ -20,10 +20,13 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     public Collection<GameData> listGames() {
-        return
+        return memoryGameData.values();
     }
 
-    public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game);
+    public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+        GameData updatedGame = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+        memoryGameData.put(gameID, updatedGame);
+    }
 
     public void clear() {
         memoryGameData.clear();

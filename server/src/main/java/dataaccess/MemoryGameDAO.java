@@ -35,4 +35,8 @@ public class MemoryGameDAO implements GameDAO{
     public void clear() {
         memoryGameData.clear();
     }
+
+    public boolean isEmpty() {
+        return memoryGameData.isEmpty();
+    }
 }

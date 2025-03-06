@@ -22,4 +22,8 @@ public class MemoryUserDAO implements UserDAO{
     public void clear() {
         userDataDatabase.clear();
     }
+
+    public boolean isEmpty() {
+        return userDataDatabase.isEmpty();
+    }
 }

@@ -8,6 +8,7 @@ import dataaccess.AuthDAO;
 import dataaccess.MemoryAuthDAO;
 
 import handlers.RegisterHandler;
+import handlers.ClearHandler;
 
 import spark.Spark;
 
@@ -29,6 +30,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", (req, res) -> new RegisterHandler(userDAO, authDAO).register(req, res));
+        Spark.delete("/db", (req, res) -> new ClearHandler(userDAO, gameDAO, authDAO).clear(req, res));
 
         Spark.awaitInitialization();
         return Spark.port();

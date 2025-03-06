@@ -12,7 +12,7 @@ import handlers.ClearHandler;
 import handlers.LoginHandler;
 import handlers.LogoutHandler;
 import handlers.ListGamesHandler;
-// import handlers.CreateGameHandler;
+import handlers.CreateGameHandler;
 // import handlers.JoinGameHandler;
 
 import spark.Spark;
@@ -51,7 +51,7 @@ public class Server {
         Spark.get("/game", (req, res) -> new ListGamesHandler(gameDAO, authDAO).listGames(req, res));
 
         // Create Game
-        // Spark.post("/game", (req, res) -> new CreateGameHandler(gameDAO, authDAO).createGame(req, res));
+        Spark.post("/game", (req, res) -> new CreateGameHandler(gameDAO, authDAO).createGame(req, res));
 
         // Join Game
         // Spark.put("/game", (req, res) -> new JoinGameHandler(gameDAO, authDAO).createGame(req, res));

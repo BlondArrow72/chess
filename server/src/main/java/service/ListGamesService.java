@@ -16,7 +16,7 @@ public class ListGamesService {
         this.authDAO = authDAO;
     }
 
-    public Collection<GameData> listGames(String authToken) throws UnauthorizedUserError {
+    public Collection<GameData> listGames(String authToken) {
         if (authDAO.getAuth(authToken) != null) {
             return gameDAO.listGames();
         }

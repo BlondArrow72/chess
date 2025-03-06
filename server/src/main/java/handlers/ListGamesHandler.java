@@ -28,6 +28,11 @@ public class ListGamesHandler {
         // get authToken
         String authToken = req.headers("authorization");
 
+        if (authToken.isEmpty()) {
+            res.status(400);
+            return new Gson().toJson(Map.of("message", "Error: bad request"));
+        }
+
         try {
             // call service
             Collection<GameData> gameList = new ListGamesService(gameDAO, authDAO).listGames(authToken);
@@ -38,6 +43,10 @@ public class ListGamesHandler {
         }
         catch(UnauthorizedUserError e) {
             res.status(401);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
+        catch(Exception e) {
+            res.status(500);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }
     }

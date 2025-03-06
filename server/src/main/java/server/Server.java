@@ -10,6 +10,7 @@ import dataaccess.MemoryAuthDAO;
 import handlers.RegisterHandler;
 import handlers.ClearHandler;
 import handlers.LoginHandler;
+import handlers.LogoutHandler;
 
 import spark.Spark;
 
@@ -39,6 +40,9 @@ public class Server {
 
         // Login
         Spark.post("/session", (req, res) -> new LoginHandler(userDAO, authDAO).login(req, res));
+
+        // Logout
+        Spark.delete("/session", (req, res) -> new LogoutHandler(authDAO).logout(req, res));
 
         Spark.awaitInitialization();
         return Spark.port();

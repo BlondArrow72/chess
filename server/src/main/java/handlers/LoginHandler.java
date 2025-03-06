@@ -3,7 +3,6 @@ package handlers;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 
-import model.UserData;
 import model.AuthData;
 
 import service.LoginService;

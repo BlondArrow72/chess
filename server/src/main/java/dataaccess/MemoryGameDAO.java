@@ -9,9 +9,11 @@ import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
     private final HashMap<Integer, GameData> memoryGameData;
+    private int gameID;
 
     public MemoryGameDAO() {
         memoryGameData = new HashMap<>();
+        gameID = 1;
     }
 
     public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
@@ -38,5 +40,9 @@ public class MemoryGameDAO implements GameDAO{
 
     public boolean isEmpty() {
         return memoryGameData.isEmpty();
+    }
+
+    public int getGameID() {
+        return gameID++;
     }
 }

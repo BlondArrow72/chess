@@ -10,6 +10,8 @@ import spark.Response;
 
 import com.google.gson.Gson;
 
+import java.util.Map;
+
 public class CreateGameHandler {
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
@@ -27,5 +29,9 @@ public class CreateGameHandler {
 
         // call service
         int gameID = new CreateGameService(gameDAO, authDAO).createGame(authToken, gameName);
+
+        // serialize
+        res.status(200);
+        return new Gson().toJson(Map.of("gameID", gameID));
     }
 }

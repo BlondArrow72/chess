@@ -17,4 +17,6 @@ public interface GameDAO extends DataDAO {
     public void clear();
 
     public boolean isEmpty();
+
+    public int getGameID();
 }

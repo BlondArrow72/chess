@@ -1,7 +1,9 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
+import model.GameData;
 
 public class CreateGameService {
     private final GameDAO gameDAO;
@@ -19,5 +21,10 @@ public class CreateGameService {
         }
 
         // create game
+        int gameID = gameDAO.getGameID();
+        gameDAO.createGame(gameID, null, null, gameName, new ChessGame());
+
+        // return gameID
+        return gameID;
     }
 }

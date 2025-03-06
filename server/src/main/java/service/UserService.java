@@ -1,38 +1,33 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
-import handlers.RegisterRequest;
-import handlers.RegisterResponse;
+import dataaccess.UserDAO;
+import dataaccess.AuthDAO;
 
-import java.util.List;
+import model.AuthData;
+import model.UserData;
+
 import java.util.UUID;
 
 public class UserService {
-    private final MemoryUserDAO userDAO = new MemoryUserDAO();
-    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
 
-    public RegisterResponse register(RegisterRequest registerRequest) throws DataAccessException {
-        // unpack values
-        String username = registerRequest.username();
-        String password = registerRequest.password();
-        String email = registerRequest.email();
+    public UserService(UserDAO userDAO, AuthDAO authDAO) {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+    }
 
+    public AuthData register(UserData newUser) {
         // createUser
-        if (userDAO.getUser(username) == null) {
-            userDAO.createUser(username, password, email);
-        }
-        else {
-            throw new DataAccessException("Username already taken.");
-        }
+        userDAO.createUser(newUser);
 
         // createAuth
         String authToken = UUID.randomUUID().toString();
-        authDAO.createAuth(authToken, username);
+        AuthData newAuth = new AuthData(authToken, newUser.username());
+        authDAO.createAuth(newAuth);
 
         // return RegisterResult
-        return new RegisterResponse(200, List.of(username, authToken));
+        return newAuth;
     }
 
     // public LoginResult login(LoginRequest loginRequest) {}

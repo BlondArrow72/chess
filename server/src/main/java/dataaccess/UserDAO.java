@@ -3,7 +3,7 @@ package dataaccess;
 import model.UserData;
 
 public interface UserDAO {
-    public void createUser(String username, String password, String email);
+    public void createUser(UserData newUser);
 
     public UserData getUser(String username);
 

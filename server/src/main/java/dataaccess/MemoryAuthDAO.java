@@ -5,11 +5,14 @@ import model.AuthData;
 import java.util.HashMap;
 
 public class MemoryAuthDAO implements AuthDAO{
-    private final HashMap<String, AuthData> authDataDatabase = new HashMap<>();
+    private final HashMap<String, AuthData> authDataDatabase;
 
-    public void createAuth(String authToken, String username) {
-        AuthData newAuth = new AuthData(authToken, username);
-        authDataDatabase.put(authToken, newAuth);
+    public MemoryAuthDAO() {
+        authDataDatabase = new HashMap<>();
+    }
+
+    public void createAuth(AuthData newAuth) {
+        authDataDatabase.put(newAuth.authToken(), newAuth);
     }
 
     public AuthData getAuth(String authToken) {

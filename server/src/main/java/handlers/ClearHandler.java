@@ -14,9 +14,9 @@ import spark.Request;
 import spark.Response;
 
 public class ClearHandler {
-    private UserDAO userDAO;
-    private GameDAO gameDAO;
-    private AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
 
     public ClearHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;

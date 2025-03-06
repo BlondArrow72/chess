@@ -17,8 +17,8 @@ import spark.Request;
 import spark.Response;
 
 public class RegisterHandler {
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public RegisterHandler(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;

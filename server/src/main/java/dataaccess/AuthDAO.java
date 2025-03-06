@@ -3,7 +3,7 @@ package dataaccess;
 import model.AuthData;
 
 public interface AuthDAO extends DataDAO{
-    public void createAuth(AuthData newAuth);
+    public AuthData createAuth(String username);
 
     public AuthData getAuth(String authToken);
 

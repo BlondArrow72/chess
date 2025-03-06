@@ -9,8 +9,8 @@ import model.UserData;
 import java.util.UUID;
 
 public class RegisterService {
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public RegisterService(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
@@ -28,11 +28,6 @@ public class RegisterService {
         }
 
         // createAuth
-        String authToken = UUID.randomUUID().toString();
-        AuthData newAuth = new AuthData(authToken, newUser.username());
-        authDAO.createAuth(newAuth);
-
-        // return RegisterResult
-        return newAuth;
+        return authDAO.createAuth(newUser.username());
     }
 }

@@ -22,7 +22,7 @@ public class RegisterHandler {
         this.authDAO = authDAO;
     }
 
-    public Response register(Request req, Response res) {
+    public Object register(Request req, Response res) {
         // deserialize req
         UserData user = new Gson().fromJson(req.body(), UserData.class);
 
@@ -31,8 +31,7 @@ public class RegisterHandler {
 
         // serialize response
         res.status(200);
-        res.body(new Gson().toJson(auth));
-
-        return res;
+        res.type("application/json");
+        return new Gson().toJson(auth);
     }
 }

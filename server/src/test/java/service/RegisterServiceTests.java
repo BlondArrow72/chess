@@ -10,7 +10,7 @@ import model.AuthData;
 
 import org.junit.jupiter.api.*;
 
-public class RegisterServiceTest {
+public class RegisterServiceTests {
     private UserDAO userDAO;
     private AuthDAO authDAO;
     private RegisterService service;

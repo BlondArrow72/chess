@@ -14,7 +14,7 @@ import chess.ChessGame;
 
 import org.junit.jupiter.api.*;
 
-public class ClearServiceTest {
+public class ClearServiceTests {
     private UserDAO userDAO;
     private GameDAO gameDAO;
     private AuthDAO authDAO;

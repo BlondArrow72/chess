@@ -6,8 +6,6 @@ import dataaccess.AuthDAO;
 import model.AuthData;
 import model.UserData;
 
-import java.util.UUID;
-
 public class RegisterService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
@@ -17,14 +15,14 @@ public class RegisterService {
         this.authDAO = authDAO;
     }
 
-    public AuthData register(UserData newUser) throws UserTakenException {
+    public AuthData register(UserData newUser) throws AlreadyTakenException {
         // check if username is already taken
         if (userDAO.getUser(newUser.username()) == null) {
             // createUser
             userDAO.createUser(newUser);
         }
         else {
-            throw new UserTakenException("Error: already taken");
+            throw new AlreadyTakenException();
         }
 
         // createAuth

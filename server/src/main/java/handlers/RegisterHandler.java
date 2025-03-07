@@ -7,7 +7,7 @@ import model.UserData;
 import model.AuthData;
 
 import service.RegisterService;
-import service.UserTakenException;
+import service.AlreadyTakenException;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class RegisterHandler {
             res.type("application/json");
             return new Gson().toJson(auth);
         }
-        catch(UserTakenException e) {
+        catch(AlreadyTakenException e) {
             res.status(403);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }

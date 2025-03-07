@@ -16,13 +16,8 @@ public class ClearService {
     }
 
     public void clear() throws RuntimeException {
-        if ((userDAO.isEmpty()) && (gameDAO.isEmpty()) && (authDAO.isEmpty())) {
-            throw new RuntimeException("Error: databases already clear");
-        }
-        else {
-            userDAO.clear();
-            gameDAO.clear();
-            authDAO.clear();
-        }
+        userDAO.clear();
+        gameDAO.clear();
+        authDAO.clear();
     }
 }

@@ -30,7 +30,7 @@ public class ClearHandler {
             res.status(200);
             return new Gson().toJson(null);
         }
-        catch(RuntimeException e) {
+        catch(Exception e) {
             res.status(500);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }

@@ -40,5 +40,9 @@ public class LoginHandler {
             res.status(401);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }
+        catch (Exception e) {
+            res.status(500);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
     }
 }

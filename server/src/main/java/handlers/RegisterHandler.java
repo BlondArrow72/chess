@@ -30,6 +30,11 @@ public class RegisterHandler {
             // deserialize req
             UserData user = new Gson().fromJson(req.body(), UserData.class);
 
+            // verify valid request
+            if (user.username() == null || user.password() == null || user.email() == null) {
+                throw new BadRequestException();
+            }
+
             // call service
             AuthData auth = new RegisterService(userDAO, authDAO).register(user);
 
@@ -38,8 +43,16 @@ public class RegisterHandler {
             res.type("application/json");
             return new Gson().toJson(auth);
         }
+        catch(BadRequestException e) {
+            res.status(400);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
         catch(AlreadyTakenException e) {
             res.status(403);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
+        catch(Exception e) {
+            res.status(500);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }
     }

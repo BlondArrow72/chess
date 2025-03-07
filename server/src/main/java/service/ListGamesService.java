@@ -17,11 +17,10 @@ public class ListGamesService {
     }
 
     public Collection<GameData> listGames(String authToken) {
-        if (authDAO.getAuth(authToken) != null) {
-            return gameDAO.listGames();
-        }
-        else {
+        if (authDAO.getAuth(authToken) == null) {
             throw new UnauthorizedUserError();
         }
+
+        return gameDAO.listGames();
     }
 }

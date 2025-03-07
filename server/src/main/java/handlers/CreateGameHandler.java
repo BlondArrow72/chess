@@ -5,6 +5,7 @@ import dataaccess.AuthDAO;
 
 import service.CreateGameService;
 
+import service.UnauthorizedUserError;
 import spark.Request;
 import spark.Response;
 
@@ -22,16 +23,34 @@ public class CreateGameHandler {
     }
 
     public Object createGame(Request req, Response res) {
-        // deserialize
-        String authToken = req.headers("authorization");
-        CreateGameRequest createGameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
-        String gameName = createGameRequest.gameName();
+        try {
+            // deserialize
+            String authToken = req.headers("authorization");
+            CreateGameRequest createGameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
+            String gameName = createGameRequest.gameName();
 
-        // call service
-        int gameID = new CreateGameService(gameDAO, authDAO).createGame(authToken, gameName);
+            if (authDAO.isEmpty() || gameName.isEmpty()) {
+                throw new BadRequestException();
+            }
 
-        // serialize
-        res.status(200);
-        return new Gson().toJson(Map.of("gameID", gameID));
+            // call service
+            int gameID = new CreateGameService(gameDAO, authDAO).createGame(authToken, gameName);
+
+            // serialize
+            res.status(200);
+            return new Gson().toJson(Map.of("gameID", gameID));
+        }
+        catch (BadRequestException e) {
+            res.status(400);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
+        catch (UnauthorizedUserError e) {
+            res.status(401);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
+        catch (Exception e) {
+            res.status(500);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
     }
 }

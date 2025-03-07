@@ -7,10 +7,7 @@ import dataaccess.MemoryAuthDAO;
 
 import model.AuthData;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.*;
 
 public class CreateGameServiceTests {
     private GameDAO gameDAO;
@@ -22,6 +19,12 @@ public class CreateGameServiceTests {
         gameDAO = new MemoryGameDAO();
         authDAO = new MemoryAuthDAO();
         service = new CreateGameService(gameDAO, authDAO);
+    }
+
+    @AfterEach
+    public void clearDAOs() {
+        gameDAO.clear();
+        authDAO.clear();
     }
 
     @Test

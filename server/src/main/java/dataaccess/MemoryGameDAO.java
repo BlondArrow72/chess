@@ -16,9 +16,8 @@ public class MemoryGameDAO implements GameDAO{
         gameID = 1;
     }
 
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
-        GameData newGame = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
-        memoryGameData.put(gameID, newGame);
+    public void createGame(GameData newGame) {
+        memoryGameData.put(newGame.gameID(), newGame);
     }
 
     public GameData getGame(int gameID) {

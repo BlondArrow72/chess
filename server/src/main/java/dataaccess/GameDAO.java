@@ -6,7 +6,7 @@ import model.GameData;
 import java.util.Collection;
 
 public interface GameDAO extends DataDAO {
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game);
+    public void createGame(GameData gameData);
 
     public GameData getGame(int gameID);
 

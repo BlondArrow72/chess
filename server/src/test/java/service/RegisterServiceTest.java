@@ -29,7 +29,7 @@ public class RegisterServiceTest {
     }
 
     @Test
-    @DisplayName("Positive Register User")
+    @DisplayName("Positive Register Test")
     public void registerSuccess() {
         // create newUser to register
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
@@ -43,7 +43,7 @@ public class RegisterServiceTest {
     }
 
     @Test
-    @DisplayName("Negative Register User")
+    @DisplayName("Negative Register Test")
     public void registerFailure() {
         // create newUser to register
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");

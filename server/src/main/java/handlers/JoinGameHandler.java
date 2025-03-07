@@ -20,22 +20,22 @@ public class JoinGameHandler {
     }
 
     public Object joinGame(Request req, Response res) {
-        try {// deserialize
-        String authToken = req.headers("authroization");
-        JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
+        try {
+            // deserialize
+            String authToken = req.headers("authorization");
+            JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
 
-        if (authDAO.isEmpty() || joinGameRequest.playerColor().equals(null) || joinGameRequest.gameID().equals(null)) {
-            throw new BadRequestException();
-        }
+            if (authToken.isEmpty() || joinGameRequest.playerColor() == null || joinGameRequest.gameID() == null) {
+                throw new BadRequestException();
+            }
 
-        // send to service
+            // send to service
 
-        // return response
+            // return response
         }
         catch (BadRequestException e) {
             res.status(400);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }
-
     }
 }

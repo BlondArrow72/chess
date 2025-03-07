@@ -29,7 +29,7 @@ public class CreateGameHandler {
             CreateGameRequest createGameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
             String gameName = createGameRequest.gameName();
 
-            if (authDAO.isEmpty() || gameName.isEmpty()) {
+            if (authToken.isEmpty() || gameName.isEmpty()) {
                 throw new BadRequestException();
             }
 

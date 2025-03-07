@@ -20,14 +20,16 @@ public class LoginService {
     public AuthData login(LoginRequest loginRequest) throws UnauthorizedUserError {
         // get user
         UserData existingUser = userDAO.getUser(loginRequest.username());
-
-        // verify passwords match
-        if (loginRequest.password().equals(existingUser.password())) {
-            // create new auth
-            return authDAO.createAuth(loginRequest.username());
-        }
-        else {
+        if (existingUser == null) {
             throw new UnauthorizedUserError();
         }
+
+        // verify passwords match
+        if (!loginRequest.password().equals(existingUser.password())) {
+            throw new UnauthorizedUserError();
+        }
+
+        // create new auth
+        return authDAO.createAuth(loginRequest.username());
     }
 }

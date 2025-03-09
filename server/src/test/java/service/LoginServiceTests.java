@@ -45,7 +45,7 @@ public class LoginServiceTests {
 
     @Test
     @DisplayName("Negative Login Test")
-    public void registerFailure() {
+    public void loginFailure() {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
         userDAO.createUser(newUser);
 

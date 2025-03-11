@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PawnMovesCalculator implements ChessPieceMovesCalculator{
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
@@ -169,5 +170,23 @@ public class PawnMovesCalculator implements ChessPieceMovesCalculator{
         }
 
         return possibleMoves;
+    }
+
+    private Collection<ChessMove> addPromotionMove(Collection<ChessMove> possibleMoves, ChessPosition currentPosition, ChessPosition promotionPosition) {
+        // promotion types
+        Collection<ChessPiece.PieceType> promotionTypes = new List(
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.QUEEN
+        );
+
+
+        ChessMove bishopPromotionMove = new ChessMove(currentPosition, promotionPosition, ChessPiece.PieceType.BISHOP);
+        possibleMoves.add(bishopPromotionMove);
+
+        // add knight promotion
+        ChessMove knightPromotionMove = new ChessMove(currentPosition, promotionPosition, ChessPiece.PieceType.BISHOP);
+        possibleMoves.add(bishopPromotionMove);
     }
 }

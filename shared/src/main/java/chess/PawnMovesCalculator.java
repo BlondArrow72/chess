@@ -2,7 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Arrays;
 
 public class PawnMovesCalculator implements ChessPieceMovesCalculator{
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
@@ -152,17 +152,7 @@ public class PawnMovesCalculator implements ChessPieceMovesCalculator{
 
         if (isInBounds(downLeftPosition) && !isBlocked(board, myPosition, downLeftPosition) && canCapture(board, myPosition, downLeftPosition) && (myTeam == ChessGame.TeamColor.BLACK)) {
             if (currentRow==2) {
-                ChessMove bishopPromotionMove = new ChessMove(myPosition, downLeftPosition, ChessPiece.PieceType.BISHOP);
-                possibleMoves.add(bishopPromotionMove);
-
-                ChessMove knightPromotionMove = new ChessMove(myPosition, downLeftPosition, ChessPiece.PieceType.KNIGHT);
-                possibleMoves.add(knightPromotionMove);
-
-                ChessMove rookPromotionMove = new ChessMove(myPosition, downLeftPosition, ChessPiece.PieceType.ROOK);
-                possibleMoves.add(rookPromotionMove);
-
-                ChessMove queenPromotionMove = new ChessMove(myPosition, downLeftPosition, ChessPiece.PieceType.QUEEN);
-                possibleMoves.add(queenPromotionMove);
+                possibleMoves = addPromotionMoves(possibleMoves, myPosition, downLeftPosition);
             }
             else {
                 possibleMoves.add(downLeftMove);
@@ -172,21 +162,21 @@ public class PawnMovesCalculator implements ChessPieceMovesCalculator{
         return possibleMoves;
     }
 
-    private Collection<ChessMove> addPromotionMove(Collection<ChessMove> possibleMoves, ChessPosition currentPosition, ChessPosition promotionPosition) {
+    private Collection<ChessMove> addPromotionMoves(Collection<ChessMove> possibleMoves, ChessPosition currentPosition, ChessPosition promotionPosition) {
         // promotion types
-        Collection<ChessPiece.PieceType> promotionTypes = new List(
+        Collection<ChessPiece.PieceType> promotionTypes = Arrays.asList(
                 ChessPiece.PieceType.BISHOP,
                 ChessPiece.PieceType.KNIGHT,
                 ChessPiece.PieceType.ROOK,
                 ChessPiece.PieceType.QUEEN
         );
 
+        // add all move types to possibleMoves
+        for(ChessPiece.PieceType pieceType : promotionTypes) {
+            ChessMove newMove = new ChessMove(currentPosition, promotionPosition, pieceType);
+            possibleMoves.add(newMove);
+        }
 
-        ChessMove bishopPromotionMove = new ChessMove(currentPosition, promotionPosition, ChessPiece.PieceType.BISHOP);
-        possibleMoves.add(bishopPromotionMove);
-
-        // add knight promotion
-        ChessMove knightPromotionMove = new ChessMove(currentPosition, promotionPosition, ChessPiece.PieceType.BISHOP);
-        possibleMoves.add(bishopPromotionMove);
+        return possibleMoves;
     }
 }

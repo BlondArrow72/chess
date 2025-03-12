@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.google.gson.Gson;
+
 public class SQLUserDAO implements UserDAO {
     public void createSQLUserDAO() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
@@ -32,7 +34,19 @@ public class SQLUserDAO implements UserDAO {
         }
     }
 
-    public void createUser(UserData newUser);
+    public void createUser(UserData newUser) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            // prepare create statement
+            String createUserStatement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(createUserStatement)) {
+                preparedStatement.executeUpdate();
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 
     public UserData getUser(String username);
 

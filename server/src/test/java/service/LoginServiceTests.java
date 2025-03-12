@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.UserDAO;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.MemoryAuthDAO;
+import dataaccess.*;
 
 import handlers.LoginRequest;
 import model.UserData;
@@ -24,7 +21,7 @@ public class LoginServiceTests {
     }
 
     @AfterEach
-    public void clearDAOs() {
+    public void clearDAOs() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
     }
@@ -33,13 +30,21 @@ public class LoginServiceTests {
     @DisplayName("Positive Login Test")
     public void loginSuccess() {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
-        userDAO.createUser(newUser);
+        try {
+            userDAO.createUser(newUser);
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         LoginRequest loginRequest = new LoginRequest("testUsername", "testPassword");
         AuthData newAuth = service.login(loginRequest);
 
         // assertions
-        Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
+        try {
+            Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
     }
 
@@ -47,7 +52,11 @@ public class LoginServiceTests {
     @DisplayName("Negative Login Test")
     public void loginFailure() {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
-        userDAO.createUser(newUser);
+        try {
+            userDAO.createUser(newUser);
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         LoginRequest loginRequest = new LoginRequest("testUsername", "testBadPassword");
 

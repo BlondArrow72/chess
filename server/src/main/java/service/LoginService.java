@@ -19,7 +19,12 @@ public class LoginService {
 
     public AuthData login(LoginRequest loginRequest) throws UnauthorizedUserError {
         // get user
-        UserData existingUser = userDAO.getUser(loginRequest.username());
+        UserData existingUser = null;
+        try {
+            existingUser = userDAO.getUser(loginRequest.username());
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         if (existingUser == null) {
             throw new UnauthorizedUserError();
         }

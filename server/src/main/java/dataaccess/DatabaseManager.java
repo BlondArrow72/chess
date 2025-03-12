@@ -43,6 +43,8 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+
+            new SQLUserDAO();
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }

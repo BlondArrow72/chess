@@ -3,11 +3,11 @@ package dataaccess;
 import model.UserData;
 
 public interface UserDAO extends DataDAO {
-    public void createUser(UserData newUser);
+    public void createUser(UserData newUser) throws DataAccessException;
 
-    public UserData getUser(String username);
+    public UserData getUser(String username) throws DataAccessException;
 
-    public void clear();
+    public void clear() throws DataAccessException;
 
-    public boolean isEmpty();
+    public boolean isEmpty() throws DataAccessException;
 }

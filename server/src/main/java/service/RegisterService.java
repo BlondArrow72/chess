@@ -17,12 +17,20 @@ public class RegisterService {
 
     public AuthData register(UserData newUser) throws AlreadyTakenException {
         // check if username is already taken
-        if (userDAO.getUser(newUser.username()) != null) {
-            throw new AlreadyTakenException();
+        try {
+            if (userDAO.getUser(newUser.username()) != null) {
+                throw new AlreadyTakenException();
+            }
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
         }
 
         // createUser
-        userDAO.createUser(newUser);
+        try {
+            userDAO.createUser(newUser);
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         // createAuth
         return authDAO.createAuth(newUser.username());

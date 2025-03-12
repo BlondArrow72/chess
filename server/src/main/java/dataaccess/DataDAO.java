@@ -1,7 +1,7 @@
 package dataaccess;
 
 public interface DataDAO {
-    public void clear();
+    public void clear() throws DataAccessException;
 
-    public boolean isEmpty();
+    public boolean isEmpty() throws DataAccessException;
 }

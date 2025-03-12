@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.UserDAO;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.MemoryAuthDAO;
+import dataaccess.*;
 
 import model.UserData;
 import model.AuthData;
@@ -23,7 +20,7 @@ public class RegisterServiceTests {
     }
 
     @AfterEach
-    public void clearDAOs() {
+    public void clearDAOs() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
     }
@@ -38,7 +35,11 @@ public class RegisterServiceTests {
         AuthData newAuth = service.register(newUser);
 
         // assertions
-        Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
+        try {
+            Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
     }
 
@@ -50,7 +51,11 @@ public class RegisterServiceTests {
 
         // registerUser
         AuthData successAuth = service.register(newUser);
-        Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
+        try {
+            Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertEquals(successAuth, authDAO.getAuth(successAuth.authToken()));
 
         // assertions

@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 
 public class LogoutService {
     private final AuthDAO authDAO;
@@ -9,16 +10,12 @@ public class LogoutService {
         this.authDAO = authDAO;
     }
 
-    public void logout(String authToken) throws UnauthorizedUserError {
-        try {
-            if (authDAO.getAuth(authToken) != null) {
-                authDAO.deleteAuth(authToken);
-            }
-            else {
-                throw new UnauthorizedUserError();
-            }
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
+    public void logout(String authToken) throws UnauthorizedUserError, DataAccessException {
+        if (authDAO.getAuth(authToken) != null) {
+            authDAO.deleteAuth(authToken);
+        }
+        else {
+            throw new UnauthorizedUserError();
         }
     }
 }

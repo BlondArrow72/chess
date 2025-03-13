@@ -27,7 +27,7 @@ public class Server {
             // declare DAO objects
             userDAO = new SQLUserDAO();
             gameDAO = new MemoryGameDAO();
-            authDAO = new MemoryAuthDAO();
+            authDAO = new SQLAuthDAO();
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());

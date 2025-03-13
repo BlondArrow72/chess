@@ -16,9 +16,9 @@ public class SQLAuthDAO implements AuthDAO {
             String[] createAuthTableStatements = {
                     """
                     CREATE TABLE IF NOT EXISTS auths (
-                        `authToken` varchar(255) NOT NULL,
-                        `username` varchar(255) NOT NULL,
-                        PRIMARY KEY (`authToken`)
+                        authToken varchar(255) NOT NULL,
+                        username varchar(255) NOT NULL,
+                        PRIMARY KEY (authToken)
                     )
                     """
             };
@@ -61,7 +61,7 @@ public class SQLAuthDAO implements AuthDAO {
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException {
-        String getAuthStatement = "SELECT authToken FROM auths WHERE authToken=?";
+        String getAuthStatement = "SELECT authToken, username FROM auths WHERE authToken=?";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement preparedStatement = conn.prepareStatement(getAuthStatement)) {

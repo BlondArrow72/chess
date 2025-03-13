@@ -17,8 +17,12 @@ public class ListGamesService {
     }
 
     public Collection<GameData> listGames(String authToken) {
-        if (authDAO.getAuth(authToken) == null) {
-            throw new UnauthorizedUserError();
+        try {
+            if (authDAO.getAuth(authToken) == null) {
+                throw new UnauthorizedUserError();
+            }
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
         }
 
         return gameDAO.listGames();

@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 
@@ -15,7 +16,7 @@ public class RegisterService {
         this.authDAO = authDAO;
     }
 
-    public AuthData register(UserData newUser) throws AlreadyTakenException {
+    public AuthData register(UserData newUser) throws AlreadyTakenException, DataAccessException {
         // check if username is already taken
         try {
             if (userDAO.getUser(newUser.username()) != null) {

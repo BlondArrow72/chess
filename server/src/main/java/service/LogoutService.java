@@ -10,11 +10,15 @@ public class LogoutService {
     }
 
     public void logout(String authToken) throws UnauthorizedUserError {
-        if (authDAO.getAuth(authToken) != null) {
-            authDAO.deleteAuth(authToken);
-        }
-        else {
-            throw new UnauthorizedUserError();
+        try {
+            if (authDAO.getAuth(authToken) != null) {
+                authDAO.deleteAuth(authToken);
+            }
+            else {
+                throw new UnauthorizedUserError();
+            }
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

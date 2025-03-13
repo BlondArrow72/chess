@@ -40,7 +40,11 @@ public class RegisterServiceTests {
         } catch (dataaccess.DataAccessException e) {
             throw new RuntimeException(e);
         }
-        Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
+        try {
+            Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -56,7 +60,11 @@ public class RegisterServiceTests {
         } catch (dataaccess.DataAccessException e) {
             throw new RuntimeException(e);
         }
-        Assertions.assertEquals(successAuth, authDAO.getAuth(successAuth.authToken()));
+        try {
+            Assertions.assertEquals(successAuth, authDAO.getAuth(successAuth.authToken()));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         // assertions
         AlreadyTakenException alreadyTakenException = Assertions.assertThrows(AlreadyTakenException.class, () -> {

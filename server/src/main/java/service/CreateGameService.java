@@ -16,8 +16,12 @@ public class CreateGameService {
 
     public int createGame(String authToken, String gameName) {
         // verify user
-        if (authDAO.getAuth(authToken) == null) {
-            throw new UnauthorizedUserError();
+        try {
+            if (authDAO.getAuth(authToken) == null) {
+                throw new UnauthorizedUserError();
+            }
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
         }
 
         // create game

@@ -45,7 +45,11 @@ public class LoginServiceTests {
         } catch (dataaccess.DataAccessException e) {
             throw new RuntimeException(e);
         }
-        Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
+        try {
+            Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

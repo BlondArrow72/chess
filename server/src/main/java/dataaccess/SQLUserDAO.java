@@ -12,8 +12,10 @@ import org.mindrot.jbcrypt.BCrypt;
 public class SQLUserDAO implements UserDAO {
 
     public SQLUserDAO() throws DataAccessException {
+        DatabaseManager.createDatabase();
+
         try (Connection conn = DatabaseManager.getConnection()) {
-            String[] preparedStatements = {
+            String[] createUserTablestatements = {
                     """
                     CREATE TABLE IF NOT EXISTS users (
                         'username' varchar(255) NOT NULL,
@@ -24,12 +26,11 @@ public class SQLUserDAO implements UserDAO {
                     """
             };
 
-            for (String statement : preparedStatements) {
+            for (String statement : createUserTablestatements) {
                 try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
             }
-
         }
         catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -39,7 +40,7 @@ public class SQLUserDAO implements UserDAO {
     public void createUser(UserData newUser) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             // prepare create statement
-            String createUserStatement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+            String createUserStatement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(createUserStatement)) {
                 // put username in the right spot
@@ -104,9 +105,9 @@ public class SQLUserDAO implements UserDAO {
 
     public boolean isEmpty() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            String isEmptyString = "SELECT COUNT(*) FROM users";
+            String isEmptyStatement = "SELECT COUNT(*) FROM users";
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(isEmptyString)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(isEmptyStatement)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         int numUsers = resultSet.getInt(1);

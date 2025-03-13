@@ -19,12 +19,21 @@ public class JoinGameService {
 
     public void joinGame(String authToken, ChessGame.TeamColor playerColor, int gameID) {
         // verify authToken
-        if (authDAO.getAuth(authToken) == null) {
-            throw new UnauthorizedUserError();
+        try {
+            if (authDAO.getAuth(authToken) == null) {
+                throw new UnauthorizedUserError();
+            }
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
         }
 
         // get authorization
-        AuthData auth = authDAO.getAuth(authToken);
+        AuthData auth = null;
+        try {
+            auth = authDAO.getAuth(authToken);
+        } catch (dataaccess.DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         // get game
         GameData game = gameDAO.getGame(gameID);

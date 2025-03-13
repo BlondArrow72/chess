@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.AuthData;
+import service.UnauthorizedUserError;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -72,7 +73,7 @@ public class SQLAuthDAO implements AuthDAO {
                         return new AuthData(authToken, username);
                     }
                     else {
-                        throw new DataAccessException("Auth does not exist");
+                        throw new UnauthorizedUserError();
                     }
                 }
             }

@@ -20,7 +20,7 @@ public class RegisterServiceTests {
     }
 
     @AfterEach
-    public void clearDAOs() throws DataAccessException {
+    public void clearDAOs() {
         userDAO.clear();
         authDAO.clear();
     }

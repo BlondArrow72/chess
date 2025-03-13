@@ -1,10 +1,7 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.GameDAO;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryAuthDAO;
+import dataaccess.*;
 
 import model.AuthData;
 
@@ -26,14 +23,14 @@ public class JoinGameServiceTests {
     }
 
     @AfterEach
-    public void clearDAOs() {
+    public void clearDAOs() throws DataAccessException {
         gameDAO.clear();
         authDAO.clear();
     }
 
     @Test
     @DisplayName("Positive Join Game Test")
-    public void joinGameSuccess() {
+    public void joinGameSuccess() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
         GameData newGame = new GameData(1234, null, null, "testGameName", new ChessGame());
         gameDAO.createGame(newGame);
@@ -46,7 +43,7 @@ public class JoinGameServiceTests {
 
     @Test
     @DisplayName("Negative Join Game Test")
-    public void joinGameFailure() {
+    public void joinGameFailure() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
         GameData newGame = new GameData(1234, "taken", null, "testGameName", new ChessGame());
         gameDAO.createGame(newGame);

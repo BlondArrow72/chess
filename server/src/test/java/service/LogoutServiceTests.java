@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import handlers.LoginRequest;
 import model.AuthData;
 import model.UserData;
@@ -20,13 +17,13 @@ public class LogoutServiceTests {
     }
 
     @AfterEach
-    public void clearDAOs() {
+    public void clearDAOs() throws DataAccessException {
         authDAO.clear();
     }
 
     @Test
     @DisplayName("Positive Logout Test")
-    public void logoutSuccess() {
+    public void logoutSuccess() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
 
         Assertions.assertFalse(authDAO.isEmpty());
@@ -40,7 +37,7 @@ public class LogoutServiceTests {
 
     @Test
     @DisplayName("Negative Logout Test")
-    public void logoutFailure() {
+    public void logoutFailure() throws DataAccessException {
         UnauthorizedUserError unauthorizedUserError = Assertions.assertThrows(UnauthorizedUserError.class, () -> {
             service.logout(null);
         });

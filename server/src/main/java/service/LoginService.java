@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 
 import handlers.LoginRequest;
@@ -17,7 +18,7 @@ public class LoginService {
         this.authDAO = authDAO;
     }
 
-    public AuthData login(LoginRequest loginRequest) throws UnauthorizedUserError {
+    public AuthData login(LoginRequest loginRequest) throws UnauthorizedUserError, DataAccessException {
         // get user
         UserData existingUser = null;
         try {

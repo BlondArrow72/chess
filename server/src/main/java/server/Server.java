@@ -18,15 +18,20 @@ public class Server {
     private GameDAO gameDAO;
     private AuthDAO authDAO;
 
-    public int run(int desiredPort) throws DataAccessException {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
-        // declare DAO objects
-        userDAO = new SQLUserDAO();
-        gameDAO = new MemoryGameDAO();
-        authDAO = new SQLAuthDAO();
+        try {
+            // declare DAO objects
+            userDAO = new SQLUserDAO();
+            gameDAO = new MemoryGameDAO();
+            authDAO = new SQLAuthDAO();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
         // Register your endpoints and handle exceptions here.
 

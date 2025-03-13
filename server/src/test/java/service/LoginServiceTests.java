@@ -28,7 +28,7 @@ public class LoginServiceTests {
 
     @Test
     @DisplayName("Positive Login Test")
-    public void loginSuccess() {
+    public void loginSuccess() throws DataAccessException {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
         try {
             userDAO.createUser(newUser);

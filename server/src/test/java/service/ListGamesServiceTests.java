@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.GameDAO;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryAuthDAO;
+import dataaccess.*;
 
 import model.GameData;
 import model.AuthData;
@@ -28,14 +25,14 @@ public class ListGamesServiceTests {
     }
 
     @AfterEach
-    public void clearDAOs() {
+    public void clearDAOs() throws DataAccessException {
         gameDAO.clear();
         authDAO.clear();
     }
 
     @Test
     @DisplayName("Positive List Games Test")
-    public void listGamesSuccess() {
+    public void listGamesSuccess() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
         GameData newGame = new GameData(1234, null, null, "testGameName", new ChessGame());
         gameDAO.createGame(newGame);

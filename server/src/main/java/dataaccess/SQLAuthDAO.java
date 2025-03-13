@@ -12,8 +12,6 @@ import java.util.UUID;
 public class SQLAuthDAO implements AuthDAO {
 
     public SQLAuthDAO() throws DataAccessException {
-        DatabaseManager.createDatabase();
-
         try (Connection conn = DatabaseManager.getConnection()) {
             String[] createAuthTableStatements = {
                     """

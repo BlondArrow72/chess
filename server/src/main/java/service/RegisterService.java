@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 
@@ -18,20 +19,12 @@ public class RegisterService {
 
     public AuthData register(UserData newUser) throws AlreadyTakenException, DataAccessException {
         // check if username is already taken
-        try {
-            if (userDAO.getUser(newUser.username()) != null) {
-                throw new AlreadyTakenException();
-            }
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
+        if (userDAO.getUser(newUser.username()) != null) {
+            throw new AlreadyTakenException();
         }
 
         // createUser
-        try {
-            userDAO.createUser(newUser);
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        userDAO.createUser(newUser);
 
         // createAuth
         return authDAO.createAuth(newUser.username());

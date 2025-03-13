@@ -12,8 +12,6 @@ import org.mindrot.jbcrypt.BCrypt;
 public class SQLUserDAO implements UserDAO {
 
     public SQLUserDAO() throws DataAccessException {
-        DatabaseManager.createDatabase();
-
         try (Connection conn = DatabaseManager.getConnection()) {
             String[] createUserTablestatements = {
                     """

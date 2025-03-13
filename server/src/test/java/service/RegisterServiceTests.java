@@ -13,21 +13,21 @@ public class RegisterServiceTests {
     private RegisterService service;
 
     @BeforeEach
-    public void setup() {
-        userDAO = new MemoryUserDAO();
+    public void setup() throws DataAccessException{
+        userDAO = new SQLUserDAO();
         authDAO = new MemoryAuthDAO();
         service = new RegisterService(userDAO, authDAO);
     }
 
     @AfterEach
-    public void clearDAOs() {
+    public void clearDAOs() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
     }
 
     @Test
     @DisplayName("Positive Register Test")
-    public void registerSuccess() {
+    public void registerSuccess() throws DataAccessException {
         // create newUser to register
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
 
@@ -49,7 +49,7 @@ public class RegisterServiceTests {
 
     @Test
     @DisplayName("Negative Register Test")
-    public void registerFailure() {
+    public void registerFailure() throws DataAccessException {
         // create newUser to register
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
 

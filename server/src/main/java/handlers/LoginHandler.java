@@ -1,5 +1,6 @@
 package handlers;
 
+import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 

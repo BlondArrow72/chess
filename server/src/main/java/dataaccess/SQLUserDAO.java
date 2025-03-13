@@ -12,15 +12,18 @@ import org.mindrot.jbcrypt.BCrypt;
 public class SQLUserDAO implements UserDAO {
 
     public SQLUserDAO() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        clear();
+
         try (Connection conn = DatabaseManager.getConnection()) {
             String[] createUserTablestatements = {
                     """
                     CREATE TABLE IF NOT EXISTS users (
-                        'username' varchar(255) NOT NULL,
-                        'password' int NOT NULL,
-                        'email' varchar(255),
-                        PRIMARY KEY ('username')
-                    )
+                        username varchar(255) NOT NULL,
+                        password varchar(255) NOT NULL,
+                        email varchar(255) NOT NULL,
+                        PRIMARY KEY (username)
+                    );
                     """
             };
 
@@ -65,7 +68,7 @@ public class SQLUserDAO implements UserDAO {
     public UserData getUser(String username) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             // prepare get statement
-            String getUserStatement = "SELECT username FROM users WHERE username=?";
+            String getUserStatement = "SELECT username, password, email FROM users WHERE username=?";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(getUserStatement)) {
                 preparedStatement.setString(1, username);
@@ -78,7 +81,7 @@ public class SQLUserDAO implements UserDAO {
                         return new UserData(username, password, email);
                     }
                     else {
-                        throw new DataAccessException("User does not exist.");
+                        return null;
                     }
                 }
             }

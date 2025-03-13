@@ -9,6 +9,8 @@ import handlers.LoginRequest;
 import model.UserData;
 import model.AuthData;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class LoginService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
@@ -31,7 +33,7 @@ public class LoginService {
         }
 
         // verify passwords match
-        if (!loginRequest.password().equals(existingUser.password())) {
+        if (!BCrypt.checkpw(loginRequest.password(), existingUser.password())) {
             throw new UnauthorizedUserError();
         }
 

@@ -21,10 +21,6 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     public UserData getUser(String username) throws DataAccessException {
-        if (userDataDatabase.get(username) == null) {
-            throw new DataAccessException("User does not exist.");
-        }
-
         return userDataDatabase.get(username);
     }
 

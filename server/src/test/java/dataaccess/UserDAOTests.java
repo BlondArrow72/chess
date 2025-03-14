@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import org.mindrot.jbcrypt.BCrypt;
-import service.AlreadyTakenException;
 
 public class UserDAOTests {
     private UserDAO userDAO;
@@ -59,14 +58,12 @@ public class UserDAOTests {
     @Test
     public void clearPositive() throws DataAccessException {
         userDAO.clear();
-
         Assertions.assertTrue(userDAO.isEmpty());
     }
 
     @Test
     public void isEmptyPositive() throws DataAccessException {
         userDAO.clear();
-
         Assertions.assertTrue(userDAO.isEmpty());
     }
 

@@ -50,7 +50,7 @@ public class UserDAOTests {
 
     @Test
     public void getUserNegative() throws DataAccessException {
-        Assertions.assertEquals(null, userDAO.getUser("getUserNegativeUsername"));
+        Assertions.assertNull(userDAO.getUser("getUserNegativeUsername"));
     }
 
     @Test

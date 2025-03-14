@@ -22,7 +22,7 @@ public class SQLUserDAO implements UserDAO {
                         password varchar(255) NOT NULL,
                         email varchar(255) NOT NULL,
                         PRIMARY KEY (username)
-                    );
+                    )
                     """
             };
 
@@ -38,10 +38,9 @@ public class SQLUserDAO implements UserDAO {
     }
 
     public void createUser(UserData newUser) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            // prepare create statement
-            String createUserStatement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String createUserStatement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
 
+        try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement preparedStatement = conn.prepareStatement(createUserStatement)) {
                 // put username in the right spot
                 preparedStatement.setString(1, newUser.username());
@@ -80,7 +79,7 @@ public class SQLUserDAO implements UserDAO {
                         return new UserData(username, password, email);
                     }
                     else {
-                        return null;
+                        throw new DataAccessException("Unable to get user.");
                     }
                 }
             }

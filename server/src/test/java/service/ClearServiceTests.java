@@ -3,9 +3,6 @@ package service;
 import dataaccess.*;
 
 import model.UserData;
-import model.GameData;
-
-import chess.ChessGame;
 
 import org.junit.jupiter.api.*;
 

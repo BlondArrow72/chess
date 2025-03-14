@@ -30,10 +30,10 @@ public class LoginServiceTests {
     @Test
     @DisplayName("Positive Login Test")
     public void loginSuccess() throws DataAccessException {
-        UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
+        UserData newUser = new UserData("testUsernamePositive", "testPassword", "testEmail");
         userDAO.createUser(newUser);
 
-        LoginRequest loginRequest = new LoginRequest("testUsername", "testPassword");
+        LoginRequest loginRequest = new LoginRequest("testUsernamePositive", "testPassword");
         AuthData newAuth = service.login(loginRequest);
 
         UserData loggedInUser = userDAO.getUser(loginRequest.username());
@@ -46,10 +46,10 @@ public class LoginServiceTests {
     @Test
     @DisplayName("Negative Login Test")
     public void loginFailure() throws DataAccessException {
-        UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
+        UserData newUser = new UserData("testUsernameNegative", "testPassword", "testEmail");
         userDAO.createUser(newUser);
 
-        LoginRequest loginRequest = new LoginRequest("testUsername", "testBadPassword");
+        LoginRequest loginRequest = new LoginRequest("testUsernameNegative", "testBadPassword");
 
         // assertions
         UnauthorizedUserError unauthorizedUserError = Assertions.assertThrows(UnauthorizedUserError.class, () -> {

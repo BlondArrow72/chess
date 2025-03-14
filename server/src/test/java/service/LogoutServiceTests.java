@@ -1,9 +1,7 @@
 package service;
 
 import dataaccess.*;
-import handlers.LoginRequest;
 import model.AuthData;
-import model.UserData;
 import org.junit.jupiter.api.*;
 
 public class LogoutServiceTests {

@@ -3,12 +3,8 @@ package service;
 import dataaccess.*;
 
 import handlers.ListGamesResponse;
-import model.GameData;
 import model.AuthData;
 
-import chess.ChessGame;
-
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.jupiter.api.*;

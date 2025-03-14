@@ -79,7 +79,7 @@ public class SQLUserDAO implements UserDAO {
                         return new UserData(username, password, email);
                     }
                     else {
-                        throw new DataAccessException("Unable to get user.");
+                        return null;
                     }
                 }
             }

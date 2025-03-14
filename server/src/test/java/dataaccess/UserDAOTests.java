@@ -31,7 +31,7 @@ public class UserDAOTests {
         UserData newUser = new UserData("testCreateUserNegative", "testPassword", "testEmail");
         userDAO.createUser(newUser);
 
-        DataAccessException dataAccessException = Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(DataAccessException.class, () -> {
             userDAO.createUser(newUser);
         });
     }
@@ -50,7 +50,7 @@ public class UserDAOTests {
 
     @Test
     public void getUserNegative() throws DataAccessException {
-        DataAccessException dataAccessException = Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(DataAccessException.class, () -> {
             userDAO.getUser("testGetUserNegative");
         });
     }

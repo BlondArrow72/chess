@@ -18,9 +18,9 @@ public class ListGamesServiceTests {
     private ListGamesService service;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException {
         gameDAO = new MemoryGameDAO();
-        authDAO = new MemoryAuthDAO();
+        authDAO = new SQLAuthDAO();
         service = new ListGamesService(gameDAO, authDAO);
     }
 

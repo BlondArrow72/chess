@@ -7,6 +7,7 @@ import model.UserData;
 import model.AuthData;
 
 import org.junit.jupiter.api.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginServiceTests {
     private UserDAO userDAO;
@@ -14,9 +15,9 @@ public class LoginServiceTests {
     private LoginService service;
 
     @BeforeEach
-    public void setup() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
+    public void setup() throws DataAccessException {
+        userDAO = new SQLUserDAO();
+        authDAO = new SQLAuthDAO();
         service = new LoginService(userDAO, authDAO);
     }
 
@@ -30,37 +31,23 @@ public class LoginServiceTests {
     @DisplayName("Positive Login Test")
     public void loginSuccess() throws DataAccessException {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
-        try {
-            userDAO.createUser(newUser);
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        userDAO.createUser(newUser);
 
         LoginRequest loginRequest = new LoginRequest("testUsername", "testPassword");
         AuthData newAuth = service.login(loginRequest);
 
+        UserData loggedInUser = userDAO.getUser(loginRequest.username());
+
         // assertions
-        try {
-            Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        Assertions.assertTrue(BCrypt.checkpw(newUser.password(), loggedInUser.password()));
+        Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
     }
 
     @Test
     @DisplayName("Negative Login Test")
-    public void loginFailure() {
+    public void loginFailure() throws DataAccessException {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
-        try {
-            userDAO.createUser(newUser);
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        userDAO.createUser(newUser);
 
         LoginRequest loginRequest = new LoginRequest("testUsername", "testBadPassword");
 

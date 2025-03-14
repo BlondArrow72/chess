@@ -12,27 +12,19 @@ import org.junit.jupiter.api.*;
 import javax.xml.crypto.Data;
 
 public class ClearServiceTests {
-    private UserDAO userDAO;
-    private GameDAO gameDAO;
-    private AuthDAO authDAO;
-    private ClearService service;
 
     @Test
     @DisplayName("Positive Clear Test")
     public void clearSuccess() throws DataAccessException {
         // setup
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
-        authDAO = new MemoryAuthDAO();
-        service = new ClearService(userDAO, gameDAO, authDAO);
+        UserDAO userDAO = new SQLUserDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
+        AuthDAO authDAO = new SQLAuthDAO();
+        ClearService service = new ClearService(userDAO, gameDAO, authDAO);
 
         // add to DAOs
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
-        try {
-            userDAO.createUser(newUser);
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        userDAO.createUser(newUser);
 
         GameData newGame = new GameData(1234, null, null, "testGameName", new ChessGame());
         gameDAO.createGame(newGame);

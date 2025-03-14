@@ -6,6 +6,7 @@ import model.UserData;
 import model.AuthData;
 
 import org.junit.jupiter.api.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class RegisterServiceTests {
     private UserDAO userDAO;
@@ -15,7 +16,7 @@ public class RegisterServiceTests {
     @BeforeEach
     public void setup() throws DataAccessException{
         userDAO = new SQLUserDAO();
-        authDAO = new MemoryAuthDAO();
+        authDAO = new SQLAuthDAO();
         service = new RegisterService(userDAO, authDAO);
     }
 
@@ -35,16 +36,10 @@ public class RegisterServiceTests {
         AuthData newAuth = service.register(newUser);
 
         // assertions
-        try {
-            Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        Assertions.assertEquals(newUser.username(), userDAO.getUser(newUser.username()).username());
+        Assertions.assertTrue(BCrypt.checkpw(newUser.password(), userDAO.getUser(newUser.username()).password()));
+        Assertions.assertEquals(newUser.email(), userDAO.getUser(newUser.username()).email());
+        Assertions.assertEquals(newAuth, authDAO.getAuth(newAuth.authToken()));
     }
 
     @Test
@@ -55,16 +50,10 @@ public class RegisterServiceTests {
 
         // registerUser
         AuthData successAuth = service.register(newUser);
-        try {
-            Assertions.assertEquals(newUser, userDAO.getUser(newUser.username()));
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            Assertions.assertEquals(successAuth, authDAO.getAuth(successAuth.authToken()));
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        Assertions.assertEquals(newUser.username(), userDAO.getUser(newUser.username()).username());
+        Assertions.assertTrue(BCrypt.checkpw(newUser.password(), userDAO.getUser(newUser.username()).password()));
+        Assertions.assertEquals(newUser.email(), userDAO.getUser(newUser.username()).email());
+        Assertions.assertEquals(successAuth, authDAO.getAuth(successAuth.authToken()));
 
         // assertions
         AlreadyTakenException alreadyTakenException = Assertions.assertThrows(AlreadyTakenException.class, () -> {

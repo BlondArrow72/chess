@@ -11,8 +11,8 @@ public class LogoutServiceTests {
     private LogoutService service;
 
     @BeforeEach
-    public void setup() {
-        authDAO = new MemoryAuthDAO();
+    public void setup() throws DataAccessException {
+        authDAO = new SQLAuthDAO();
         service = new LogoutService(authDAO);
     }
 

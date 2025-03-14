@@ -13,7 +13,6 @@ public class SQLUserDAO implements UserDAO {
 
     public SQLUserDAO() throws DataAccessException {
         DatabaseManager.createDatabase();
-        clear();
 
         try (Connection conn = DatabaseManager.getConnection()) {
             String[] createUserTablestatements = {

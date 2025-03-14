@@ -50,7 +50,7 @@ public class SQLGameDAO implements GameDAO {
         String chessGameJson = new Gson().toJson(chessGame);
 
         try (Connection conn = DatabaseManager.getConnection()){
-            try (PreparedStatement preparedStatement = conn.prepareStatement(createGameStatement)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(createGameStatement, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 // insert gameName
                 preparedStatement.setString(1, gameName);
 
@@ -136,17 +136,18 @@ public class SQLGameDAO implements GameDAO {
     }
 
     public void updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
-        String updateGameString = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?, ?)";
+        String updateGameString = "UPDATE games SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement preparedStatement = conn.prepareStatement(updateGameString)) {
-                preparedStatement.setInt(1, gameID);
-                preparedStatement.setString(2, whiteUsername);
-                preparedStatement.setString(3, blackUsername);
-                preparedStatement.setString(4, gameName);
+                preparedStatement.setString(1, whiteUsername);
+                preparedStatement.setString(2, blackUsername);
+                preparedStatement.setString(3, gameName);
 
                 String chessGameJson = new Gson().toJson(game);
-                preparedStatement.setString(5, chessGameJson);
+                preparedStatement.setString(4, chessGameJson);
+
+                preparedStatement.setInt(5, gameID);
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected == 0) {

@@ -47,6 +47,8 @@ public class JoinGameServiceTests {
         int gameID = gameDAO.createGame(newGameName);
 
         JoinGameRequest joinGameRequest = new JoinGameRequest(auth.authToken(), TeamColor.WHITE, gameID);
+        service.joinGame(joinGameRequest);
+
         AlreadyTakenException alreadyTakenException = Assertions.assertThrows(AlreadyTakenException.class, () -> {
             service.joinGame(joinGameRequest);
         });

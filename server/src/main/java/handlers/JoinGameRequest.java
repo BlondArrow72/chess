@@ -2,4 +2,4 @@ package handlers;
 
 import chess.ChessGame.TeamColor;
 
-public record JoinGameRequest(TeamColor playerColor, Integer gameID) {}
+public record JoinGameRequest(String authToken, TeamColor playerColor, Integer gameID) {}

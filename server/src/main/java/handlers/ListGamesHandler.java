@@ -5,7 +5,6 @@ import dataaccess.AuthDAO;
 
 import service.ListGamesService;
 
-import model.GameData;
 import service.UnauthorizedUserError;
 import spark.Request;
 import spark.Response;
@@ -13,7 +12,6 @@ import spark.Response;
 import com.google.gson.Gson;
 
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class ListGamesHandler {
@@ -35,14 +33,7 @@ public class ListGamesHandler {
             }
 
             // call service
-            Collection<GameData> gameList = new ListGamesService(gameDAO, authDAO).listGames(authToken);
-
-            // convert to ListGamesResponse
-            Collection<ListGamesResponse> listGamesResponses = new ArrayList<>();
-            for (GameData currentGame : gameList) {
-                ListGamesResponse currentGameRespose = new ListGamesResponse(currentGame.gameID(), currentGame.whiteUsername(), currentGame.blackUsername(), currentGame.gameName());
-                listGamesResponses.add(currentGameRespose);
-            }
+            Collection<ListGamesResponse> listGamesResponses = new ListGamesService(gameDAO, authDAO).listGames(authToken);
 
             // return success
             res.status(200);

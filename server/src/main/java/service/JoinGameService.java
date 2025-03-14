@@ -1,8 +1,10 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
+import handlers.JoinGameRequest;
 import model.GameData;
 import model.AuthData;
 
@@ -17,28 +19,23 @@ public class JoinGameService {
         this.authDAO = authDAO;
     }
 
-    public void joinGame(String authToken, ChessGame.TeamColor playerColor, int gameID) {
+    public void joinGame(JoinGameRequest joinGameRequest) throws DataAccessException {
+        String authToken = joinGameRequest.authToken();
+
         // verify authToken
-        try {
-            if (authDAO.getAuth(authToken) == null) {
-                throw new UnauthorizedUserError();
-            }
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
+        if (authDAO.getAuth(authToken) == null) {
+            throw new UnauthorizedUserError();
         }
 
         // get authorization
-        AuthData auth = null;
-        try {
-            auth = authDAO.getAuth(authToken);
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        AuthData auth = authDAO.getAuth(authToken);
 
         // get game
+        int gameID = joinGameRequest.gameID();
         GameData game = gameDAO.getGame(gameID);
 
         // determine playerColor
+        ChessGame.TeamColor playerColor = joinGameRequest.playerColor();
         if (playerColor == ChessGame.TeamColor.WHITE) {
             // verify empty spot
             if (game.whiteUsername() != null) {

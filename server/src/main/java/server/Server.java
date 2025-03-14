@@ -26,7 +26,7 @@ public class Server {
         try {
             // declare DAO objects
             userDAO = new SQLUserDAO();
-            gameDAO = new MemoryGameDAO();
+            gameDAO = new SQLGameDAO();
             authDAO = new SQLAuthDAO();
         }
         catch (Exception e) {

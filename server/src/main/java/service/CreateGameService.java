@@ -1,9 +1,8 @@
 package service;
 
-import chess.ChessGame;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
-import model.GameData;
 
 public class CreateGameService {
     private final GameDAO gameDAO;
@@ -14,22 +13,13 @@ public class CreateGameService {
         this.authDAO = authDAO;
     }
 
-    public int createGame(String authToken, String gameName) {
+    public int createGame(String authToken, String gameName) throws DataAccessException {
         // verify user
-        try {
-            if (authDAO.getAuth(authToken) == null) {
-                throw new UnauthorizedUserError();
-            }
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
+        if (authDAO.getAuth(authToken) == null) {
+            throw new UnauthorizedUserError();
         }
 
         // create game
-        int gameID = gameDAO.getGameID();
-        GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
-        gameDAO.createGame(newGame);
-
-        // return gameID
-        return gameID;
+        return gameDAO.createGame(gameName);
     }
 }

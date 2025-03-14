@@ -13,7 +13,7 @@ public class CreateGameServiceTests {
 
     @BeforeEach
     public void setup() throws DataAccessException {
-        gameDAO = new MemoryGameDAO();
+        gameDAO = new SQLGameDAO();
         authDAO = new SQLAuthDAO();
         service = new CreateGameService(gameDAO, authDAO);
     }

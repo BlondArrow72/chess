@@ -1,13 +1,12 @@
 package service;
 
-import chess.ChessGame;
 import dataaccess.*;
 
+import handlers.JoinGameRequest;
 import model.AuthData;
 
 import chess.ChessGame.TeamColor;
 
-import model.GameData;
 import org.junit.jupiter.api.*;
 
 public class JoinGameServiceTests {
@@ -17,7 +16,7 @@ public class JoinGameServiceTests {
 
     @BeforeEach
     public void setup() throws DataAccessException {
-        gameDAO = new MemoryGameDAO();
+        gameDAO = new SQLGameDAO();
         authDAO = new SQLAuthDAO();
         service = new JoinGameService(gameDAO, authDAO);
     }
@@ -32,24 +31,24 @@ public class JoinGameServiceTests {
     @DisplayName("Positive Join Game Test")
     public void joinGameSuccess() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
-        GameData newGame = new GameData(1234, null, null, "testGameName", new ChessGame());
-        gameDAO.createGame(newGame);
+        int newGameID = gameDAO.createGame("testGameName");
 
-        service.joinGame(auth.authToken(), TeamColor.WHITE, 1234);
-        GameData game = new GameData(1234, "testUsername", null, "testGameName", new ChessGame());
+        JoinGameRequest joinGameRequest = new JoinGameRequest(auth.authToken(), TeamColor.WHITE, newGameID);
+        service.joinGame(joinGameRequest);
 
-        Assertions.assertEquals(game, gameDAO.getGame(1234));
+        Assertions.assertEquals("testUsername", gameDAO.getGame(newGameID).whiteUsername());
     }
 
     @Test
     @DisplayName("Negative Join Game Test")
     public void joinGameFailure() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
-        GameData newGame = new GameData(1234, "taken", null, "testGameName", new ChessGame());
-        gameDAO.createGame(newGame);
+        String newGameName = "testGameName";
+        int gameID = gameDAO.createGame(newGameName);
 
+        JoinGameRequest joinGameRequest = new JoinGameRequest(auth.authToken(), TeamColor.WHITE, gameID);
         AlreadyTakenException alreadyTakenException = Assertions.assertThrows(AlreadyTakenException.class, () -> {
-            service.joinGame(auth.authToken(), TeamColor.WHITE, 1234);
+            service.joinGame(joinGameRequest);
         });
     }
 }

@@ -126,7 +126,7 @@ public class SQLAuthDAO implements AuthDAO {
                         return numAuths == 0;
                     }
                     else {
-                        throw new SQLException("Unable to retrieve number of auths.");
+                        throw new DataAccessException("Unable to retrieve number of auths.");
                     }
                 }
             }

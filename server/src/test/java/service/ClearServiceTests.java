@@ -9,8 +9,6 @@ import chess.ChessGame;
 
 import org.junit.jupiter.api.*;
 
-import javax.xml.crypto.Data;
-
 public class ClearServiceTests {
 
     @Test
@@ -18,7 +16,7 @@ public class ClearServiceTests {
     public void clearSuccess() throws DataAccessException {
         // setup
         UserDAO userDAO = new SQLUserDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+        GameDAO gameDAO = new SQLGameDAO();
         AuthDAO authDAO = new SQLAuthDAO();
         ClearService service = new ClearService(userDAO, gameDAO, authDAO);
 
@@ -26,8 +24,8 @@ public class ClearServiceTests {
         UserData newUser = new UserData("testUsername", "testPassword", "testEmail");
         userDAO.createUser(newUser);
 
-        GameData newGame = new GameData(1234, null, null, "testGameName", new ChessGame());
-        gameDAO.createGame(newGame);
+        String newGameName = "testGameName";
+        gameDAO.createGame(newGameName);
 
         authDAO.createAuth("testUsername");
 

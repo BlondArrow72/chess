@@ -1,8 +1,10 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
+import handlers.ListGamesResponse;
 import model.GameData;
 
 import java.util.Collection;
@@ -16,13 +18,9 @@ public class ListGamesService {
         this.authDAO = authDAO;
     }
 
-    public Collection<GameData> listGames(String authToken) {
-        try {
-            if (authDAO.getAuth(authToken) == null) {
-                throw new UnauthorizedUserError();
-            }
-        } catch (dataaccess.DataAccessException e) {
-            throw new RuntimeException(e);
+    public Collection<ListGamesResponse> listGames(String authToken) throws DataAccessException {
+        if (authDAO.getAuth(authToken) == null) {
+            throw new UnauthorizedUserError();
         }
 
         return gameDAO.listGames();

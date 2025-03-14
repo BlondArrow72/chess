@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 
+import handlers.ListGamesResponse;
 import model.GameData;
 import model.AuthData;
 
@@ -19,9 +20,10 @@ public class ListGamesServiceTests {
 
     @BeforeEach
     public void setup() throws DataAccessException {
-        gameDAO = new MemoryGameDAO();
+        gameDAO = new SQLGameDAO();
         authDAO = new SQLAuthDAO();
         service = new ListGamesService(gameDAO, authDAO);
+        gameDAO.clear();
     }
 
     @AfterEach
@@ -34,15 +36,11 @@ public class ListGamesServiceTests {
     @DisplayName("Positive List Games Test")
     public void listGamesSuccess() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
-        GameData newGame = new GameData(1234, null, null, "testGameName", new ChessGame());
-        gameDAO.createGame(newGame);
+        gameDAO.createGame("testGameName");
 
-        Collection<GameData> gameList = service.listGames(auth.authToken());
+        Collection<ListGamesResponse> gameList = service.listGames(auth.authToken());
 
-        Collection<GameData> expected = new ArrayList<>();
-        expected.add(newGame);
-
-        Assertions.assertEquals(gameList.size(), expected.size());
+        Assertions.assertEquals(1, gameList.size());
     }
 
     @Test

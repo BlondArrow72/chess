@@ -24,12 +24,10 @@ public class AuthDAOTests {
     }
 
     @Test
-    public void createAuthNegative() throws DataAccessException {
-        String testUsername = "createAuthNegativeUsername";
-        AuthData firstAuth = authDAO.createAuth(testUsername);
-
-        // I'm not sure how to implement a negative test case for this
-        Assertions.assertEquals(testUsername, firstAuth.username());
+    public void createAuthNegative() {
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            authDAO.createAuth(null);
+        });
     }
 
     @Test

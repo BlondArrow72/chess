@@ -8,6 +8,7 @@ public class QueenMovesCalculator implements ChessPieceMovesCalculator{
 
         Collection<ChessMove> possibleMoves = new ArrayList<>();
 
+
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
 

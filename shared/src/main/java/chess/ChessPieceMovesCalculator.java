@@ -30,6 +30,30 @@ public interface ChessPieceMovesCalculator {
         return possibleMoves;
     }
 
+    default Collection<ChessMove> continuousMoves(Collection<ChessMove> possibleMoves, ChessBoard board, ChessPosition myPosition, int rowDirection, int colDirection) {
+        for (int i = 1; i <= 7; i++) {
+            int newRow = i * rowDirection + myPosition.getRow();
+            int newCol = i * colDirection + myPosition.getColumn();
+            ChessPosition newPosition = new ChessPosition(newRow, newCol);
+            ChessMove newMove = new ChessMove(myPosition, newPosition);
+
+            if (isInBounds(newPosition)) {
+                if (canCapture(board, myPosition, newPosition)) {
+                    possibleMoves.add(newMove);
+                    break;
+                }
+                else if (isBlocked(board, myPosition, newPosition)) {
+                    break;
+                }
+                else {
+                    possibleMoves.add(newMove);
+                }
+            }
+        }
+
+        return possibleMoves;
+    }
+
     default boolean isInBounds(ChessPosition myPosition) {
         return (myPosition.getRow() >= 1) && (myPosition.getRow() <= 8) && (myPosition.getColumn() >= 1) && (myPosition.getColumn() <= 8);
     }

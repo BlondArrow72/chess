@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -30,7 +31,13 @@ public interface ChessPieceMovesCalculator {
         return possibleMoves;
     }
 
-    default Collection<ChessMove> continuousMoves(Collection<ChessMove> possibleMoves, ChessBoard board, ChessPosition myPosition, int rowDirection, int colDirection) {
+    default Collection<ChessMove> continuousMoves(
+            Collection<ChessMove> possibleMoves,
+            ChessBoard board,
+            ChessPosition myPosition,
+            int rowDirection,
+            int colDirection)
+    {
         for (int i = 1; i <= 7; i++) {
             int newRow = i * rowDirection + myPosition.getRow();
             int newCol = i * colDirection + myPosition.getColumn();
@@ -49,6 +56,24 @@ public interface ChessPieceMovesCalculator {
                     possibleMoves.add(newMove);
                 }
             }
+        }
+
+        return possibleMoves;
+    }
+
+    default Collection<ChessMove> getDiscreteMoves(
+            int[][] directions,
+            ChessBoard board,
+            ChessPosition myPosition)
+    {
+        Collection<ChessMove> possibleMoves = new ArrayList<>();
+
+        for (int[] direction : directions) {
+            int newRow = direction[0] + myPosition.getRow();
+            int newCol = direction[1] + myPosition.getColumn();
+            ChessPosition newPosition = new ChessPosition(newRow, newCol);
+            ChessMove newMove = new ChessMove(myPosition, newPosition);
+            possibleMoves = evaluateMove(possibleMoves, board, newMove);
         }
 
         return possibleMoves;

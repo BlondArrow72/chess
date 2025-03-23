@@ -10,7 +10,6 @@ import static ui.EscapeSequences.BLACK_KNIGHT;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,10 +18,10 @@ public class UiChessBoard {
     private PrintStream out;
     private TileColor tileColor;
 
-    private List<String> headerStrings = new ArrayList<>(List.of(
+    private final List<String> headerStrings = new ArrayList<>(List.of(
             EMPTY, " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", EMPTY
     ));
-    private List<String> rowStrings = new ArrayList<>(List.of(
+    private final List<String> rowStrings = new ArrayList<>(List.of(
             " 8 ", " 7 ", " 6 ", " 5 ", " 4 ", " 3 ", " 2 ", " 1 "
     ));
 
@@ -32,16 +31,6 @@ public class UiChessBoard {
     public enum TileColor {
         LIGHT,
         DARK
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Chess Board" + WHITE_KING + "\n");
-
-        UiChessBoard uiChessBoard = new UiChessBoard();
-        ChessBoard chessBoard = new ChessBoard();
-        chessBoard.resetBoard();
-
-        uiChessBoard.drawBoard(chessBoard, false);
     }
 
     public void drawBoard(ChessBoard board, boolean reverse) {

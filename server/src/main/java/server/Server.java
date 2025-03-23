@@ -33,8 +33,6 @@ public class Server {
             throw new RuntimeException(e.getMessage());
         }
 
-        // Register your endpoints and handle exceptions here.
-
         // Register
         Spark.post("/user", (req, res) -> new RegisterHandler(userDAO, authDAO).register(req, res));
 

@@ -26,15 +26,15 @@ public class CreateGameHandler {
         try {
             // deserialize
             String authToken = req.headers("authorization");
-            CreateGameRequest createGameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
-            String gameName = createGameRequest.gameName();
+            String gameName = new Gson().fromJson(req.body(), String.class);
 
             if (authToken.isEmpty() || gameName.isEmpty()) {
                 throw new BadRequestException();
             }
 
             // call service
-            int gameID = new CreateGameService(gameDAO, authDAO).createGame(authToken, gameName);
+            CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
+            int gameID = new CreateGameService(gameDAO, authDAO).createGame(createGameRequest);
 
             // serialize
             res.status(200);

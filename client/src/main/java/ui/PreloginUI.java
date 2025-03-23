@@ -11,8 +11,8 @@ public class PreloginUI {
     private final Scanner scanner = new Scanner(System.in);
     private final ServerFacade serverFacade = new ServerFacade();
 
-    public AuthData run() {
-        AuthData userAuth = null;
+    public String run() {
+        String authToken = null;
 
         printMenu();
 
@@ -20,24 +20,22 @@ public class PreloginUI {
 
         switch(userResponse) {
             case ("Login"):
-                userAuth = login();
+                authToken = login();
 
             case ("Register"):
-                userAuth = register();
+                authToken = register();
 
             case ("Quit"):
                 break;
 
             case ("Help"):
                 help();
-                printMenu();
 
             default:
                 System.out.println("Invalid Response.");
-                printMenu();
         }
 
-        return userAuth;
+        return authToken;
     }
 
     private void printMenu() {
@@ -53,7 +51,7 @@ public class PreloginUI {
         System.out.println("Hit ENTER after typing your selection.");
     }
 
-    private AuthData login() {
+    private String login() {
         // get username and password
         System.out.println("Enter your username:");
         String username = scanner.nextLine();
@@ -63,10 +61,10 @@ public class PreloginUI {
 
         // make login request
         LoginRequest loginRequest = new LoginRequest(username, password);
-        return serverFacade.login(loginRequest);
+        return serverFacade.login(loginRequest).authToken();
     }
 
-    private AuthData register() {
+    private String register() {
         // get username, password, and email
         System.out.println("Enter your username:");
         String username = scanner.nextLine();
@@ -79,7 +77,7 @@ public class PreloginUI {
 
         // make register request
         UserData newUser = new UserData(username, password, email);
-        return serverFacade.register(newUser);
+        return serverFacade.register(newUser).authToken();
     }
 
     private void help() {

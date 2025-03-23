@@ -1,3 +1,3 @@
 package handlers;
 
-public record CreateGameRequest(String gameName) {}
+public record CreateGameRequest(String authToken, String gameName) {}

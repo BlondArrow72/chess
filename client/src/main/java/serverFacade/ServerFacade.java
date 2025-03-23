@@ -1,8 +1,12 @@
 package serverFacade;
 
+import handlers.CreateGameRequest;
+import handlers.JoinGameRequest;
+
 import model.AuthData;
 
 import handlers.LoginRequest;
+import handlers.ListGamesResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collection;
 
 import model.UserData;
 import org.eclipse.jetty.client.HttpResponseException;
@@ -18,20 +23,39 @@ import org.eclipse.jetty.client.HttpResponseException;
 import com.google.gson.Gson;
 
 public class ServerFacade {
-    private final String serverUrl = "https://localhost:8080";
-
     public AuthData register(UserData newUser) throws ResponseException {
         String path = "/user";
-        return this.makeRequest("POST", path, newUser, AuthData.class);
+        return makeRequest("POST", path, newUser, AuthData.class);
     }
 
     public AuthData login(LoginRequest loginRequest) throws ResponseException {
         String path = "/session";
-        return this.makeRequest("POST", path, loginRequest, AuthData.class);
+        return makeRequest("POST", path, loginRequest, AuthData.class);
+    }
+
+    public void logout(AuthData userAuth) {
+        String path = "/session";
+        makeRequest("DELETE", path, userAuth, null);
+    }
+
+    public int createGame(CreateGameRequest createGameRequest) {
+        String path = "/game";
+        return makeRequest("POST", path, createGameRequest, Integer.class);
+    }
+
+    public Collection<ListGamesResponse> listGames(String authToken) {
+        String path = "/game";
+        return makeRequest("GET", path, authToken, ListGamesResponse.class);
+    }
+
+    public void joinGame(JoinGameRequest joinGameRequest) {
+        String path = "/game";
+        makeRequest("PUT", path, joinGameRequest, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws HttpResponseException {
         try {
+            String serverUrl = "http://localhost:8080";
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);

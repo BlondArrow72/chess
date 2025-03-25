@@ -4,6 +4,7 @@ import dataaccess.*;
 
 import model.AuthData;
 
+import model.CreateGameRequest;
 import org.junit.jupiter.api.*;
 
 public class CreateGameServiceTests {
@@ -28,7 +29,8 @@ public class CreateGameServiceTests {
     @DisplayName("Positive Create Game Test")
     public void createGameSuccess() throws DataAccessException {
         AuthData auth = authDAO.createAuth("testUsername");
-        int gameID = service.createGame(auth.authToken(), "testGame");
+        CreateGameRequest createGameRequest = new CreateGameRequest(auth.authToken(), "testGameName");
+        int gameID = service.createGame(createGameRequest);
 
         Assertions.assertEquals(gameID, gameDAO.getGame(gameID).gameID());
     }
@@ -36,8 +38,9 @@ public class CreateGameServiceTests {
     @Test
     @DisplayName("Negative Create Game Test")
     public void createGameFailure() {
+        CreateGameRequest createGameRequest = new CreateGameRequest("testAuthToken", "testGameName");
         UnauthorizedUserError unauthorizedUserError = Assertions.assertThrows(UnauthorizedUserError.class, () -> {
-            service.createGame(null, "testGameName");
+            service.createGame(createGameRequest);
         });
     }
 }

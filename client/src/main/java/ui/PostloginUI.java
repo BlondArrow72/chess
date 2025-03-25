@@ -1,43 +1,50 @@
 package ui;
 
+import chess.ChessGame;
 import model.CreateGameRequest;
+import model.JoinGameRequest;
 import model.ListGamesResponse;
 
 import serverFacade.ServerFacade;
 
 import java.util.Collection;
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class PostloginUI {
     private final Scanner scanner = new Scanner(System.in);
     private final ServerFacade serverFacade = new ServerFacade();
+    private HashMap<Integer, Integer> currentGames = new HashMap<>();
 
-    public void run(String authToken) {
+    public int run(String authToken) {
         printMenu();
         String userResponse = scanner.nextLine();
+        int gameID = 0;
 
         switch(userResponse) {
             case "Create Game":
-                int gameID = createGame(authToken);
+                createGame(authToken);
 
             case "List Games":
-                help(); // listGames(authToken);
+                listGames(authToken);
 
             case "Play Game":
-                help(); // playGame();
+                gameID = playGame(authToken);
 
             case "Observe Game":
-                help(); // observeGame();
+                gameID = observeGame(authToken);
 
             case "Logout":
-                help(); // logout();
+                logout(authToken);
 
             case "Help":
                 help();
 
             default:
-                System.out.println("Invalid Response.");
+                System.out.println("Invalid Response. Please try again.");
         }
+
+        return gameID;
     }
 
     private void printMenu() {
@@ -55,38 +62,85 @@ public class PostloginUI {
         System.out.println("Hit ENTER after typing your selection.");
     }
 
-    private int createGame(String authToken) {
+    private void createGame(String authToken) {
         System.out.println("What do you want to be the name of your game?");
         String gameName = scanner.nextLine();
 
         CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
 
-        return serverFacade.createGame(createGameRequest);
+        serverFacade.createGame(createGameRequest);
     }
 
-    /*
     private void listGames(String authToken) {
         Collection<ListGamesResponse> gamesList = serverFacade.listGames(authToken);
+
+        System.out.println("Game Number\tGame Name\tWhite Username\tBlack Username");
+        int counter = 1;
+        currentGames = new HashMap<>();
         for (ListGamesResponse game : gamesList) {
-            game.toString();
+            currentGames.put(counter, game.gameID());
+            System.out.printf("%d/t%s/t%s/t%s%n",
+                    counter,
+                    game.gameName(),
+                    game.whiteUsername(),
+                    game.blackUsername()
+            );
+            counter++;
         }
     }
 
-     */
+    private int playGame(String authToken) {
+        listGames(authToken);
 
-    /*
-    private void playGame() {
-        return serverFacade.playGame();
+        System.out.println("\nWhich game would you like to join?");
+        int gameNumber = 0;
+        if (scanner.hasNextInt()) {
+            gameNumber = scanner.nextInt();
+        }
+        else {
+            System.out.println("Input a valid number.");
+            playGame(authToken);
+        }
+
+        System.out.println("Would you like to play as 'White' or 'Black'?");
+        String teamColor = scanner.nextLine();
+        ChessGame.TeamColor playerColor  = ChessGame.TeamColor.WHITE;
+        if (teamColor.equals("Black")) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        }
+        else {
+            System.out.println("Please join as either 'White' or 'Black'.");
+            playGame(authToken);
+        }
+
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, currentGames.get(gameNumber));
+        serverFacade.joinGame(joinGameRequest);
+
+        return currentGames.get(gameNumber);
     }
 
-    private void observeGame() {
-        return serverFacade.observeGame();
+    private int observeGame(String authToken) {
+        listGames(authToken);
+
+        System.out.println("\nWhich game would you like to observe?");
+        int gameNumber = 0;
+        if (scanner.hasNextInt()) {
+            gameNumber = scanner.nextInt();
+        }
+        else {
+            System.out.println("Input a valid number.");
+            playGame(authToken);
+        }
+
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, ChessGame.TeamColor.WHITE, currentGames.get(gameNumber));
+        serverFacade.joinGame(joinGameRequest);
+
+        return currentGames.get(gameNumber);
     }
 
-    private void logout() {
-        return serverFacade.logout();
+    private void logout(String authToken) {
+        serverFacade.logout(authToken);
     }
-    */
 
     private void help() {
         System.out.println("Help Menu:");

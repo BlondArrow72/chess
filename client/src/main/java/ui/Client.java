@@ -9,18 +9,21 @@ public class Client {
 
         int menu = 0;
         String authToken = null;
+        int gameID = 0;
 
         while (true) {
             switch (menu) {
                 case 0:
                     authToken = preloginUI.run();
-                    if (authToken == null) {
-                        break;
+                    if (authToken != null) {
+                        menu = 1;
                     }
-                    menu = 1;
 
                 case 1:
-                    postloginUI.run(authToken);
+                    gameID = postloginUI.run(authToken);
+                    if (gameID != 0) {
+                        menu = 2;
+                    }
 
                 case 2:
                     menu = gameplayUI.run();

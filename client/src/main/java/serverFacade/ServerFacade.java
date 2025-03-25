@@ -1,10 +1,9 @@
 package serverFacade;
 
+import model.UserData;
+import model.AuthData;
 import model.CreateGameRequest;
 import model.JoinGameRequest;
-
-import model.AuthData;
-
 import model.LoginRequest;
 import model.ListGamesResponse;
 
@@ -12,15 +11,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collection;
 
-import model.UserData;
+import java.util.Collection;
+import java.util.List;
+
+import java.lang.reflect.Type;
+
 import org.eclipse.jetty.client.HttpResponseException;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class ServerFacade {
     public AuthData register(UserData newUser) throws ResponseException {
@@ -33,29 +37,28 @@ public class ServerFacade {
         return makeRequest("POST", path, loginRequest, AuthData.class);
     }
 
-    public void logout(AuthData userAuth) {
+    public void logout(String authToken) {
         String path = "/session";
-        makeRequest("DELETE", path, userAuth, null);
+        makeRequest("DELETE", path, authToken, null);
     }
 
-    public int createGame(CreateGameRequest createGameRequest) {
+    public void createGame(CreateGameRequest createGameRequest) {
         String path = "/game";
-        return makeRequest("POST", path, createGameRequest, Integer.class);
+        makeRequest("POST", path, createGameRequest, Integer.class);
     }
 
-    /*
     public Collection<ListGamesResponse> listGames(String authToken) {
         String path = "/game";
-        return makeRequest("GET", path, authToken, ListGamesResponse.class);
+        Type collectionType = new TypeToken<List<ListGamesResponse>>() {}.getType();
+        return makeRequest("GET", path, authToken, collectionType);
     }
 
     public void joinGame(JoinGameRequest joinGameRequest) {
         String path = "/game";
         makeRequest("PUT", path, joinGameRequest, null);
     }
-     */
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws HttpResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Type responseType) throws HttpResponseException {
         try {
             String serverUrl = "http://localhost:8080";
             URL url = (new URI(serverUrl + path)).toURL();
@@ -66,7 +69,7 @@ public class ServerFacade {
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
-            return readBody(http, responseClass);
+            return readBody(http, responseType);
         }
         catch (Exception ex) {
             throw new ResponseException(500, ex.getMessage());
@@ -90,13 +93,13 @@ public class ServerFacade {
         }
     }
 
-    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+    private static <T> T readBody(HttpURLConnection http, Type responseType) throws IOException {
         T response = null;
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
+                if (responseType != null) {
+                    response = new Gson().fromJson(reader, responseType);
                 }
             }
         }

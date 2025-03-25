@@ -16,10 +16,10 @@ public class PostloginUI {
     private final ServerFacade serverFacade = new ServerFacade();
     private HashMap<Integer, Integer> currentGames = new HashMap<>();
 
-    public int run(String authToken) {
+    public JoinGameRequest run(String authToken) {
         printMenu();
         String userResponse = scanner.nextLine();
-        int gameID = 0;
+        JoinGameRequest joinGameRequest = null;
 
         switch(userResponse) {
             case "Create Game":
@@ -29,10 +29,10 @@ public class PostloginUI {
                 listGames(authToken);
 
             case "Play Game":
-                gameID = playGame(authToken);
+                joinGameRequest = playGame(authToken);
 
             case "Observe Game":
-                gameID = observeGame(authToken);
+                joinGameRequest = observeGame(authToken);
 
             case "Logout":
                 logout(authToken);
@@ -44,7 +44,7 @@ public class PostloginUI {
                 System.out.println("Invalid Response. Please try again.");
         }
 
-        return gameID;
+        return joinGameRequest;
     }
 
     private void printMenu() {
@@ -89,7 +89,7 @@ public class PostloginUI {
         }
     }
 
-    private int playGame(String authToken) {
+    private JoinGameRequest playGame(String authToken) {
         listGames(authToken);
 
         System.out.println("\nWhich game would you like to join?");
@@ -116,10 +116,10 @@ public class PostloginUI {
         JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, currentGames.get(gameNumber));
         serverFacade.joinGame(joinGameRequest);
 
-        return currentGames.get(gameNumber);
+        return joinGameRequest;
     }
 
-    private int observeGame(String authToken) {
+    private JoinGameRequest observeGame(String authToken) {
         listGames(authToken);
 
         System.out.println("\nWhich game would you like to observe?");
@@ -135,7 +135,7 @@ public class PostloginUI {
         JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, ChessGame.TeamColor.WHITE, currentGames.get(gameNumber));
         serverFacade.joinGame(joinGameRequest);
 
-        return currentGames.get(gameNumber);
+        return joinGameRequest;
     }
 
     private void logout(String authToken) {

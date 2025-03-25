@@ -1,5 +1,7 @@
 package ui;
 
+import model.JoinGameRequest;
+
 public class Client {
 
     public void run() {
@@ -9,7 +11,7 @@ public class Client {
 
         int menu = 0;
         String authToken = null;
-        int gameID = 0;
+        JoinGameRequest joinGameRequest = null;
 
         while (true) {
             switch (menu) {
@@ -20,13 +22,13 @@ public class Client {
                     }
 
                 case 1:
-                    gameID = postloginUI.run(authToken);
-                    if (gameID != 0) {
+                    joinGameRequest = postloginUI.run(authToken);
+                    if (joinGameRequest != null) {
                         menu = 2;
                     }
 
                 case 2:
-                    menu = gameplayUI.run();
+                    gameplayUI.run(joinGameRequest);
 
                 default:
                     break;

@@ -27,6 +27,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ServerFacade {
+    String serverUrl;
+
+    public ServerFacade(int desiredPort) {
+        String baseURL = "http://localhost:";
+        serverUrl = baseURL + desiredPort;
+    }
+
     public AuthData register(UserData newUser) throws ResponseException {
         String path = "/user";
         return makeRequest("POST", path, newUser, AuthData.class);
@@ -60,7 +67,6 @@ public class ServerFacade {
 
     private <T> T makeRequest(String method, String path, Object request, Type responseType) throws HttpResponseException {
         try {
-            String serverUrl = "http://localhost:8080";
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
@@ -71,8 +77,8 @@ public class ServerFacade {
             throwIfNotSuccessful(http);
             return readBody(http, responseType);
         }
-        catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+        catch (Exception e) {
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -88,8 +94,17 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         int status = http.getResponseCode();
-        if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status);
+        if (status == 400) {
+            throw new ResponseException(status, "Error: bad request");
+        }
+        else if (status == 401) {
+            throw new ResponseException(status, "Error: unauthorized");
+        }
+        else if (status == 403) {
+            throw new ResponseException(status, "Error: already taken");
+        }
+        else if (status == 500) {
+            throw new ResponseException(status, "Database error.");
         }
     }
 

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class PreloginUI {
     private final Scanner scanner = new Scanner(System.in);
-    private final ServerFacade serverFacade = new ServerFacade();
+    private final ServerFacade serverFacade = new ServerFacade(8080);
 
     public String run() {
         String authToken = null;
@@ -17,21 +17,21 @@ public class PreloginUI {
 
         String userResponse = scanner.nextLine();
 
-        switch(userResponse) {
-            case ("Login"):
-                authToken = login();
-
-            case ("Register"):
-                authToken = register();
-
-            case ("Quit"):
-                break;
-
-            case ("Help"):
-                help();
-
-            default:
-                System.out.println("Invalid Response.");
+        if (userResponse.equals("Login")) {
+            authToken = login();
+        }
+        else if (userResponse.equals("Register")) {
+            authToken = register();
+        }
+        else if (userResponse.equals("Quit")) {
+            System.exit(0);
+        }
+        else if (userResponse.equals("Help")) {
+            help();
+        }
+        else {
+            System.out.println("Invalid Response.");
+            run();
         }
 
         return authToken;
@@ -82,9 +82,10 @@ public class PreloginUI {
     private void help() {
         System.out.println("Help Menu:");
         System.out.println("Login - Prompts the user to input login information.");
-        System.out.println("Register - Prompts the user to imput registration information.");
+        System.out.println("Register - Prompts the user to input registration information.");
         System.out.println("Quit - Exits the program.");
         System.out.println("Help - Displays help text.");
         System.out.println();
+        run();
     }
 }

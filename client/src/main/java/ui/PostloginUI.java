@@ -5,6 +5,7 @@ import model.CreateGameRequest;
 import model.JoinGameRequest;
 import model.ListGamesResponse;
 
+import serverFacade.ResponseException;
 import serverFacade.ServerFacade;
 
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 
 public class PostloginUI {
     private final Scanner scanner = new Scanner(System.in);
-    private final ServerFacade serverFacade = new ServerFacade();
+    private final ServerFacade serverFacade = new ServerFacade(8080);
     private HashMap<Integer, Integer> currentGames = new HashMap<>();
 
     public JoinGameRequest run(String authToken) {
@@ -21,27 +22,32 @@ public class PostloginUI {
         String userResponse = scanner.nextLine();
         JoinGameRequest joinGameRequest = null;
 
-        switch(userResponse) {
-            case "Create Game":
+        try {
+            if (userResponse.equals("Create Game")) {
                 createGame(authToken);
-
-            case "List Games":
+            }
+            else if (userResponse.equals("List Games")) {
                 listGames(authToken);
-
-            case "Play Game":
+            }
+            else if (userResponse.equals("Play Game")) {
                 joinGameRequest = playGame(authToken);
-
-            case "Observe Game":
+            }
+            else if (userResponse.equals("Observe Game")) {
                 joinGameRequest = observeGame(authToken);
-
-            case "Logout":
+            }
+            else if (userResponse.equals("Logout")) {
                 logout(authToken);
-
-            case "Help":
+            }
+            else if (userResponse.equals("Help")) {
                 help();
-
-            default:
+            }
+            else {
                 System.out.println("Invalid Response. Please try again.");
+            }
+        }
+        catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            run(authToken);
         }
 
         return joinGameRequest;

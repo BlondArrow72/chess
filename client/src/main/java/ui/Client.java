@@ -13,26 +13,31 @@ public class Client {
         String authToken = null;
         JoinGameRequest joinGameRequest = null;
 
-        while (true) {
-            switch (menu) {
-                case 0:
-                    authToken = preloginUI.run();
-                    if (authToken != null) {
-                        menu = 1;
-                    }
+        try {
+            while (true) {
+                switch (menu) {
+                    case 0:
+                        authToken = preloginUI.run();
+                        if (authToken != null) {
+                            menu = 1;
+                        }
 
-                case 1:
-                    joinGameRequest = postloginUI.run(authToken);
-                    if (joinGameRequest != null) {
-                        menu = 2;
-                    }
+                    case 1:
+                        joinGameRequest = postloginUI.run(authToken);
+                        if (joinGameRequest != null) {
+                            menu = 2;
+                        }
 
-                case 2:
-                    gameplayUI.run(joinGameRequest);
+                    case 2:
+                        gameplayUI.run(joinGameRequest);
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            run();
         }
     }
 }

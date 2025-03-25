@@ -1,7 +1,5 @@
 package ui;
 
-import model.AuthData;
-
 public class Client {
 
     public void run() {

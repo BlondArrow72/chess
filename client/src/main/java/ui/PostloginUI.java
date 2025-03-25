@@ -1,8 +1,8 @@
 package ui;
 
-import handlers.CreateGameRequest;
-import handlers.ListGamesResponse;
-import model.AuthData;
+import model.CreateGameRequest;
+import model.ListGamesResponse;
+
 import serverFacade.ServerFacade;
 
 import java.util.Collection;
@@ -21,16 +21,16 @@ public class PostloginUI {
                 int gameID = createGame(authToken);
 
             case "List Games":
-                listGames(authToken);
+                help(); // listGames(authToken);
 
             case "Play Game":
-                playGame();
+                help(); // playGame();
 
             case "Observe Game":
-                observeGame();
+                help(); // observeGame();
 
             case "Logout":
-                logout();
+                help(); // logout();
 
             case "Help":
                 help();
@@ -64,6 +64,7 @@ public class PostloginUI {
         return serverFacade.createGame(createGameRequest);
     }
 
+    /*
     private void listGames(String authToken) {
         Collection<ListGamesResponse> gamesList = serverFacade.listGames(authToken);
         for (ListGamesResponse game : gamesList) {
@@ -71,6 +72,9 @@ public class PostloginUI {
         }
     }
 
+     */
+
+    /*
     private void playGame() {
         return serverFacade.playGame();
     }
@@ -82,6 +86,7 @@ public class PostloginUI {
     private void logout() {
         return serverFacade.logout();
     }
+    */
 
     private void help() {
         System.out.println("Help Menu:");

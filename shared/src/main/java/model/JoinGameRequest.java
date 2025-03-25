@@ -1,4 +1,4 @@
-package handlers;
+package model;
 
 import chess.ChessGame.TeamColor;
 

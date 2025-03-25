@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.*;
 
-import handlers.ListGamesResponse;
+import model.ListGamesResponse;
 import model.AuthData;
 
 import java.util.Collection;

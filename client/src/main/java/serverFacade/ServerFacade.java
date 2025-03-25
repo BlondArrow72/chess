@@ -1,12 +1,12 @@
 package serverFacade;
 
-import handlers.CreateGameRequest;
-import handlers.JoinGameRequest;
+import model.CreateGameRequest;
+import model.JoinGameRequest;
 
 import model.AuthData;
 
-import handlers.LoginRequest;
-import handlers.ListGamesResponse;
+import model.LoginRequest;
+import model.ListGamesResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +43,7 @@ public class ServerFacade {
         return makeRequest("POST", path, createGameRequest, Integer.class);
     }
 
+    /*
     public Collection<ListGamesResponse> listGames(String authToken) {
         String path = "/game";
         return makeRequest("GET", path, authToken, ListGamesResponse.class);
@@ -52,6 +53,7 @@ public class ServerFacade {
         String path = "/game";
         makeRequest("PUT", path, joinGameRequest, null);
     }
+     */
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws HttpResponseException {
         try {

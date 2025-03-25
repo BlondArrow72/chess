@@ -3,6 +3,7 @@ package handlers;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
+import model.ListGamesResponse;
 import service.ListGamesService;
 
 import service.UnauthorizedUserError;

@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.*;
 
-import handlers.LoginRequest;
+import model.LoginRequest;
 import model.UserData;
 import model.AuthData;
 

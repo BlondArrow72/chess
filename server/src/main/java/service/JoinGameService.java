@@ -4,7 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
-import handlers.JoinGameRequest;
+import model.JoinGameRequest;
 import model.GameData;
 import model.AuthData;
 

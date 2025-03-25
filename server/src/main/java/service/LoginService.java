@@ -4,7 +4,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 
-import handlers.LoginRequest;
+import model.LoginRequest;
 
 import model.UserData;
 import model.AuthData;

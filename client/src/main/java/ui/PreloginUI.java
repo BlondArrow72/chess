@@ -1,7 +1,6 @@
 package ui;
 
-import handlers.LoginRequest;
-import model.AuthData;
+import model.LoginRequest;
 import model.UserData;
 import serverFacade.ServerFacade;
 

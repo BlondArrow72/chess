@@ -1,6 +1,6 @@
 package dataaccess;
 
-import handlers.ListGamesResponse;
+import model.ListGamesResponse;
 import model.GameData;
 
 import chess.ChessGame;

@@ -1,11 +1,11 @@
 package handlers;
 
-import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 
 import model.AuthData;
 
+import model.LoginRequest;
 import service.LoginService;
 
 import service.UnauthorizedUserError;

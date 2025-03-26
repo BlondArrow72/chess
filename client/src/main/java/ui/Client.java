@@ -21,15 +21,23 @@ public class Client {
                         if (authToken != null) {
                             menu = 1;
                         }
+                        break;
 
                     case 1:
                         joinGameRequest = postloginUI.run(authToken);
-                        if (joinGameRequest != null) {
+                        if (joinGameRequest.authToken() == null) {
+                            authToken = null;
+                            menu = 0;
+                        }
+                        else {
                             menu = 2;
                         }
+                        break;
 
                     case 2:
                         gameplayUI.run(joinGameRequest);
+                        menu = 1;
+                        break;
 
                     default:
                         break;

@@ -7,7 +7,7 @@ import model.JoinGameRequest;
 
 public class GameplayUI {
     public void run(JoinGameRequest joinGameRequest) {
-        boolean reverse = joinGameRequest.playerColor() == ChessGame.TeamColor.BLACK;
+        boolean reverse = (joinGameRequest.playerColor() == ChessGame.TeamColor.BLACK);
 
         UiChessBoard uiChessBoard = new UiChessBoard();
         ChessBoard defaultBoard = new ChessBoard();

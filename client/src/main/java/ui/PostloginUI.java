@@ -36,7 +36,7 @@ public class PostloginUI {
                 joinGameRequest = observeGame(authToken);
             }
             else if (userResponse.equals("Logout")) {
-                logout(authToken);
+                joinGameRequest = logout(authToken);
             }
             else if (userResponse.equals("Help")) {
                 help();
@@ -78,7 +78,7 @@ public class PostloginUI {
     private void listGames(String authToken) {
         Collection<ListGamesResponse> gamesList = serverFacade.listGames(authToken);
 
-        System.out.println("Game Number\tGame Name\tWhite Username\tBlack Username");
+        System.out.println("Game Number     Game Name       White Username      Black Username");
         int counter = 1;
         currentGames = new HashMap<>();
         for (ListGamesResponse game : gamesList) {
@@ -100,6 +100,7 @@ public class PostloginUI {
         int gameNumber = 0;
         if (scanner.hasNextInt()) {
             gameNumber = scanner.nextInt();
+            scanner.nextLine();
         }
         else {
             System.out.println("Input a valid number.");
@@ -108,8 +109,11 @@ public class PostloginUI {
 
         System.out.println("Would you like to play as 'White' or 'Black'?");
         String teamColor = scanner.nextLine();
-        ChessGame.TeamColor playerColor  = ChessGame.TeamColor.WHITE;
-        if (teamColor.equals("Black")) {
+        ChessGame.TeamColor playerColor = null;
+        if (teamColor.equals("White")) {
+            playerColor  = ChessGame.TeamColor.WHITE;
+        }
+        else if (teamColor.equals("Black")) {
             playerColor = ChessGame.TeamColor.BLACK;
         }
         else {
@@ -142,8 +146,9 @@ public class PostloginUI {
         return joinGameRequest;
     }
 
-    private void logout(String authToken) {
+    private JoinGameRequest logout(String authToken) {
         serverFacade.logout(authToken);
+        return new JoinGameRequest(null, null, null);
     }
 
     private void help() {

@@ -28,6 +28,9 @@ public class CreateGameHandler {
         try {
             // deserialize
             String authToken = req.headers("authorization");
+            if (req.body() == null) {
+                System.out.println("Null body.");
+            }
             String gameName = new Gson().fromJson(req.body(), String.class);
 
             if (authToken.isEmpty() || gameName.isEmpty()) {

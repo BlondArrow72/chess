@@ -14,6 +14,7 @@ import spark.Response;
 import com.google.gson.Gson;
 
 import java.util.Map;
+import java.util.HashMap;
 
 public class CreateGameHandler {
     private final GameDAO gameDAO;
@@ -31,7 +32,8 @@ public class CreateGameHandler {
             if (req.body() == null) {
                 System.out.println("Null body.");
             }
-            String gameName = new Gson().fromJson(req.body(), String.class);
+            HashMap<String, String> gameNameMap = new Gson().fromJson(req.body(), HashMap.class);
+            String gameName = gameNameMap.get("gameName");
 
             if (authToken.isEmpty() || gameName.isEmpty()) {
                 throw new BadRequestException();

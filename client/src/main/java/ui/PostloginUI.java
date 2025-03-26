@@ -28,6 +28,7 @@ public class PostloginUI {
             }
             else if (userResponse.equals("List Games")) {
                 listGames(authToken);
+                run(authToken);
             }
             else if (userResponse.equals("Play Game")) {
                 joinGameRequest = playGame(authToken);
@@ -83,7 +84,7 @@ public class PostloginUI {
         currentGames = new HashMap<>();
         for (ListGamesResponse game : gamesList) {
             currentGames.put(counter, game.gameID());
-            System.out.printf("%d/t%s/t%s/t%s%n",
+            System.out.printf("%d\t\t%s\t\t%s\t\t%s%n",
                     counter,
                     game.gameName(),
                     game.whiteUsername(),
@@ -134,6 +135,7 @@ public class PostloginUI {
         int gameNumber = 0;
         if (scanner.hasNextInt()) {
             gameNumber = scanner.nextInt();
+            scanner.nextLine();
         }
         else {
             System.out.println("Input a valid number.");
@@ -141,7 +143,6 @@ public class PostloginUI {
         }
 
         JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, ChessGame.TeamColor.WHITE, currentGames.get(gameNumber));
-        serverFacade.joinGame(joinGameRequest);
 
         return joinGameRequest;
     }

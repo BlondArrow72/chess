@@ -72,9 +72,7 @@ public class PostloginUI {
         System.out.println("What do you want to be the name of your game?");
         String gameName = scanner.nextLine();
 
-        CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
-
-        serverFacade.createGame(createGameRequest);
+        serverFacade.createGame(authToken, gameName);
     }
 
     private void listGames(String authToken) {

@@ -1,11 +1,6 @@
 package serverFacade;
 
-import model.UserData;
-import model.AuthData;
-import model.CreateGameRequest;
-import model.JoinGameRequest;
-import model.LoginRequest;
-import model.ListGamesResponse;
+import model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,14 +12,12 @@ import java.net.URI;
 import java.net.URL;
 
 import java.util.Collection;
-import java.util.List;
 
 import java.lang.reflect.Type;
 
 import org.eclipse.jetty.client.HttpResponseException;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class ServerFacade {
     String serverUrl;
@@ -36,41 +29,51 @@ public class ServerFacade {
 
     public AuthData register(UserData newUser) throws ResponseException {
         String path = "/user";
-        return makeRequest("POST", path, newUser, AuthData.class);
+        return makeRequest("POST", path, newUser, AuthData.class, null);
     }
 
     public AuthData login(LoginRequest loginRequest) throws ResponseException {
         String path = "/session";
-        return makeRequest("POST", path, loginRequest, AuthData.class);
+        return makeRequest("POST", path, loginRequest, AuthData.class, null);
     }
 
     public void logout(String authToken) {
         String path = "/session";
-        makeRequest("DELETE", path, authToken, null);
+        makeRequest("DELETE", path, authToken, null, authToken);
     }
 
-    public void createGame(CreateGameRequest createGameRequest) {
+    public int createGame(String authToken, String gameName) {
         String path = "/game";
-        makeRequest("POST", path, createGameRequest, Integer.class);
+        CreateGameResponse response = makeRequest("POST", path, gameName, CreateGameResponse.class, authToken);
+        return response.gameID();
     }
 
     public Collection<ListGamesResponse> listGames(String authToken) {
         String path = "/game";
-        Type collectionType = new TypeToken<List<ListGamesResponse>>() {}.getType();
-        return makeRequest("GET", path, authToken, collectionType);
+        ListGamesWrapper wrapper = makeRequest("GET", path, null, ListGamesWrapper.class, authToken);
+        return wrapper.games();
     }
 
     public void joinGame(JoinGameRequest joinGameRequest) {
         String path = "/game";
-        makeRequest("PUT", path, joinGameRequest, null);
+        makeRequest("PUT", path, joinGameRequest, null, joinGameRequest.authToken());
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Type responseType) throws HttpResponseException {
+    public void clear() {
+        String path = "/db";
+        makeRequest("DELETE", path, null, null, null);
+    }
+
+    private <T> T makeRequest(String method, String path, Object request, Type responseType, String authToken) throws HttpResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (authToken != null) {
+                http.setRequestProperty("Authorization", authToken);
+            }
 
             writeBody(request, http);
             http.connect();
@@ -120,9 +123,5 @@ public class ServerFacade {
         }
 
         return response;
-    }
-
-    private boolean isSuccessful(int status) {
-        return (status / 100 == 2);
     }
 }

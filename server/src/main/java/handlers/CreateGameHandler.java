@@ -4,6 +4,7 @@ import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
 import model.CreateGameRequest;
+import model.CreateGameResponse;
 import service.CreateGameService;
 
 import service.UnauthorizedUserError;
@@ -36,10 +37,11 @@ public class CreateGameHandler {
             // call service
             CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
             int gameID = new CreateGameService(gameDAO, authDAO).createGame(createGameRequest);
+            CreateGameResponse createGameResponse = new CreateGameResponse(gameID);
 
             // serialize
             res.status(200);
-            return new Gson().toJson(Map.of("gameID", gameID));
+            return new Gson().toJson(createGameResponse);
         }
         catch (BadRequestException e) {
             res.status(400);

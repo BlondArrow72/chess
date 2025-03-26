@@ -131,7 +131,6 @@ public class PostloginUI {
 
     private JoinGameRequest observeGame(String authToken) {
         int gameNumber = getGameNumber(authToken);
-
         return new JoinGameRequest(authToken, ChessGame.TeamColor.WHITE, currentGames.get(gameNumber));
     }
 

@@ -11,30 +11,22 @@ public class PreloginUI {
     private final ServerFacade serverFacade = new ServerFacade(8080);
 
     public String run() {
-        String authToken = null;
+        while (true) {
+            printMenu();
+            String userResponse = scanner.nextLine();
 
-        printMenu();
-
-        String userResponse = scanner.nextLine();
-
-        if (userResponse.equals("Login")) {
-            authToken = login();
+            switch (userResponse) {
+                case "Login" -> {
+                    return login();
+                }
+                case "Register" -> {
+                    return register();
+                }
+                case "Quit" -> System.exit(0);
+                case "Help" -> help();
+                default -> System.out.println("Invalid Response.");
+            }
         }
-        else if (userResponse.equals("Register")) {
-            authToken = register();
-        }
-        else if (userResponse.equals("Quit")) {
-            System.exit(0);
-        }
-        else if (userResponse.equals("Help")) {
-            help();
-        }
-        else {
-            System.out.println("Invalid Response.");
-            run();
-        }
-
-        return authToken;
     }
 
     private void printMenu() {

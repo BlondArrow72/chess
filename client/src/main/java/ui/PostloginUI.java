@@ -1,7 +1,6 @@
 package ui;
 
 import chess.ChessGame;
-import model.CreateGameRequest;
 import model.JoinGameRequest;
 import model.ListGamesResponse;
 

@@ -15,8 +15,6 @@ import java.util.Collection;
 
 import java.lang.reflect.Type;
 
-import org.eclipse.jetty.client.HttpResponseException;
-
 import com.google.gson.Gson;
 
 public class ServerFacade {
@@ -64,7 +62,7 @@ public class ServerFacade {
         makeRequest("DELETE", path, null, null, null);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Type responseType, String authToken) throws HttpResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Type responseType, String authToken) {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();

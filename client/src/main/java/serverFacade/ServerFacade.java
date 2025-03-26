@@ -42,7 +42,8 @@ public class ServerFacade {
 
     public int createGame(String authToken, String gameName) {
         String path = "/game";
-        CreateGameResponse response = makeRequest("POST", path, gameName, CreateGameResponse.class, authToken);
+        CreateGameRequest createGameRequest = new CreateGameRequest(null, gameName);
+        CreateGameResponse response = makeRequest("POST", path, createGameRequest, CreateGameResponse.class, authToken);
         return response.gameID();
     }
 

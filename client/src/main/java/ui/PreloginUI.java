@@ -2,7 +2,7 @@ package ui;
 
 import model.LoginRequest;
 import model.UserData;
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 
 import java.util.Scanner;
 

@@ -4,8 +4,8 @@ import chess.ChessGame;
 import model.JoinGameRequest;
 import model.ListGamesResponse;
 
-import serverFacade.ResponseException;
-import serverFacade.ServerFacade;
+import serverfacade.ResponseException;
+import serverfacade.ServerFacade;
 
 import java.util.Collection;
 import java.util.Scanner;

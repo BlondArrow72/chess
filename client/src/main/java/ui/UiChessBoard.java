@@ -92,30 +92,12 @@ public class UiChessBoard {
 
         if (reverse) {
             for (int i = 7; i > -1; i--) {
-                ChessPosition currentPosition = new ChessPosition(rowNum + 1, i + 1);
-                ChessPiece currentPiece = board.getPiece(currentPosition);
-
-                if (currentPiece == null) {
-                    out.print(EMPTY);
-                } else {
-                    printCurrentPiece(currentPiece);
-                }
-
-                switchTileColor();
+                printRowSquares(rowNum, i);
             }
         }
         else{
             for (int i = 0; i < 8; i++) {
-                ChessPosition currentPosition = new ChessPosition(rowNum + 1, i + 1);
-                ChessPiece currentPiece = board.getPiece(currentPosition);
-
-                if (currentPiece == null) {
-                    out.print(EMPTY);
-                } else {
-                    printCurrentPiece(currentPiece);
-                }
-
-                switchTileColor();
+                printRowSquares(rowNum, i);
             }
         }
 
@@ -124,6 +106,19 @@ public class UiChessBoard {
 
         out.print(RESET_BG_COLOR);
         out.println();
+    }
+
+    private void printRowSquares(int rowNum, int i) {
+        ChessPosition currentPosition = new ChessPosition(rowNum + 1, i + 1);
+        ChessPiece currentPiece = board.getPiece(currentPosition);
+
+        if (currentPiece == null) {
+            out.print(EMPTY);
+        } else {
+            printCurrentPiece(currentPiece);
+        }
+
+        switchTileColor();
     }
 
     private void printCurrentPiece(ChessPiece currentPiece) {

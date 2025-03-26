@@ -1,7 +1,7 @@
-package serverFacade;
+package serverfacade;
 
 public class ResponseException extends RuntimeException {
-    public ResponseException(int ErrorCode, String message) {
+    public ResponseException(int errorCode, String message) {
         super(message);
     }
 }

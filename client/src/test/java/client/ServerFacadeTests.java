@@ -4,13 +4,12 @@ import chess.ChessGame;
 
 import model.UserData;
 import model.AuthData;
-import model.CreateGameRequest;
 import model.JoinGameRequest;
 import model.ListGamesResponse;
 import model.LoginRequest;
 
-import serverFacade.ServerFacade;
-import serverFacade.ResponseException;
+import serverfacade.ServerFacade;
+import serverfacade.ResponseException;
 
 import server.Server;
 

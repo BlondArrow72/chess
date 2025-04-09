@@ -33,7 +33,7 @@ public class UiChessBoard {
         DARK
     }
 
-    public void drawBoard(ChessBoard board, boolean reverse) {
+    public synchronized void drawBoard(ChessBoard board, boolean reverse) {
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
 

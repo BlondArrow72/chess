@@ -10,11 +10,14 @@ import java.util.Scanner;
 
 public class GameplayUI {
     private final Scanner scanner = new Scanner(System.in);
+    private GameplayTicket gameplayTicket;
 
-    public void run(JoinGameRequest joinGameRequest) {
+    public void run(GameplayTicket gameplayTicket) {
+        this.gameplayTicket = gameplayTicket;
+
         // start while loop
         while (true) {
-            printBoard(joinGameRequest);
+            printBoard();
             String userResponse = scanner.nextLine();
 
             try {
@@ -44,13 +47,13 @@ public class GameplayUI {
             }
             catch (ResponseException e) {
                 System.out.println(e.getMessage());
-                run(joinGameRequest);
+                run(gameplayTicket);
             }
         }
     }
 
-    private void printBoard(JoinGameRequest joinGameRequest) {
-        boolean reverse = (joinGameRequest.playerColor() == ChessGame.TeamColor.BLACK);
+    private void printBoard() {
+        boolean reverse = (gameplayTicket.playerColor() == ChessGame.TeamColor.BLACK);
 
         UiChessBoard uiChessBoard = new UiChessBoard();
         ChessBoard defaultBoard = new ChessBoard();
@@ -63,7 +66,7 @@ public class GameplayUI {
     }
 
     private void redrawChessBoard() {
-
+        printBoard();
     }
 
     private void highlightLegalMoves() {
@@ -79,6 +82,12 @@ public class GameplayUI {
     }
 
     private void help() {
-
+        System.out.println("Help Menu:");
+        System.out.println("Make Move - Allows the player to make a move on their turn.");
+        System.out.println("Redraw Chess Board - Shows the user the current state of the chess board.");
+        System.out.println("Highlight Legal Moves - Highlights the legal moves of any valid piece.");
+        System.out.println("Resign - Allows player to forfeit the game.");
+        System.out.println("Leave - Takes the user out of the current game and takes them back to the Post-Login menu.");
+        System.out.println("Help - Prints the help menu.");
     }
 }

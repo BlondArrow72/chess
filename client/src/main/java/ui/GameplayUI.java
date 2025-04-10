@@ -23,7 +23,7 @@ public class GameplayUI {
                         makeMove();
                     }
                     case "Redraw Chess Board" -> {
-                        redrawChessBoard():
+                        redrawChessBoard();
                     }
                     case "Highlight Legal Moves" -> {
                         highlightLegalMoves();

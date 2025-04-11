@@ -1,9 +1,10 @@
 package dataaccess;
 
-import responses.ListGamesResponse;
+import chess.ChessGame;
+
 import model.GameData;
 
-import chess.ChessGame;
+import responses.ListGameResponse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -103,13 +104,13 @@ public class SQLGameDAO implements GameDAO {
         }
     }
 
-    public Collection<ListGamesResponse> listGames() throws DataAccessException {
+    public Collection<ListGameResponse> listGames() throws DataAccessException {
         String listGamesStatement = "SELECT gameID, whiteUsername, blackUsername, gameName FROM games";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement preparedStatement = conn.prepareStatement(listGamesStatement)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    Collection<ListGamesResponse> listGamesResponses = new ArrayList<>();
+                    Collection<ListGameResponse> gameList = new ArrayList<>();
 
                     while (resultSet.next()) {
                         // extract data from each row
@@ -118,14 +119,14 @@ public class SQLGameDAO implements GameDAO {
                         String blackUsername = resultSet.getString("blackUsername");
                         String gameName = resultSet.getString("gameName");
 
-                        // put into listGamesResponse
-                        ListGamesResponse listGamesResponse = new ListGamesResponse(gameID, whiteUsername, blackUsername, gameName);
+                        // put into listGameResponse
+                        ListGameResponse listGameResponse = new ListGameResponse(gameID, whiteUsername, blackUsername, gameName);
 
                         // add to collection
-                        listGamesResponses.add(listGamesResponse);
+                        gameList.add(listGameResponse);
                     }
 
-                    return listGamesResponses;
+                    return gameList;
                 }
             }
         }

@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 
+import responses.ListGameResponse;
 import responses.ListGamesResponse;
 import model.AuthData;
 
@@ -34,7 +35,8 @@ public class ListGamesServiceTests {
         AuthData auth = authDAO.createAuth("testUsername");
         gameDAO.createGame("testGameName");
 
-        Collection<ListGamesResponse> gameList = service.listGames(auth.authToken());
+        ListGamesResponse gamesList = service.listGames(auth.authToken());
+        Collection<ListGameResponse> gameList = gamesList.games();
 
         Assertions.assertEquals(1, gameList.size());
     }

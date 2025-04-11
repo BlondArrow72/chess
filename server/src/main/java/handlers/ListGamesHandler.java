@@ -3,6 +3,7 @@ package handlers;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
+import responses.ListGameResponse;
 import responses.ListGamesResponse;
 import service.ListGamesService;
 
@@ -34,11 +35,11 @@ public class ListGamesHandler {
             }
 
             // call service
-            Collection<ListGamesResponse> listGamesResponses = new ListGamesService(gameDAO, authDAO).listGames(authToken);
+            ListGamesResponse listGamesResponse = new ListGamesService(gameDAO, authDAO).listGames(authToken);
 
             // return success
             res.status(200);
-            return new Gson().toJson(Map.of("games", listGamesResponses));
+            return new Gson().toJson(listGamesResponse);
         }
         catch(BadRequestException e) {
             res.status(400);

@@ -22,15 +22,20 @@ public class LogoutServiceTests {
     @Test
     @DisplayName("Positive Logout Test")
     public void logoutSuccess() throws DataAccessException {
+        // start with empty authDAO
+        authDAO.clear();
+
+        // add one auth
         AuthData auth = authDAO.createAuth("testUsername");
 
+        // ensure authDAO not empty
         Assertions.assertFalse(authDAO.isEmpty());
 
+        // clear the auth
         service.logout(auth.authToken());
 
-        // assertions
+        // assert authDAO as empty
         Assertions.assertTrue(authDAO.isEmpty());
-
     }
 
     @Test

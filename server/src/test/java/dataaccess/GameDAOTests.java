@@ -1,6 +1,6 @@
 package dataaccess;
 
-import responses.ListGamesResponse;
+import responses.ListGameResponse;
 import model.GameData;
 
 import org.junit.jupiter.api.Assertions;
@@ -61,7 +61,7 @@ public class GameDAOTests {
         gameDAO.createGame("gameName1");
         gameDAO.createGame("gameName2");
 
-        Collection<ListGamesResponse> gameList = gameDAO.listGames();
+        Collection<ListGameResponse> gameList = gameDAO.listGames();
 
         Assertions.assertEquals(2, gameList.size());
     }
@@ -69,7 +69,7 @@ public class GameDAOTests {
     @Test
     public void listGamesNegative() throws DataAccessException {
         gameDAO.clear();
-        Collection<ListGamesResponse> gameList = gameDAO.listGames();
+        Collection<ListGameResponse> gameList = gameDAO.listGames();
         Assertions.assertTrue(gameList.isEmpty());
     }
 

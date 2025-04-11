@@ -1,3 +1,6 @@
 package responses;
 
-public record ListGamesResponse(int gameID, String whiteUsername, String blackUsername, String gameName) {}
+import java.util.Collection;
+
+public record ListGamesResponse(Collection<ListGameResponse> games) {
+}

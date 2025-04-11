@@ -21,7 +21,6 @@ import requests.JoinGameRequest;
 import requests.LoginRequest;
 import responses.CreateGameResponse;
 import responses.ListGamesResponse;
-import responses.ListGamesWrapper;
 import responses.LoginResponse;
 
 public class ServerFacade {
@@ -56,7 +55,7 @@ public class ServerFacade {
 
     public Collection<ListGamesResponse> listGames(String authToken) {
         String path = "/game";
-        ListGamesWrapper wrapper = makeRequest("GET", path, null, ListGamesWrapper.class, authToken);
+        ListGamesResponse wrapper = makeRequest("GET", path, null, ListGamesResponse.class, authToken);
         return wrapper.games();
     }
 

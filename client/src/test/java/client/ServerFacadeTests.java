@@ -5,6 +5,7 @@ import chess.ChessGame;
 import model.UserData;
 import model.AuthData;
 import requests.JoinGameRequest;
+import responses.ListGameResponse;
 import responses.ListGamesResponse;
 import requests.LoginRequest;
 
@@ -143,9 +144,10 @@ public class ServerFacadeTests {
         String gameName = "testGameName";
         int gameID = facade.createGame(auth.authToken(), gameName);
 
-        Collection<ListGamesResponse> gameList = facade.listGames(auth.authToken());
+        ListGamesResponse listGamesResponse = facade.listGames(auth.authToken());
+        Collection<ListGameResponse> gameList = listGamesResponse.games();
 
-        for (ListGamesResponse game : gameList) {
+        for (ListGameResponse game : gameList) {
             if (game.whiteUsername() == null
                 && game.blackUsername() == null
                 && game.gameName().equals(gameName)) {

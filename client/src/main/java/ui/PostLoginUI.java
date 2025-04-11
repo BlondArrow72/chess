@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import requests.JoinGameRequest;
+import requests.ListGamesRequest;
 import responses.ListGameResponse;
 import responses.ListGamesResponse;
 
@@ -66,7 +67,8 @@ public class PostLoginUI {
 
     private void listGames() {
         // get games list
-        ListGamesResponse listGamesResponse = serverFacade.listGames(postloginTicket.authToken());
+        ListGamesRequest  listGamesRequest  = new ListGamesRequest(postloginTicket.authToken());
+        ListGamesResponse listGamesResponse = serverFacade.listGames(listGamesRequest);
         Collection<ListGameResponse> gamesList = listGamesResponse.games();
 
         // List game data for each game

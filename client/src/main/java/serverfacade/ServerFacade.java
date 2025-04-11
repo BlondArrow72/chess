@@ -1,9 +1,10 @@
 package serverfacade;
 
-import requests.CreateGameRequest;
-import requests.JoinGameRequest;
-import requests.LoginRequest;
 import requests.RegisterRequest;
+import requests.LoginRequest;
+import requests.CreateGameRequest;
+import requests.ListGamesRequest;
+import requests.JoinGameRequest;
 
 import responses.CreateGameResponse;
 import responses.ListGamesResponse;
@@ -38,7 +39,7 @@ public class ServerFacade {
 
     public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
         String path = "/session";
-        return makeRequest("POST", path, loginRequest, RegisterResponse.class, null);
+        return makeRequest("POST", path, loginRequest, LoginResponse.class, null);
     }
 
     public void logout(String authToken) {
@@ -53,9 +54,9 @@ public class ServerFacade {
         return response.gameID();
     }
 
-    public ListGamesResponse listGames(String authToken) {
+    public ListGamesResponse listGames(ListGamesRequest listGamesRequest) {
         String path = "/game";
-        return makeRequest("GET", path, null, ListGamesResponse.class, authToken);
+        return makeRequest("GET", path, null, ListGamesResponse.class, listGamesRequest.authToken());
     }
 
     public void joinGame(JoinGameRequest joinGameRequest) {

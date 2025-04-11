@@ -3,6 +3,7 @@ package client;
 import chess.ChessGame;
 
 import requests.JoinGameRequest;
+import requests.ListGamesRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 
@@ -142,28 +143,38 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Positive List Games Test")
     public void listGamesSuccess() {
+        // register new user
         RegisterRequest registerRequest = new RegisterRequest("testPositiveListGamesUsername", "testPassword", "testEmail");
         RegisterResponse registerResponse = facade.register(registerRequest);
 
+        // create game to look for
         String gameName = "testGameName";
+        facade.createGame(registerResponse.authToken(), gameName);
 
-        ListGamesResponse listGamesResponse = facade.listGames(registerResponse.authToken());
+        // get list of all games
+        ListGamesRequest  listGamesRequest  = new ListGamesRequest(registerResponse.authToken());
+        ListGamesResponse listGamesResponse = facade.listGames(listGamesRequest);
         Collection<ListGameResponse> gameList = listGamesResponse.games();
 
+        // go through and search for game that matches gameName
+        boolean contains = false;
         for (ListGameResponse game : gameList) {
             if (game.whiteUsername() == null
                 && game.blackUsername() == null
                 && game.gameName().equals(gameName)) {
 
-                Assertions.assertTrue(true);
+                // if game exists, change contains to true
+                contains = true;
             }
         }
+
+        Assertions.assertTrue(contains);
     }
 
     @Test
     @DisplayName("Negative List Games Test")
     public void listGamesFailure() {
-        Assertions.assertThrows(ResponseException.class, () -> {
+        Assertions.assertThrows(NullPointerException.class, () -> {
             facade.listGames(null);
         });
     }

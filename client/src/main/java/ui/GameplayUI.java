@@ -8,9 +8,11 @@ import chess.InvalidMoveException;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Collection;
 
 public class GameplayUI {
     private final Scanner scanner = new Scanner(System.in);
+    private final ChessBoardUI chessBoardUI = new ChessBoardUI();
 
     private GameplayTicket gameplayTicket;
     private ChessGame chessGame;
@@ -51,31 +53,22 @@ public class GameplayUI {
         // check to see if board should be reversed
         boolean reverse = (gameplayTicket.playerColor() == ChessGame.TeamColor.BLACK);
 
-        // get UiChessBoard
-        UiChessBoard uiChessBoard = new UiChessBoard();
-
         // draw the chess board
-        uiChessBoard.drawBoard(chessGame.getBoard(), reverse);
+        chessBoardUI.drawBoard(chessGame.getBoard(), reverse, null);
     }
 
     private void makeMove() throws InvalidMoveException {
         // ask user which piece they want to move
         System.out.println("Which piece do you want to move? Use this format: A1");
-        String userInput = scanner.nextLine();
-        ChessPosition startingPosition = convertInputToPosition(userInput);
-
-        // check to make sure piece exists on board
-        ChessPiece existingPiece = chessGame.getBoard().getPiece(startingPosition);
-        if (existingPiece == null) {
-            throw new InvalidMoveException("No piece at " + userInput + ". Try again.");
-        }
+        ChessPosition startingPosition = getValidPiecePositionFromUser();
 
         // ask user where they want to move the piece to
-        System.out.println("Where do you want to move " + userInput + " to?");
-        userInput = scanner.nextLine();
+        System.out.println("Where do you want to move to?");
+        String userInput = scanner.nextLine();
         ChessPosition endingPosition = convertInputToPosition(userInput);
 
         // if piece is a pawn, do special handling elsewhere
+        ChessPiece existingPiece = chessGame.getBoard().getPiece(startingPosition);
         ChessMove chessMove;
         if (existingPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
             chessMove = pawnMove(startingPosition, endingPosition, existingPiece.getTeamColor());
@@ -90,22 +83,6 @@ public class GameplayUI {
         // TODO: use WebSocket to make move
 
         // TODO: use WebSocket to broadcast move
-    }
-
-    private ChessPosition convertInputToPosition(String userInput) {
-        // ensure string has 2 characters and they have the form "A1"
-        if (userInput.length() != 2
-                || !Character.isLetter(userInput.charAt(0))
-                || !Character.isDigit(userInput.charAt(1))) {
-            throw new InputMismatchException("Please enter a position resembling \"A1\"");
-        }
-
-        // decode characters
-        int colNum = userInput.charAt(0);
-        int rowNum = userInput.charAt(1);
-
-        // put into ChessPosition object and return
-        return new ChessPosition(rowNum, colNum);
     }
 
     private ChessMove pawnMove(ChessPosition startingPosition, ChessPosition endingPosition, ChessGame.TeamColor pieceColor) {
@@ -150,11 +127,39 @@ public class GameplayUI {
     }
 
     private void highlightLegalMoves() {
+        // get piece that the user wants to highlight
+        System.out.println("What piece moves do you want to see?");
+        ChessPosition chessPosition = getValidPiecePositionFromUser();
 
+        // get valid moves for piece in question
+        Collection<ChessMove> validMoves = chessGame.validMoves(chessPosition);
+
+        // check to see if board should be reversed
+        boolean reverse = (gameplayTicket.playerColor() == ChessGame.TeamColor.BLACK);
+
+        // draw the chess board
+        chessBoardUI.drawBoard(chessGame.getBoard(), reverse, validMoves);
     }
 
     private void resign() {
+        // ask user if they're sure they want to resign
+        System.out.println("Are you sure you want to resign? (y/n");
+        String userInput = scanner.nextLine();
 
+        // check input
+        boolean exitLoop = true;
+        while (exitLoop) {
+            if (userInput.equals("n")) {
+                return;
+            } else {
+                System.out.println("Please input \"y\" or \"n\"");
+                exitLoop = false;
+            }
+        }
+
+        // TODO: use WebSocket to forfeit game
+
+        // TODO: use WebSocket to notify all players that user has resigned
     }
 
     private PostLoginTicket leave() {
@@ -169,5 +174,42 @@ public class GameplayUI {
         System.out.println("Resign - Allows player to forfeit the game.");
         System.out.println("Leave - Takes the user out of the current game and takes them back to the Post-Login menu.");
         System.out.println("Help - Prints the help menu.");
+    }
+
+    private ChessPosition getValidPiecePositionFromUser() {
+        // loop until get valid position
+        ChessPosition chessPosition = null;
+        boolean continueLoop = true;
+        while (continueLoop) {
+            String userInput = scanner.nextLine();
+            chessPosition = convertInputToPosition(userInput);
+
+            // check to make sure piece exists on board
+            ChessPiece existingPiece = chessGame.getBoard().getPiece(chessPosition);
+            if (existingPiece == null) {
+                System.out.println("No piece at " + userInput + ". Try again.");
+            }
+            else {
+                continueLoop = false;
+            }
+        }
+
+        return chessPosition;
+    }
+
+    private ChessPosition convertInputToPosition(String userInput) {
+        // ensure string has 2 characters and they have the form "A1"
+        if (userInput.length() != 2
+                || !Character.isLetter(userInput.charAt(0))
+                || !Character.isDigit(userInput.charAt(1))) {
+            throw new InputMismatchException("Please enter a position resembling \"A1\"");
+        }
+
+        // decode characters
+        int colNum = userInput.charAt(0);
+        int rowNum = userInput.charAt(1);
+
+        // put into ChessPosition object and return
+        return new ChessPosition(rowNum, colNum);
     }
 }

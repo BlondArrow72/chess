@@ -4,29 +4,39 @@ public class Client {
 
     public void run() {
         // initialize UI objects
-        PreloginUI preloginUI = new PreloginUI();
-        PostloginUI postloginUI = new PostloginUI();
+        PreLoginUI preLoginUI = new PreLoginUI();
+        PostLoginUI postLoginUI = new PostLoginUI();
         GameplayUI gameplayUI = new GameplayUI();
 
         // initialize ticket objects
-        PostloginTicket postloginTicket = null;
+        PostLoginTicket postLoginTicket = null;
         GameplayTicket gameplayTicket = null;
 
         // while loop
         while (true) {
             // enter gameplayUI
             if (gameplayTicket != null) {
-                postloginTicket = gameplayUI.run(gameplayTicket);
+                postLoginTicket = gameplayUI.run(gameplayTicket);
             }
 
-            // enter postloginUI
-            else if (postloginTicket != null) {
-                postloginUI.run(postloginUI);
+            // enter postLoginUI
+            else if (postLoginTicket != null) {
+                gameplayTicket = postLoginUI.run(postLoginTicket);
+
+                // if no gameplayTicket is returned, go back to preLoginUi
+                if (gameplayTicket == null) {
+                    postLoginTicket = null;
+                }
             }
 
-            // enter preloginUI
+            // enter preLoginUI
             else {
-                preloginUI.run();
+                postLoginTicket = preLoginUI.run();
+
+                // if postLoginTicket is null, exit program
+                if (postLoginTicket == null) {
+                    System.exit(0);
+                }
             }
         }
     }

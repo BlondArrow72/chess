@@ -1,22 +1,32 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 
 import serverfacade.ResponseException;
+import serverfacade.ServerFacade;
 
 import java.util.Scanner;
 
 public class GameplayUI {
     private final Scanner scanner = new Scanner(System.in);
-    private GameplayTicket gameplayTicket;
+    private final ServerFacade serverFacade = new ServerFacade(8080);
 
-    public PostloginTicket run(GameplayTicket gameplayTicket) {
+    private GameplayTicket gameplayTicket;
+    private ChessGame chessGame;
+
+    public PostLoginTicket run(GameplayTicket gameplayTicket) {
+        // make gameplayTicket accessible anywhere in code
         this.gameplayTicket = gameplayTicket;
+
+        // get the current game
+        chessGame = new ChessGame();
 
         // start while loop
         while (true) {
+            // print the board
             printBoard();
+
+            // get user response for menu action
             String userResponse = scanner.nextLine();
 
             try {
@@ -58,12 +68,8 @@ public class GameplayUI {
         // get UiChessBoard
         UiChessBoard uiChessBoard = new UiChessBoard();
 
-        // get chess board
-        ChessBoard defaultBoard = new ChessBoard();
-        defaultBoard.resetBoard();
-
         // draw the chess board
-        uiChessBoard.drawBoard(defaultBoard, reverse);
+        uiChessBoard.drawBoard(chessGame.getBoard(), reverse);
     }
 
     private void makeMove() {
@@ -81,7 +87,7 @@ public class GameplayUI {
 
     }
 
-    private PostloginTicket leave() {
+    private PostLoginTicket leave() {
 
     }
 

@@ -5,50 +5,39 @@ import requests.JoinGameRequest;
 import responses.ListGameResponse;
 import responses.ListGamesResponse;
 
-import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
 import java.util.Collection;
 import java.util.Scanner;
 import java.util.HashMap;
 
-public class PostloginUI {
+public class PostLoginUI {
     private final Scanner scanner = new Scanner(System.in);
     private final ServerFacade serverFacade = new ServerFacade(8080);
+
+    private PostLoginTicket postloginTicket;
     private HashMap<Integer, Integer> currentGames = new HashMap<>();
 
-    public JoinGameRequest run(String authToken) {
+    public GameplayTicket run(PostLoginTicket postloginTicket) {
+        // make postLoginTicket a class variable
+        this.postloginTicket = postloginTicket;
+
         while (true) {
+            // let user know what they can do
             printMenu();
+
+            // get userResponse
             String userResponse = scanner.nextLine();
 
-            try {
-                switch (userResponse) {
-                    case "Create Game" -> {
-                        createGame(authToken);
-                    }
-                    case "List Games" -> {
-                        listGames(authToken);
-                    }
-                    case "Play Game" -> {
-                        return playGame(authToken);
-                    }
-                    case "Observe Game" -> {
-                        return observeGame(authToken);
-                    }
-                    case "Logout" -> {
-                        return logout(authToken);
-                    }
-                    case "Help" -> {
-                        help();
-                    }
-                    default -> {
-                        System.out.println("Invalid Response. Please try again.");
-                    }
-                }
-            } catch (ResponseException e) {
-                System.out.println(e.getMessage());
-                run(authToken);
+            // switch on userResponse
+            switch (userResponse) {
+                case "Create Game"  -> createGame();
+                case "List Games"   -> listGames();
+                case "Play Game"    -> {return playGame();}
+                case "Observe Game" -> {return observeGame();}
+                case "Logout"       -> {return logout();}
+                case "Help"         -> help();
+                default -> System.out.println("Invalid Response. Please try again.");
             }
         }
     }
@@ -68,16 +57,16 @@ public class PostloginUI {
         System.out.println("Hit ENTER after typing your selection.");
     }
 
-    private void createGame(String authToken) {
+    private void createGame() {
         System.out.println("What do you want to be the name of your game?");
         String gameName = scanner.nextLine();
 
-        serverFacade.createGame(authToken, gameName);
+        serverFacade.createGame(postloginTicket.authToken(), gameName);
     }
 
-    private void listGames(String authToken) {
+    private void listGames() {
         // get games list
-        ListGamesResponse listGamesResponse = serverFacade.listGames(authToken);
+        ListGamesResponse listGamesResponse = serverFacade.listGames(postloginTicket.authToken());
         Collection<ListGameResponse> gamesList = listGamesResponse.games();
 
         // List game data for each game
@@ -110,8 +99,8 @@ public class PostloginUI {
         return printString;
     }
 
-    private JoinGameRequest playGame(String authToken) {
-        int gameNumber = getGameNumber(authToken);
+    private GameplayTicket playGame() {
+        int gameNumber = getGameNumber();
 
         ChessGame.TeamColor playerColor = null;
         while (playerColor == null) {
@@ -127,20 +116,24 @@ public class PostloginUI {
             }
         }
 
-        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, currentGames.get(gameNumber));
+        // request to join game
+        String authToken = postloginTicket.authToken();
+        Integer gameID = currentGames.get(gameNumber);
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, gameID);
         serverFacade.joinGame(joinGameRequest);
 
-        return joinGameRequest;
+        // provide GameplayTicket
+        return new GameplayTicket(authToken, playerColor, gameID);
     }
 
-    private JoinGameRequest observeGame(String authToken) {
-        int gameNumber = getGameNumber(authToken);
-        return new JoinGameRequest(authToken, ChessGame.TeamColor.WHITE, currentGames.get(gameNumber));
+    private GameplayTicket observeGame() {
+        int gameNumber = getGameNumber();
+        return new GameplayTicket(postloginTicket.authToken(), ChessGame.TeamColor.WHITE, currentGames.get(gameNumber));
     }
 
-    private int getGameNumber(String authToken) {
+    private int getGameNumber() {
         while (true) {
-            listGames(authToken);
+            listGames();
             System.out.println("\nWhich game would you like to join?");
 
             try {
@@ -159,9 +152,9 @@ public class PostloginUI {
         }
     }
 
-    private JoinGameRequest logout(String authToken) {
-        serverFacade.logout(authToken);
-        return new JoinGameRequest(null, null, null);
+    private GameplayTicket logout() {
+        serverFacade.logout(postloginTicket.authToken());
+        return null;
     }
 
     private void help() {

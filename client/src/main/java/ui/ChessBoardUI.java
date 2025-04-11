@@ -30,7 +30,7 @@ public class ChessBoardUI {
     private ChessBoard board;
     private boolean reverse;
 
-    private Collection<ChessPosition> highlightedCells = new ArrayList<>();
+    private Collection<ChessPosition> highlightedPositions = new ArrayList<>();
 
     public enum TileColor {
         LIGHT,
@@ -38,6 +38,29 @@ public class ChessBoardUI {
     }
 
     public synchronized void drawBoard(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
+        // do setup
+        setup(board, reverse, highlightMoves);
+
+        // print header
+        printHeader();
+
+        // print board
+        if (reverse) {
+            for (int i = 7; i > -1; i--) {
+                printRow(i);
+            }
+        }
+        else {
+            for (int i = 0; i < 8; i++) {
+                printRow(i);
+            }
+        }
+
+        // print header
+        printHeader();
+    }
+
+    private void setup(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
         // name printStream out and clear screen
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
@@ -57,23 +80,14 @@ public class ChessBoardUI {
             Collections.reverse(headerStrings);
         }
 
-        // print header
-        printHeader();
+        // store highlighted positions
+        storeHighlightedPositions(highlightMoves);
+    }
 
-        // print board
-        if (reverse) {
-            for (int i = 7; i > -1; i--) {
-                printRow(i);
-            }
+    private void storeHighlightedPositions(Collection<ChessMove> highlightMoves) {
+        for (ChessMove move: highlightMoves) {
+            highlightedPositions.add(move.getEndPosition());
         }
-        else {
-            for (int i = 0; i < 8; i++) {
-                printRow(i);
-            }
-        }
-
-        // print header
-        printHeader();
     }
 
     private void printHeader() {

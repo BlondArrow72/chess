@@ -25,21 +25,25 @@ public class PostLoginUI {
         this.postloginTicket = postloginTicket;
 
         while (true) {
-            // let user know what they can do
-            printMenu();
+            try {
+                // let user know what they can do
+                printMenu();
 
-            // get userResponse
-            String userResponse = scanner.nextLine();
+                // get userResponse
+                String userResponse = scanner.nextLine();
 
-            // switch on userResponse
-            switch (userResponse) {
-                case "Create Game"  -> createGame();
-                case "List Games"   -> listGames();
-                case "Play Game"    -> {return playGame();}
-                case "Observe Game" -> {return observeGame();}
-                case "Logout"       -> {return logout();}
-                case "Help"         -> help();
-                default -> System.out.println("Invalid Response. Please try again.");
+                // switch on userResponse
+                switch (userResponse) {
+                    case "Create Game"  -> createGame();
+                    case "List Games"   -> listGames();
+                    case "Play Game"    -> {return playGame();}
+                    case "Observe Game" -> {return observeGame();}
+                    case "Logout"       -> {return logout();}
+                    case "Help"         -> help();
+                    default -> System.out.println("Invalid Response. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }

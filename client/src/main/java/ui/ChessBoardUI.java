@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ChessBoardUI {
@@ -29,22 +30,29 @@ public class ChessBoardUI {
     private ChessBoard board;
     private boolean reverse;
 
+    private Collection<ChessPosition> highlightedCells = new ArrayList<>();
+
     public enum TileColor {
         LIGHT,
         DARK
     }
 
     public synchronized void drawBoard(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
+        // name printStream out and clear screen
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
 
+        // initialize tileColor variable
         tileColor = TileColor.DARK;
 
+        // ensure text prints out white
         out.print(SET_TEXT_COLOR_WHITE);
 
+        // initialize instance variables
         this.board = board;
         this.reverse = reverse;
 
+        // reverse headers if needed
         if (reverse) {
             Collections.reverse(headerStrings);
         }

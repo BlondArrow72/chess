@@ -1,51 +1,33 @@
 package ui;
 
-import model.JoinGameRequest;
-
 public class Client {
 
     public void run() {
+        // initialize UI objects
         PreloginUI preloginUI = new PreloginUI();
         PostloginUI postloginUI = new PostloginUI();
         GameplayUI gameplayUI = new GameplayUI();
 
-        int menu = 0;
-        String authToken = null;
-        JoinGameRequest joinGameRequest = null;
+        // initialize ticket objects
+        PostloginTicket postloginTicket = null;
+        GameplayTicket gameplayTicket = null;
 
-        try {
-            while (true) {
-                switch (menu) {
-                    case 0:
-                        authToken = preloginUI.run();
-                        if (authToken != null) {
-                            menu = 1;
-                        }
-                        break;
-
-                    case 1:
-                        joinGameRequest = postloginUI.run(authToken);
-                        if (joinGameRequest.authToken() == null) {
-                            authToken = null;
-                            menu = 0;
-                        }
-                        else {
-                            menu = 2;
-                        }
-                        break;
-
-                    case 2:
-                        gameplayUI.run(joinGameRequest);
-                        menu = 1;
-                        break;
-
-                    default:
-                        break;
-                }
+        // while loop
+        while (true) {
+            // enter gameplayUI
+            if (gameplayTicket != null) {
+                gameplayUI.run(gameplayTicket);
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            run();
+
+            // enter postloginUI
+            else if (postloginTicket != null) {
+                postloginUI.run(postloginUI);
+            }
+
+            // enter preloginUI
+            else {
+                preloginUI.run();
+            }
         }
     }
 }

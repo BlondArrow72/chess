@@ -1,7 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
-import model.ListGamesResponse;
+import responses.ListGamesResponse;
 import model.GameData;
 
 import java.lang.Integer;

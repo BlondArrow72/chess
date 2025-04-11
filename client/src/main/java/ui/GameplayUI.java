@@ -3,7 +3,6 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 
-import model.JoinGameRequest;
 import serverfacade.ResponseException;
 
 import java.util.Scanner;

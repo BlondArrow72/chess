@@ -1,4 +1,4 @@
-package model;
+package responses;
 
 import java.util.Collection;
 

@@ -3,8 +3,8 @@ package handlers;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
-import model.CreateGameRequest;
-import model.CreateGameResponse;
+import requests.CreateGameRequest;
+import responses.CreateGameResponse;
 import service.CreateGameService;
 
 import service.UnauthorizedUserError;

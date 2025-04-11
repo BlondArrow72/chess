@@ -1,6 +1,6 @@
 package dataaccess;
 
-import model.ListGamesResponse;
+import responses.ListGamesResponse;
 import model.GameData;
 
 import org.junit.jupiter.api.Assertions;

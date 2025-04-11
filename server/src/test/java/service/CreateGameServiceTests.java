@@ -4,7 +4,7 @@ import dataaccess.*;
 
 import model.AuthData;
 
-import model.CreateGameRequest;
+import requests.CreateGameRequest;
 import org.junit.jupiter.api.*;
 
 public class CreateGameServiceTests {

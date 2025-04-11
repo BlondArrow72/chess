@@ -4,9 +4,9 @@ import chess.ChessGame;
 
 import model.UserData;
 import model.AuthData;
-import model.JoinGameRequest;
-import model.ListGamesResponse;
-import model.LoginRequest;
+import requests.JoinGameRequest;
+import responses.ListGamesResponse;
+import requests.LoginRequest;
 
 import serverfacade.ServerFacade;
 import serverfacade.ResponseException;

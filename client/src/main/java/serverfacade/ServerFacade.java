@@ -16,6 +16,13 @@ import java.util.Collection;
 import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
+import requests.CreateGameRequest;
+import requests.JoinGameRequest;
+import requests.LoginRequest;
+import responses.CreateGameResponse;
+import responses.ListGamesResponse;
+import responses.ListGamesWrapper;
+import responses.LoginResponse;
 
 public class ServerFacade {
     String serverUrl;
@@ -30,7 +37,7 @@ public class ServerFacade {
         return makeRequest("POST", path, newUser, AuthData.class, null);
     }
 
-    public AuthData login(LoginRequest loginRequest) throws ResponseException {
+    public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
         String path = "/session";
         return makeRequest("POST", path, loginRequest, AuthData.class, null);
     }

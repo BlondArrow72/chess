@@ -1,4 +1,4 @@
-package model;
+package requests;
 
 import chess.ChessGame.TeamColor;
 

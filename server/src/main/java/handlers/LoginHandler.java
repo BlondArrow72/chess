@@ -5,7 +5,7 @@ import dataaccess.AuthDAO;
 
 import model.AuthData;
 
-import model.LoginRequest;
+import requests.LoginRequest;
 import service.LoginService;
 
 import service.UnauthorizedUserError;

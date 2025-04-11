@@ -1,6 +1,6 @@
 package ui;
 
-import model.LoginRequest;
+import requests.LoginRequest;
 import model.UserData;
 import serverfacade.ServerFacade;
 
@@ -10,7 +10,7 @@ public class PreloginUI {
     private final Scanner scanner = new Scanner(System.in);
     private final ServerFacade serverFacade = new ServerFacade(8080);
 
-    public String run() {
+    public PostloginTicket run() {
         while (true) {
             printMenu();
             String userResponse = scanner.nextLine();
@@ -42,7 +42,7 @@ public class PreloginUI {
         System.out.println("Hit ENTER after typing your selection.");
     }
 
-    private String login() {
+    private PostloginTicket login() {
         // get username and password
         System.out.println("Enter your username:");
         String username = scanner.nextLine();
@@ -52,7 +52,9 @@ public class PreloginUI {
 
         // make login request
         LoginRequest loginRequest = new LoginRequest(username, password);
-        return serverFacade.login(loginRequest).authToken();
+        serverFacade.login(loginRequest);
+
+        //
     }
 
     private String register() {

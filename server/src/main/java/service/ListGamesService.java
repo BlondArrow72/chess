@@ -4,7 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
-import model.ListGamesResponse;
+import responses.ListGamesResponse;
 
 import java.util.Collection;
 

@@ -3,7 +3,7 @@ package handlers;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 
-import model.JoinGameRequest;
+import requests.JoinGameRequest;
 import service.AlreadyTakenException;
 import service.JoinGameService;
 

@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.*;
 
-import model.JoinGameRequest;
+import requests.JoinGameRequest;
 import model.AuthData;
 
 import chess.ChessGame.TeamColor;

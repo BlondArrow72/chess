@@ -1,8 +1,8 @@
 package ui;
 
 import chess.ChessGame;
-import model.JoinGameRequest;
-import model.ListGamesResponse;
+import requests.JoinGameRequest;
+import responses.ListGamesResponse;
 
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;

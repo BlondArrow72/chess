@@ -2,15 +2,9 @@ package client;
 
 import chess.ChessGame;
 
-import requests.JoinGameRequest;
-import requests.ListGamesRequest;
-import requests.LoginRequest;
-import requests.RegisterRequest;
+import requests.*;
 
-import responses.ListGameResponse;
-import responses.ListGamesResponse;
-import responses.LoginResponse;
-import responses.RegisterResponse;
+import responses.*;
 
 import serverfacade.ServerFacade;
 import serverfacade.ResponseException;
@@ -127,16 +121,21 @@ public class ServerFacadeTests {
         RegisterResponse registerResponse = facade.register(registerRequest);
         String gameName = "testCreateGameSuccessGameName";
 
-        facade.createGame(registerResponse.authToken(), gameName);
+        CreateGameRequest createGameRequest = new CreateGameRequest(registerResponse.authToken(), gameName);
+        facade.createGame(createGameRequest);
     }
 
     @Test
     @DisplayName("Negative Create Game Test")
     public void createGameFailure() {
+        // make create game request
         String authToken = "testAuthToken";
         String gameName = "testGameName";
+        CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
+
+        // assert that it fails because of invalid response token
         Assertions.assertThrows(ResponseException.class, () -> {
-            facade.createGame(authToken, gameName);
+            facade.createGame(createGameRequest);
         });
     }
 
@@ -149,7 +148,8 @@ public class ServerFacadeTests {
 
         // create game to look for
         String gameName = "testGameName";
-        facade.createGame(registerResponse.authToken(), gameName);
+        CreateGameRequest createGameRequest = new CreateGameRequest(registerResponse.authToken(), gameName);
+        facade.createGame(createGameRequest);
 
         // get list of all games
         ListGamesRequest  listGamesRequest  = new ListGamesRequest(registerResponse.authToken());
@@ -188,10 +188,11 @@ public class ServerFacadeTests {
 
         // create new game
         String gameName = "testJoinGamePositiveGameName";
-        int gameID = facade.createGame(registerResponse.authToken(), gameName);
+        CreateGameRequest  createGameRequest  = new CreateGameRequest(registerResponse.authToken(), gameName);
+        CreateGameResponse createGameResponse = facade.createGame(createGameRequest);
 
         // join game just created
-        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResponse.authToken(), ChessGame.TeamColor.WHITE, gameID);
+        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResponse.authToken(), ChessGame.TeamColor.WHITE, createGameResponse.gameID());
         facade.joinGame(joinGameRequest);
     }
 
@@ -204,10 +205,11 @@ public class ServerFacadeTests {
 
         // create new game
         String newGameName = "testGameName";
-        int gameID = facade.createGame(registerResponse.authToken(), newGameName);
+        CreateGameRequest  createGameRequest  = new CreateGameRequest(registerResponse.authToken(), newGameName);
+        CreateGameResponse createGameResponse = facade.createGame(createGameRequest);
 
         // join new game
-        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResponse.authToken(), ChessGame.TeamColor.WHITE, gameID);
+        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResponse.authToken(), ChessGame.TeamColor.WHITE, createGameResponse.gameID());
         facade.joinGame(joinGameRequest);
 
         // try to join game again

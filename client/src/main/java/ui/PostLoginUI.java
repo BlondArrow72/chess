@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import requests.ListGamesRequest;
 import responses.ListGameResponse;
@@ -59,10 +60,13 @@ public class PostLoginUI {
     }
 
     private void createGame() {
+        // get game name from user
         System.out.println("What do you want to be the name of your game?");
         String gameName = scanner.nextLine();
 
-        serverFacade.createGame(postloginTicket.authToken(), gameName);
+        // create the game
+        CreateGameRequest createGameRequest = new CreateGameRequest(postloginTicket.authToken(), gameName);
+        serverFacade.createGame(createGameRequest);
     }
 
     private void listGames() {

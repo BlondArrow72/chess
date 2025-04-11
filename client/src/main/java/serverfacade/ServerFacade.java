@@ -47,11 +47,9 @@ public class ServerFacade {
         makeRequest("DELETE", path, authToken, null, authToken);
     }
 
-    public int createGame(String authToken, String gameName) {
+    public CreateGameResponse createGame(CreateGameRequest createGameRequest) {
         String path = "/game";
-        CreateGameRequest createGameRequest = new CreateGameRequest(null, gameName);
-        CreateGameResponse response = makeRequest("POST", path, createGameRequest, CreateGameResponse.class, authToken);
-        return response.gameID();
+        return makeRequest("POST", path, createGameRequest, CreateGameResponse.class, createGameRequest.authToken());
     }
 
     public ListGamesResponse listGames(ListGamesRequest listGamesRequest) {

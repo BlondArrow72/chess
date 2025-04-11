@@ -11,7 +11,7 @@ public class GameplayUI {
     private final Scanner scanner = new Scanner(System.in);
     private GameplayTicket gameplayTicket;
 
-    public void run(GameplayTicket gameplayTicket) {
+    public PostloginTicket run(GameplayTicket gameplayTicket) {
         this.gameplayTicket = gameplayTicket;
 
         // start while loop
@@ -34,7 +34,7 @@ public class GameplayUI {
                         resign();
                     }
                     case "Leave" -> {
-                        leave();
+                        return leave();
                     }
                     case "Help" -> {
                         help();
@@ -52,12 +52,17 @@ public class GameplayUI {
     }
 
     private void printBoard() {
+        // check to see if board should be reversed
         boolean reverse = (gameplayTicket.playerColor() == ChessGame.TeamColor.BLACK);
 
+        // get UiChessBoard
         UiChessBoard uiChessBoard = new UiChessBoard();
+
+        // get chess board
         ChessBoard defaultBoard = new ChessBoard();
         defaultBoard.resetBoard();
 
+        // draw the chess board
         uiChessBoard.drawBoard(defaultBoard, reverse);
     }
 
@@ -76,7 +81,7 @@ public class GameplayUI {
 
     }
 
-    private void leave() {
+    private PostloginTicket leave() {
 
     }
 

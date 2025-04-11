@@ -1,6 +1,16 @@
 package serverfacade;
 
-import model.*;
+import model.AuthData;
+
+import requests.CreateGameRequest;
+import requests.JoinGameRequest;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+
+import responses.CreateGameResponse;
+import responses.ListGamesResponse;
+import responses.LoginResponse;
+import responses.RegisterResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,17 +21,9 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
-import java.util.Collection;
-
 import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
-import requests.CreateGameRequest;
-import requests.JoinGameRequest;
-import requests.LoginRequest;
-import responses.CreateGameResponse;
-import responses.ListGamesResponse;
-import responses.LoginResponse;
 
 public class ServerFacade {
     String serverUrl;
@@ -31,9 +33,9 @@ public class ServerFacade {
         serverUrl = baseURL + desiredPort;
     }
 
-    public AuthData register(UserData newUser) throws ResponseException {
+    public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
         String path = "/user";
-        return makeRequest("POST", path, newUser, AuthData.class, null);
+        return makeRequest("POST", path, registerRequest, AuthData.class, null);
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
@@ -53,10 +55,9 @@ public class ServerFacade {
         return response.gameID();
     }
 
-    public Collection<ListGamesResponse> listGames(String authToken) {
+    public ListGamesResponse listGames(String authToken) {
         String path = "/game";
-        ListGamesResponse wrapper = makeRequest("GET", path, null, ListGamesResponse.class, authToken);
-        return wrapper.games();
+        return makeRequest("GET", path, null, ListGamesResponse.class, authToken);
     }
 
     public void joinGame(JoinGameRequest joinGameRequest) {

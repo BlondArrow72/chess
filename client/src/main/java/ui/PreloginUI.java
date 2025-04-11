@@ -57,7 +57,7 @@ public class PreloginUI {
         //
     }
 
-    private String register() {
+    private PostloginTicket register() {
         // get username, password, and email
         System.out.println("Enter your username:");
         String username = scanner.nextLine();
@@ -70,7 +70,7 @@ public class PreloginUI {
 
         // make register request
         UserData newUser = new UserData(username, password, email);
-        return serverFacade.register(newUser).authToken();
+        serverFacade.register(newUser);
     }
 
     private void help() {

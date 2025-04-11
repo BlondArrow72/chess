@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import requests.JoinGameRequest;
+import responses.ListGameResponse;
 import responses.ListGamesResponse;
 
 import serverfacade.ResponseException;
@@ -75,14 +76,17 @@ public class PostloginUI {
     }
 
     private void listGames(String authToken) {
-        Collection<ListGamesResponse> gamesList = serverFacade.listGames(authToken);
+        // get games list
+        ListGamesResponse listGamesResponse = serverFacade.listGames(authToken);
+        Collection<ListGameResponse> gamesList = listGamesResponse.games();
 
+        // List game data for each game
         System.out.printf("%-12s %-20s %-20s %-20s%n",
                 "Game Number", "Game Name", "White Username", "Black Username");
         System.out.println("-".repeat(72));
         int counter = 1;
         currentGames = new HashMap<>();
-        for (ListGamesResponse game : gamesList) {
+        for (ListGameResponse game : gamesList) {
             currentGames.put(counter, game.gameID());
             System.out.printf("%-12d %-20s %-20s %-20s %n",
                     counter,

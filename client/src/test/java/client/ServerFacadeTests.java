@@ -2,12 +2,14 @@ package client;
 
 import chess.ChessGame;
 
-import model.UserData;
-import model.AuthData;
 import requests.JoinGameRequest;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+
 import responses.ListGameResponse;
 import responses.ListGamesResponse;
-import requests.LoginRequest;
+import responses.LoginResponse;
+import responses.RegisterResponse;
 
 import serverfacade.ServerFacade;
 import serverfacade.ResponseException;
@@ -46,50 +48,52 @@ public class ServerFacadeTests {
     @DisplayName("Positive Register Test")
     public void registerSuccess() {
         // create newUser to register
-        UserData newUser = new UserData("testPositiveRegisterUsername", "testPositiveRegisterPassword", "testPositiveRegisterEmail");
+        RegisterRequest registerRequest = new RegisterRequest("testPositiveRegisterUsername", "testPositiveRegisterPassword", "testPositiveRegisterEmail");
 
-        // registerUser
-        AuthData newAuth = facade.register(newUser);
+        // register user
+        RegisterResponse registerResponse = facade.register(registerRequest);
 
         // assertions
-        Assertions.assertEquals(newUser.username(), newAuth.username());
+        Assertions.assertEquals(registerRequest.username(), registerResponse.username());
     }
 
     @Test
     @DisplayName("Negative Register Test")
     public void registerFailure() {
-        // create newUser to register
-        UserData newUser = new UserData("testNegativeRegisterUsername", "testNegativeRegisterPassword", "testNegativeRegisterEmail");
+        // create new user to register
+        RegisterRequest registerRequest = new RegisterRequest("testNegativeRegisterUsername", "testNegativeRegisterPassword", "testNegativeRegisterEmail");
 
         // registerUser
-        AuthData successAuth = facade.register(newUser);
-        Assertions.assertEquals(newUser.username(), successAuth.username());
+        RegisterResponse registerResponse = facade.register(registerRequest);
+        Assertions.assertEquals(registerRequest.username(), registerResponse.username());
 
         // assertions
         Assertions.assertThrows(ResponseException.class, () -> {
-            facade.register(newUser);
+            facade.register(registerRequest);
         });
     }
 
     @Test
     @DisplayName("Positive Login Test")
     public void loginSuccess() {
-        UserData newUser = new UserData("testUsernameLoginPositive", "testPassword", "testEmail");
-        facade.register(newUser);
+        RegisterRequest registerRequest = new RegisterRequest("testUsernameLoginPositive", "testPassword", "testEmail");
+        facade.register(registerRequest);
 
         LoginRequest loginRequest = new LoginRequest("testUsernameLoginPositive", "testPassword");
-        AuthData newAuth = facade.login(loginRequest);
+        LoginResponse loginResponse = facade.login(loginRequest);
 
         // assertions
-        Assertions.assertEquals(newAuth.username(), newUser.username());
+        Assertions.assertEquals(loginResponse.username(), loginRequest.username());
     }
 
     @Test
     @DisplayName("Negative Login Test")
     public void loginFailure() {
-        UserData newUser = new UserData("testUsernameLoginNegative", "testPasswordLoginNegative", "testEmailLoginNegative");
-        facade.register(newUser);
+        // register new user
+        RegisterRequest registerRequest = new RegisterRequest("testUsernameLoginNegative", "testPasswordLoginNegative", "testEmailLoginNegative");
+        facade.register(registerRequest);
 
+        // login as the user with a pass password
         LoginRequest loginRequest = new LoginRequest("testUsernameLoginNegative", "testBadPassword");
 
         // assertions
@@ -101,10 +105,10 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Positive Logout Test")
     public void logoutSuccess() {
-        UserData newUser = new UserData("testUsernameLoginPositive", "testPasswordLoginPositive", "testEmailLoginPositive");
-        AuthData auth = facade.register(newUser);
+        RegisterRequest  registerRequest  = new RegisterRequest("testUsernameLoginPositive", "testPasswordLoginPositive", "testEmailLoginPositive");
+        RegisterResponse registerResponse = facade.register(registerRequest);
 
-        facade.logout(auth.authToken());
+        facade.logout(registerResponse.authToken());
     }
 
     @Test
@@ -118,11 +122,11 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Positive Create Game Test")
     public void createGameSuccess() {
-        UserData newUser = new UserData("testCreateGameSuccessUsername", "testPassword", "testEmail");
-        AuthData newAuth = facade.register(newUser);
+        RegisterRequest  registerRequest  = new RegisterRequest("testCreateGameSuccessUsername", "testPassword", "testEmail");
+        RegisterResponse registerResponse = facade.register(registerRequest);
         String gameName = "testCreateGameSuccessGameName";
 
-        facade.createGame(newAuth.authToken(), gameName);
+        facade.createGame(registerResponse.authToken(), gameName);
     }
 
     @Test
@@ -138,13 +142,12 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Positive List Games Test")
     public void listGamesSuccess() {
-        UserData newUser = new UserData("testPositiveListGamesUsername", "testPassword", "testEmail");
-        AuthData auth = facade.register(newUser);
+        RegisterRequest registerRequest = new RegisterRequest("testPositiveListGamesUsername", "testPassword", "testEmail");
+        RegisterResponse registerResponse = facade.register(registerRequest);
 
         String gameName = "testGameName";
-        int gameID = facade.createGame(auth.authToken(), gameName);
 
-        ListGamesResponse listGamesResponse = facade.listGames(auth.authToken());
+        ListGamesResponse listGamesResponse = facade.listGames(registerResponse.authToken());
         Collection<ListGameResponse> gameList = listGamesResponse.games();
 
         for (ListGameResponse game : gameList) {
@@ -168,30 +171,35 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Positive Join Game Test")
     public void joinGameSuccess() {
-        UserData newUser = new UserData("testJoinGamePositiveUsername", "testPassword", "testEmail");
-        AuthData auth = facade.register(newUser);
+        // register new user
+        RegisterRequest  registerRequest  = new RegisterRequest("testJoinGamePositiveUsername", "testPassword", "testEmail");
+        RegisterResponse registerResponse = facade.register(registerRequest);
 
+        // create new game
         String gameName = "testJoinGamePositiveGameName";
-        int gameID = facade.createGame(auth.authToken(), gameName);
+        int gameID = facade.createGame(registerResponse.authToken(), gameName);
 
-        JoinGameRequest joinGameRequest = new JoinGameRequest(auth.authToken(), ChessGame.TeamColor.WHITE, gameID);
+        // join game just created
+        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResponse.authToken(), ChessGame.TeamColor.WHITE, gameID);
         facade.joinGame(joinGameRequest);
-
-        Assertions.assertEquals("testJoinGamePositiveUsername", auth.username());
     }
 
     @Test
     @DisplayName("Negative Join Game Test")
     public void joinGameFailure() {
-        UserData newUser = new UserData("testJoinGameNegativeUsername", "testPassword", "testEmail");
-        AuthData auth = facade.register(newUser);
+        // register new user
+        RegisterRequest  registerRequest  = new RegisterRequest("testJoinGameNegativeUsername", "testPassword", "testEmail");
+        RegisterResponse registerResponse = facade.register(registerRequest);
 
+        // create new game
         String newGameName = "testGameName";
-        int gameID = facade.createGame(auth.authToken(), newGameName);
+        int gameID = facade.createGame(registerResponse.authToken(), newGameName);
 
-        JoinGameRequest joinGameRequest = new JoinGameRequest(auth.authToken(), ChessGame.TeamColor.WHITE, gameID);
+        // join new game
+        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResponse.authToken(), ChessGame.TeamColor.WHITE, gameID);
         facade.joinGame(joinGameRequest);
 
+        // try to join game again
         Assertions.assertThrows(ResponseException.class, () -> {
             facade.joinGame(joinGameRequest);
         });

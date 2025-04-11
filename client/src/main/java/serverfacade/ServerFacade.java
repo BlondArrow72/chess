@@ -1,7 +1,5 @@
 package serverfacade;
 
-import model.AuthData;
-
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import requests.LoginRequest;
@@ -35,12 +33,12 @@ public class ServerFacade {
 
     public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
         String path = "/user";
-        return makeRequest("POST", path, registerRequest, AuthData.class, null);
+        return makeRequest("POST", path, registerRequest, RegisterResponse.class, null);
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
         String path = "/session";
-        return makeRequest("POST", path, loginRequest, AuthData.class, null);
+        return makeRequest("POST", path, loginRequest, RegisterResponse.class, null);
     }
 
     public void logout(String authToken) {

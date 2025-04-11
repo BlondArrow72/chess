@@ -29,34 +29,15 @@ public class GameplayUI {
             // get user response for menu action
             String userResponse = scanner.nextLine();
 
-            try {
-                switch (userResponse) {
-                    case "Make Move" -> {
-                        makeMove();
-                    }
-                    case "Redraw Chess Board" -> {
-                        redrawChessBoard();
-                    }
-                    case "Highlight Legal Moves" -> {
-                        highlightLegalMoves();
-                    }
-                    case "Resign" -> {
-                        resign();
-                    }
-                    case "Leave" -> {
-                        return leave();
-                    }
-                    case "Help" -> {
-                        help();
-                    }
-                    default -> {
-                        System.out.println("Invalid response. Please try again.");
-                    }
-                }
-            }
-            catch (ResponseException e) {
-                System.out.println(e.getMessage());
-                run(gameplayTicket);
+            // switch on userResonse
+            switch (userResponse) {
+                case "Make Move"             -> makeMove();
+                case "Redraw Chess Board"    -> redrawChessBoard();
+                case "Highlight Legal Moves" -> highlightLegalMoves();
+                case "Resign"                -> resign();
+                case "Leave"                 -> {return leave();}
+                case "Help"                  -> help();
+                default -> System.out.println("Invalid response. Please try again.");
             }
         }
     }
@@ -88,7 +69,7 @@ public class GameplayUI {
     }
 
     private PostLoginTicket leave() {
-
+        return new PostLoginTicket(gameplayTicket.authToken());
     }
 
     private void help() {

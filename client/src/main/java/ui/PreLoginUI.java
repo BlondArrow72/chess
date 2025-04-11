@@ -14,19 +14,29 @@ public class PreLoginUI {
 
     public PostLoginTicket run() {
         while (true) {
-            // let user know what they can do
-            printMenu();
+            try {
+                // let user know what they can do
+                printMenu();
 
-            // get userResponse
-            String userResponse = scanner.nextLine();
+                // get userResponse
+                String userResponse = scanner.nextLine();
 
-            // switch on userResponse
-            switch (userResponse) {
-                case "Login"    -> {return login();}
-                case "Register" -> {return register();}
-                case "Quit"     -> {return null;}
-                case "Help"     -> help();
-                default -> System.out.println("Invalid Response.");
+                // switch on userResponse
+                switch (userResponse) {
+                    case "Login" -> {
+                        return login();
+                    }
+                    case "Register" -> {
+                        return register();
+                    }
+                    case "Quit" -> {
+                        return null;
+                    }
+                    case "Help" -> help();
+                    default -> System.out.println("Invalid Response.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }

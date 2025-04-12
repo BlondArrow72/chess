@@ -17,6 +17,7 @@ import service.UnauthorizedUserError;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
 
@@ -66,6 +67,9 @@ public class WebSocketHandler {
         session.getRemote().sendString(loadGameJson);
 
         // notify all other clients that user joined
+        String notificationString = username + " has joined the game";
+        NotificationMessage notificationMessage = new NotificationMessage(notificationString);
+        connectionManager.notify(username, notificationMessage);
     }
 
     private void makeMove(Session session, MakeMoveCommand makeMoveCommand) {

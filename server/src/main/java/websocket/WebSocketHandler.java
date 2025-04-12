@@ -16,6 +16,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import service.UnauthorizedUserError;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
@@ -55,21 +56,28 @@ public class WebSocketHandler {
         }
     }
 
-    private void connect(Session session, String username, UserGameCommand userGameCommand) throws DataAccessException, IOException {
+    private void connect(Session session, String username, UserGameCommand userGameCommand) throws IOException {
         // add connection to websocket
         connectionManager.add(username, session);
 
         // send game to client
-        GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
+        GameData gameData;
+        try {
+            gameData = gameDAO.getGame(userGameCommand.getGameID());
+        } catch (DataAccessException e) {
+            ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            connectionManager.reply(username, errorMessage);
+            return;
+        }
         ChessGame game = gameData.game();
         LoadGameMessage loadGameMessage = new LoadGameMessage(game);
         String loadGameJson = new Gson().toJson(loadGameMessage);
         session.getRemote().sendString(loadGameJson);
 
-        // notify all other clients that user joined
+        // broadcast all other clients that user joined
         String notificationString = username + " has joined the game";
         NotificationMessage notificationMessage = new NotificationMessage(notificationString);
-        connectionManager.notify(username, notificationMessage);
+        connectionManager.broadcast(username, notificationMessage);
     }
 
     private void makeMove(Session session, MakeMoveCommand makeMoveCommand) {

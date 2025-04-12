@@ -199,7 +199,7 @@ public class GameplayUI {
 
         // TODO: use WebSocket to forfeit game
 
-        // TODO: use WebSocket to notify all players that user has resigned
+        // TODO: use WebSocket to broadcast all players that user has resigned
     }
 
     private PostLoginTicket leave() {

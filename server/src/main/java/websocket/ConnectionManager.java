@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
+import websocket.messages.ServerMessage;
 
 public class ConnectionManager {
     public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
@@ -21,12 +22,17 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
-    public void notify(String excludeUsername, NotificationMessage notificationMessage) throws IOException {
+    public void broadcast(String excludeUsername, NotificationMessage notificationMessage) throws IOException {
         String notificationJson = new Gson().toJson(notificationMessage);
         for (Connection connection: connections.values()) {
             if (!connection.username.equals(excludeUsername)) {
                 connection.send(notificationJson);
             }
         }
+    }
+
+    public void reply(String username, ServerMessage serverMessage) throws IOException {
+        String serverMessageJson = new Gson().toJson(serverMessage);
+        connections.get(username).send(serverMessageJson);
     }
 }

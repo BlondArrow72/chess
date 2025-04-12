@@ -2,7 +2,7 @@ package server;
 
 import dataaccess.*;
 
-import handlers.WebSocketHandler;
+import websocket.WebSocketHandler;
 import handlers.RegisterHandler;
 import handlers.ClearHandler;
 import handlers.LoginHandler;
@@ -35,7 +35,7 @@ public class Server {
         }
 
         // WebSocket
-        WebSocketHandler webSocketHandler = new WebSocketHandler();
+        WebSocketHandler webSocketHandler = new WebSocketHandler(authDAO, gameDAO);
         Spark.webSocket("/ws", webSocketHandler);
 
         // Register

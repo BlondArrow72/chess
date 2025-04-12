@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.*;
 
+import handlers.WebSocketHandler;
 import handlers.RegisterHandler;
 import handlers.ClearHandler;
 import handlers.LoginHandler;
@@ -32,6 +33,10 @@ public class Server {
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+
+        // WebSocket
+        WebSocketHandler webSocketHandler = new WebSocketHandler();
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register
         Spark.post("/user", (req, res) -> new RegisterHandler(userDAO, authDAO).register(req, res));

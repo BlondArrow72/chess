@@ -5,6 +5,7 @@ import chess.ChessPosition;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.InvalidMoveException;
+import websocket.WebSocketFacade;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -18,17 +19,21 @@ public class GameplayUI {
     private ChessGame chessGame;
 
     public PostLoginTicket run(GameplayTicket gameplayTicket) {
+        // start WebSocketFacade
+        WebSocketFacade webSocketFacade = new WebSocketFacade();
+
         // make gameplayTicket accessible anywhere in code
         this.gameplayTicket = gameplayTicket;
 
-        // get the current game
+        // print the current game
         chessGame = new ChessGame();
+        printBoard();
 
         // start while loop
         while (true) {
             try {
-                // print the board
-                printBoard();
+                // print menu
+                printMenu();
 
                 // get user response for menu action
                 String userResponse = scanner.nextLine();
@@ -49,6 +54,23 @@ public class GameplayUI {
         }
     }
 
+    private void printMenu() {
+        System.out.println("Choose an option:");
+        System.out.println();
+
+        if (gameplayTicket.playerColor() != null) {
+            System.out.println("Make Move");
+        }
+        System.out.println("Redraw Chess Board");
+        System.out.println("Highlight Legal Moves");
+        System.out.println("Resign");
+        System.out.println("Leave");
+        System.out.println("Help");
+        System.out.println();
+
+        System.out.println("Hit ENTER after typing your selection.");
+    }
+
     private void printBoard() {
         // check to see if board should be reversed
         boolean reverse = (gameplayTicket.playerColor() == ChessGame.TeamColor.BLACK);
@@ -58,8 +80,11 @@ public class GameplayUI {
     }
 
     private void makeMove() throws InvalidMoveException {
+        // redraw board for user
+        printBoard();
+
         // ask user which piece they want to move
-        System.out.println("Which piece do you want to move? Use this format: A1");
+        System.out.println("Which piece do you want to move?");
         ChessPosition startingPosition = getValidPiecePositionFromUser();
 
         // ask user where they want to move the piece to
@@ -78,11 +103,19 @@ public class GameplayUI {
             chessMove = new ChessMove(startingPosition, endingPosition);
         }
 
-        // TODO: verify that chessMove is valid
+        // verify that chessMove is valid
+        Collection<ChessMove> validMoves = chessGame.validMoves(startingPosition);
+        if (!validMoves.contains(chessMove)) {
+            System.out.println("Invalid move.");
+            return;
+        }
 
-        // TODO: use WebSocket to make move
+        // make the move
+        chessGame.makeMove(chessMove);
 
-        // TODO: use WebSocket to broadcast move
+        // TODO: use WebSocket to update game in server
+
+        // TODO: use WebSocket to broadcast move to all users
     }
 
     private ChessMove pawnMove(ChessPosition startingPosition, ChessPosition endingPosition, ChessGame.TeamColor pieceColor) {
@@ -127,12 +160,19 @@ public class GameplayUI {
     }
 
     private void highlightLegalMoves() {
+        // give user reference board again
+        printBoard();
+
         // get piece that the user wants to highlight
         System.out.println("What piece moves do you want to see?");
         ChessPosition chessPosition = getValidPiecePositionFromUser();
 
         // get valid moves for piece in question
         Collection<ChessMove> validMoves = chessGame.validMoves(chessPosition);
+        if (validMoves.isEmpty()) {
+            System.out.println("This piece has no valid moves.");
+            return;
+        }
 
         // check to see if board should be reversed
         boolean reverse = (gameplayTicket.playerColor() == ChessGame.TeamColor.BLACK);
@@ -206,8 +246,13 @@ public class GameplayUI {
         }
 
         // decode characters
-        int colNum = userInput.charAt(0);
-        int rowNum = userInput.charAt(1);
+        char colChar = Character.toUpperCase(userInput.charAt(0));
+        int colNum = colChar - 'A' + 1;
+        int rowNum = userInput.charAt(1) - '0';
+
+        // transform row num to be accurate
+        rowNum *= -1;
+        rowNum +=  9;
 
         // put into ChessPosition object and return
         return new ChessPosition(rowNum, colNum);

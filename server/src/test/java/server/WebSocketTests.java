@@ -6,7 +6,6 @@ import passoff.model.*;
 import passoff.server.TestFactory;
 import passoff.server.TestServerFacade;
 import passoff.websocket.*;
-import server.Server;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 

@@ -37,6 +37,20 @@ public class ChessBoardUI {
         DARK
     }
 
+    public static void main(String[] args) {
+        ChessBoardUI chessBoardUI = new ChessBoardUI();
+        ChessBoard chessBoard = new ChessBoard();
+        chessBoard.resetBoard();
+
+        Collection<ChessMove> positionsToHighlight = new ArrayList<>();
+        ChessPosition chessPosition = new ChessPosition(5, 5);
+        ChessPosition newChessPosition = new ChessPosition(5, 6);
+        ChessMove chessMove = new ChessMove(chessPosition, newChessPosition);
+        positionsToHighlight.add(chessMove);
+
+        chessBoardUI.drawBoard(chessBoard, false, positionsToHighlight);
+    }
+
     public synchronized void drawBoard(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
         // do setup
         setup(board, reverse, highlightMoves);
@@ -58,6 +72,9 @@ public class ChessBoardUI {
 
         // print header
         printHeader();
+
+        // clear highlighted positions
+        highlightedPositions.clear();
     }
 
     private void setup(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
@@ -85,6 +102,17 @@ public class ChessBoardUI {
     }
 
     private void storeHighlightedPositions(Collection<ChessMove> highlightMoves) {
+        // reset highlighted moves if null
+        if (highlightMoves == null) {
+            highlightedPositions.clear();
+            return;
+        }
+
+        // add starting position to highlighedPositions
+        ChessMove firstMove = highlightMoves.iterator().next();
+        highlightedPositions.add(firstMove.getStartPosition());
+
+        // add all destination moves to highlightedPositions
         for (ChessMove move: highlightMoves) {
             highlightedPositions.add(move.getEndPosition());
         }
@@ -132,9 +160,16 @@ public class ChessBoardUI {
     }
 
     private void printRowSquares(int rowNum, int i) {
+        // get current position
         ChessPosition currentPosition = new ChessPosition(rowNum + 1, i + 1);
-        ChessPiece currentPiece = board.getPiece(currentPosition);
 
+        // highlight current cell
+        if (highlightedPositions.contains(currentPosition)) {
+            out.print(SET_BG_COLOR_DARK_GREEN);
+        }
+
+        // print current piece
+        ChessPiece currentPiece = board.getPiece(currentPosition);
         if (currentPiece == null) {
             out.print(EMPTY);
         } else {
@@ -167,6 +202,7 @@ public class ChessBoardUI {
     }
 
     private void switchTileColor() {
+        // switch to dark if currently light
         if (tileColor == TileColor.LIGHT) {
             out.print(SET_BG_COLOR_DARK_GREY);
             tileColor = TileColor.DARK;

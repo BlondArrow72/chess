@@ -1,5 +1,6 @@
 package websocket;
 
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -22,6 +23,15 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
+    public void sendAll(LoadGameMessage loadGameMessage) throws IOException {
+        String loadGameMessageJson = new Gson().toJson(loadGameMessage);
+        for (Connection connection: connections.values()) {
+            connection.send(loadGameMessageJson);
+        }
+
+        cleanUp();
+    }
+
     public void broadcast(String excludeUsername, NotificationMessage notificationMessage) throws IOException {
         String notificationJson = new Gson().toJson(notificationMessage);
         for (Connection connection: connections.values()) {
@@ -29,10 +39,22 @@ public class ConnectionManager {
                 connection.send(notificationJson);
             }
         }
+
+        cleanUp();
     }
 
     public void reply(String username, ServerMessage serverMessage) throws IOException {
         String serverMessageJson = new Gson().toJson(serverMessage);
         connections.get(username).send(serverMessageJson);
+
+        cleanUp();
+    }
+
+    private void cleanUp() {
+        for (Connection connection: connections.values()) {
+            if (!connection.session.isOpen()) {
+                remove(connection.username);
+            }
+        }
     }
 }

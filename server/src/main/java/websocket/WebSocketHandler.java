@@ -36,23 +36,29 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws DataAccessException, IOException {
-        // deserialize object
-        UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
+    public void onMessage(Session session, String message) throws IOException {
+        try {
+            // deserialize object
+            UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
 
-        // verify authToken
-        String authToken = userGameCommand.getAuthToken();
-        AuthData authData = authDAO.getAuth(authToken);
-        if (!authToken.equals(authData.authToken())) {
-            throw new UnauthorizedUserError();
-        }
+            // verify authToken
+            String authToken = userGameCommand.getAuthToken();
+            AuthData authData = authDAO.getAuth(authToken);
+            if (!authToken.equals(authData.authToken())) {
+                throw new UnauthorizedUserError();
+            }
 
-        // send to sub methods
-        switch (userGameCommand.getCommandType()) {
-            case CONNECT   -> connect( session, authData.username(), userGameCommand);
-            case MAKE_MOVE -> makeMove(session, (MakeMoveCommand) userGameCommand);
-            case LEAVE     -> leave(   session, userGameCommand);
-            case RESIGN    -> resign(  session, userGameCommand);
+            // send to sub methods
+            switch (userGameCommand.getCommandType()) {
+                case CONNECT -> connect(session, authData.username(), userGameCommand);
+                case MAKE_MOVE -> makeMove(session, (MakeMoveCommand) userGameCommand);
+                case LEAVE -> leave(session, userGameCommand);
+                case RESIGN -> resign(session, userGameCommand);
+            }
+        } catch (UnauthorizedUserError | DataAccessException | IOException e) {
+            ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            String errorMessageJson = new Gson().toJson(errorMessage);
+            session.getRemote().sendString(errorMessageJson);
         }
     }
 
@@ -69,6 +75,7 @@ public class WebSocketHandler {
             connectionManager.reply(username, errorMessage);
             return;
         }
+
         ChessGame game = gameData.game();
         LoadGameMessage loadGameMessage = new LoadGameMessage(game);
         String loadGameJson = new Gson().toJson(loadGameMessage);

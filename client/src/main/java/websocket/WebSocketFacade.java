@@ -17,7 +17,7 @@ import javax.websocket.*;
 
 import com.google.gson.Gson;
 
-public class WebSocketFacade {
+public class WebSocketFacade extends Endpoint {
 
     Session session;
 
@@ -40,6 +40,10 @@ public class WebSocketFacade {
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
+    }
+
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
     public void connect(String authToken, int gameID) {
@@ -76,6 +80,5 @@ public class WebSocketFacade {
         } catch (IOException e) {
             throw new ResponseException(500, e.getMessage());
         }
-
     }
 }

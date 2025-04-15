@@ -181,7 +181,7 @@ public class GameplayUI {
 
     private void resign() {
         // ask user if they're sure they want to resign
-        System.out.println("Are you sure you want to resign? (y/n");
+        System.out.println("Are you sure you want to resign? (y/n)");
         String userInput = scanner.nextLine();
 
         // check input

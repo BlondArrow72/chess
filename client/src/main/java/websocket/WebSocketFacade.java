@@ -1,9 +1,7 @@
 package websocket;
 
-import org.eclipse.jetty.server.Authentication;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
-import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 
 import chess.ChessMove;

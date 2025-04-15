@@ -20,7 +20,11 @@ public class GameplayUI {
 
     public PostLoginTicket run(GameplayTicket gameplayTicket) {
         // start WebSocketFacade
-        WebSocketFacade webSocketFacade = new WebSocketFacade();
+        String url = "http://localhost:8080";
+        WebSocketFacade webSocketFacade = new WebSocketFacade(url);
+
+        // connect to WebSocketFacade
+        webSocketFacade.connect(gameplayTicket.authToken(), gameplayTicket.gameID());
 
         // make gameplayTicket accessible anywhere in code
         this.gameplayTicket = gameplayTicket;

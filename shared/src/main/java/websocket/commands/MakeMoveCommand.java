@@ -5,14 +5,14 @@ import chess.ChessMove;
 import java.util.Objects;
 
 public class MakeMoveCommand extends UserGameCommand {
-    ChessMove chessMove;
+    ChessMove move;
 
-    public MakeMoveCommand(CommandType commandType, String authToken, Integer gameID, ChessMove chessMove) {
+    public MakeMoveCommand(CommandType commandType, String authToken, Integer gameID, ChessMove move) {
         super(commandType, authToken, gameID);
-        this.chessMove = chessMove;
+        this.move = move;
     }
 
-    public ChessMove getChessMove() {return chessMove;}
+    public ChessMove getMove() {return move;}
 
     @Override
     public boolean equals(Object o) {
@@ -23,11 +23,11 @@ public class MakeMoveCommand extends UserGameCommand {
             return false;
         }
         MakeMoveCommand that = (MakeMoveCommand) o;
-        return Objects.equals(chessMove, that.chessMove);
+        return Objects.equals(move, that.move);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), chessMove);
+        return Objects.hash(super.hashCode(), move);
     }
 }

@@ -46,10 +46,7 @@ public class WebSocketHandler {
     public void onMessage(Session session, String command) throws IOException {
         try {
             // deserialize object
-            deserialize(command);
-            String type = command.get("commandType").getAsString();
-
-            UserGameCommand userGameCommand = new Gson().fromJson(command, UserGameCommand.class);
+            UserGameCommand userGameCommand = deserialize(command);
 
             // verify authToken
             String authToken = userGameCommand.getAuthToken();
@@ -79,13 +76,14 @@ public class WebSocketHandler {
         }
     }
 
-    private deserialize(String command) {
+    private UserGameCommand deserialize(String command) {
         // register Gson type adapter
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(UserGameCommand.class, UserGameCommandTypeAdapter);
+        gsonBuilder.registerTypeAdapter(UserGameCommand.class, new UserGameCommandTypeAdapter());
         Gson gson = gsonBuilder.create();
 
-        // TODO: finish implementation
+        // do the deserialization
+        return gson.fromJson(command, UserGameCommand.class);
     }
 
     private void connect(Session session, String username, UserGameCommand userGameCommand) throws IOException {
@@ -121,7 +119,7 @@ public class WebSocketHandler {
             ChessGame game = gameData.game();
 
             // make move in game
-            game.makeMove(makeMoveCommand.getChessMove());
+            game.makeMove(makeMoveCommand.getMove());
 
             // load board for everyone
             LoadGameMessage loadGameMessage = new LoadGameMessage(game);
@@ -130,9 +128,9 @@ public class WebSocketHandler {
             // notify all players who didn't make the move
             String makeMoveMessage = username
                     + " moved from "
-                    + chessPositionToString(makeMoveCommand.getChessMove().getStartPosition())
+                    + chessPositionToString(makeMoveCommand.getMove().getStartPosition())
                     + " to "
-                    + chessPositionToString(makeMoveCommand.getChessMove().getEndPosition());
+                    + chessPositionToString(makeMoveCommand.getMove().getEndPosition());
             NotificationMessage notificationMessage = new NotificationMessage(makeMoveMessage);
             connectionManager.broadcast(username, notificationMessage);
 

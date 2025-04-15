@@ -250,18 +250,24 @@ public class WebSocketHandler {
             // get connectionManager
             ConnectionManager connectionManager = connectionManagerMap.get(userGameCommand.getGameID());
 
+            // update the game
+            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
+            if (gameData.whiteUsername() != null && gameData.whiteUsername().equals(username)) {
+                gameDAO.updateGame(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            } else if (gameData.whiteUsername() != null && gameData.blackUsername().equals(username)) {
+                gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+            } else {
+                String errorString = "Observers cannot resign from game.";
+                ErrorMessage errorMessage = new ErrorMessage(errorString);
+                String errorMessageJson = new Gson().toJson(errorMessage);
+                session.getRemote().sendString(errorMessageJson);
+                return;
+            }
+
             // broadcast resignation
             String resignString = username + " is resigning from the game.";
             NotificationMessage resignNotification = new NotificationMessage(resignString);
             connectionManager.notifyAll(resignNotification);
-
-            // update the game
-            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-            if (gameData.whiteUsername().equals(username)) {
-                gameDAO.updateGame(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
-            } else if (gameData.blackUsername().equals(username)) {
-                gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
-            }
 
             // remove user from connectionManager
             connectionManager.remove(username);

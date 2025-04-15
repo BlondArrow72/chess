@@ -137,9 +137,11 @@ public class WebSocketHandler {
 
             // if in checkmate or stalemate, don't allow a move
             if (game.isInCheckmate(ChessGame.TeamColor.WHITE)
-                || game.isInCheckmate(ChessGame.TeamColor.BLACK)
-                || game.isInStalemate(ChessGame.TeamColor.WHITE)
-                || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+                    || game.isInCheckmate(ChessGame.TeamColor.BLACK)
+                    || game.isInStalemate(ChessGame.TeamColor.WHITE)
+                    || game.isInStalemate(ChessGame.TeamColor.BLACK)
+                    || gameData.whiteUsername() == null
+                    || gameData.blackUsername() == null) {
                 throw new InvalidMoveException("Game is over. Unable to make move.");
             }
 

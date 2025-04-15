@@ -144,7 +144,11 @@ public class WebSocketHandler {
             }
 
             // check to make sure user making a move can make a move
-            if (gameData.whiteUsername().equals(username) || gameData.blackUsername().equals(username)) {
+            ChessGame.TeamColor teamTurn = game.getTeamTurn();
+            if (teamTurn.equals(ChessGame.TeamColor.WHITE) && gameData.whiteUsername().equals(username)) {
+                // make move in game
+                game.makeMove(makeMoveCommand.getMove());
+            } else if (teamTurn.equals(ChessGame.TeamColor.BLACK) && gameData.blackUsername().equals(username)) {
                 // make move in game
                 game.makeMove(makeMoveCommand.getMove());
             } else {

@@ -23,8 +23,6 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
-    public void removeAll() { connections.clear(); }
-
     public void sendAll(LoadGameMessage loadGameMessage) throws IOException {
         String loadGameMessageJson = new Gson().toJson(loadGameMessage);
         for (Connection connection: connections.values()) {

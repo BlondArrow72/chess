@@ -43,7 +43,10 @@ public class ServerFacadeTests {
     @DisplayName("Positive Register Test")
     public void registerSuccess() {
         // create newUser to register
-        RegisterRequest registerRequest = new RegisterRequest("testPositiveRegisterUsername", "testPositiveRegisterPassword", "testPositiveRegisterEmail");
+        String username = "testPositiveRegisterUsername";
+        String password = "testPositiveRegisterPassword";
+        String email = "testPositiveRegisterEmail";
+        RegisterRequest registerRequest = new RegisterRequest(username, password, email);
 
         // register user
         RegisterResponse registerResponse = facade.register(registerRequest);
@@ -56,7 +59,10 @@ public class ServerFacadeTests {
     @DisplayName("Negative Register Test")
     public void registerFailure() {
         // create new user to register
-        RegisterRequest registerRequest = new RegisterRequest("testNegativeRegisterUsername", "testNegativeRegisterPassword", "testNegativeRegisterEmail");
+        String username = "testNegativeRegisterUsername";
+        String password = "testNegativeRegisterPassword";
+        String email = "testNegativeRegisterEmail";
+        RegisterRequest registerRequest = new RegisterRequest(username, password, email);
 
         // registerUser
         RegisterResponse registerResponse = facade.register(registerRequest);

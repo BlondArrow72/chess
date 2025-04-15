@@ -4,36 +4,37 @@ import chess.ChessGame;
 import chess.ChessPosition;
 import chess.InvalidMoveException;
 
-import com.google.gson.*;
-
 import dataaccess.DataAccessException;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 
+import service.UnauthorizedUserError;
+
 import model.AuthData;
 import model.GameData;
 
-import org.eclipse.jetty.util.IO;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-
-import service.UnauthorizedUserError;
-
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
-import websocket.commands.UserGameCommand.CommandType;
 import websocket.commands.UserGameCommandTypeAdapter;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+
 import java.io.IOException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.*;
 
 @WebSocket
 public class WebSocketHandler {
 
-    private final ConnectionManager connectionManager = new ConnectionManager();
+    private final Map<Integer, ConnectionManager> connectionManagerMap = new HashMap<Integer, ConnectionManager>();
     private final AuthDAO authDAO;
     private final GameDAO gameDAO;
 
@@ -89,8 +90,19 @@ public class WebSocketHandler {
 
     private void connect(Session session, String username, UserGameCommand userGameCommand) throws IOException {
         try {
-            // add connection to websocket
+            // check if connectionManager already exists for game
+            ConnectionManager connectionManager = connectionManagerMap.get(userGameCommand.getGameID());
+
+            if (connectionManager == null) {
+                // create new connection manager
+                connectionManager = new ConnectionManager();
+            }
+
+            // add connection to game map
             connectionManager.add(username, session);
+
+            // update connetionManagerMap
+            connectionManagerMap.put(userGameCommand.getGameID(), connectionManager);
 
             // get game
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
@@ -109,12 +121,16 @@ public class WebSocketHandler {
             connectionManager.broadcast(username, notificationMessage);
         } catch (DataAccessException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            ConnectionManager connectionManager = connectionManagerMap.get(userGameCommand.getGameID());
             connectionManager.reply(username, errorMessage);
         }
     }
 
     private void makeMove(Session session, String username, MakeMoveCommand makeMoveCommand) throws IOException {
         try {
+            // get connection manager
+            ConnectionManager connectionManager = connectionManagerMap.get(makeMoveCommand.getGameID());
+
             // get game
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
             ChessGame game = gameData.game();
@@ -201,18 +217,16 @@ public class WebSocketHandler {
 
     private void leave(Session session, String username, UserGameCommand userGameCommand) throws IOException {
         try {
+            // get connectionManager
+            ConnectionManager connectionManager = connectionManagerMap.get(userGameCommand.getGameID());
+
             // update game to make sure username is null
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
 
-            if (gameData.whiteUsername().equals(username)) {
+            if (gameData.whiteUsername() != null && gameData.whiteUsername().equals(username)) {
                 gameDAO.updateGame(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
-            } else if (gameData.blackUsername().equals(username)) {
+            } else if (gameData.blackUsername() != null && gameData.blackUsername().equals(username)) {
                 gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
-            } else {
-                String leaveReply = "You are not playing the game. Can't leave.";
-                NotificationMessage leaveNotification = new NotificationMessage(leaveReply);
-                connectionManager.reply(username, leaveNotification);
-                return;
             }
 
             // broadcast that user is leaving the game
@@ -231,6 +245,9 @@ public class WebSocketHandler {
 
     private void resign(Session session, String username, UserGameCommand userGameCommand) throws IOException {
         try {
+            // get connectionManager
+            ConnectionManager connectionManager = connectionManagerMap.get(userGameCommand.getGameID());
+
             // broadcast resignation
             String resignString = username + " is resigning from the game.";
             NotificationMessage resignNotification = new NotificationMessage(resignString);

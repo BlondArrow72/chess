@@ -1,7 +1,11 @@
 package websocket;
 
+import ui.GameplayUI;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import chess.ChessMove;
@@ -17,10 +21,15 @@ import com.google.gson.Gson;
 
 public class WebSocketFacade extends Endpoint {
 
-    Session session;
+    private final Session session;
+    private final GameplayUI gameplayUI;
 
-    public WebSocketFacade(String url) {
+    public WebSocketFacade(String url, GameplayUI gameplayUI) {
         try {
+            // initialize gameplayUI
+            this.gameplayUI = gameplayUI;
+
+            // start WebSocket
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
 
@@ -33,6 +42,20 @@ public class WebSocketFacade extends Endpoint {
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
 
+                    switch (serverMessage.getServerMessageType()) {
+                        case LOAD_GAME -> {
+                            LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
+                            gameplayUI.updateGame(loadGameMessage.getGame());
+                        }
+                        case NOTIFICATION -> {
+                            NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
+                            gameplayUI.printMessage(notificationMessage.getMessage());
+                        }
+                        case ERROR -> {
+                            ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
+                            gameplayUI.printMessage(errorMessage.getErrorMessage());
+                        }
+                    }
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {

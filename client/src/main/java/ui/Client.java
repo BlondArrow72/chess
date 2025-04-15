@@ -16,7 +16,7 @@ public class Client {
         while (true) {
             // enter gameplayUI
             if (gameplayTicket != null) {
-                postLoginTicket = gameplayUI.run(gameplayTicket);
+                gameplayTicket = gameplayUI.run(gameplayTicket);
             }
 
             // enter postLoginUI

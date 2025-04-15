@@ -18,11 +18,17 @@ public class GameplayUI {
     private GameplayTicket gameplayTicket;
     private ChessGame chessGame;
 
-    private final WebSocketFacade webSocketFacade = new WebSocketFacade("http://localhost:8080");
+    private WebSocketFacade webSocketFacade;
 
-    public PostLoginTicket run(GameplayTicket gameplayTicket) {
-        // connect to WebSocketFacade
-        webSocketFacade.connect(gameplayTicket.authToken(), gameplayTicket.gameID());
+    public GameplayTicket run(GameplayTicket gameplayTicket) {
+        try {
+            // connect to WebSocketFacade
+            webSocketFacade = new WebSocketFacade("http://localhost:8080", this);
+            webSocketFacade.connect(gameplayTicket.authToken(), gameplayTicket.gameID());
+        } catch (Exception e) {
+            System.out.println("Failed to connect to WebSocket.");
+            return null;
+        }
 
         // make gameplayTicket accessible anywhere in code
         this.gameplayTicket = gameplayTicket;
@@ -199,12 +205,12 @@ public class GameplayUI {
         webSocketFacade.resign(gameplayTicket.authToken(), gameplayTicket.gameID());
     }
 
-    private PostLoginTicket leave() {
+    private GameplayTicket leave() {
         // tell WebSocket you're leaving
         webSocketFacade.leave(gameplayTicket.authToken(), gameplayTicket.gameID());
 
         // send info to return to postLoginUI screen
-        return new PostLoginTicket(gameplayTicket.authToken());
+        return null;
     }
 
     private void help() {
@@ -257,5 +263,13 @@ public class GameplayUI {
 
         // put into ChessPosition object and return
         return new ChessPosition(rowNum, colNum);
+    }
+
+    public void updateGame(ChessGame chessGame) {
+        this.chessGame = chessGame;
+    }
+
+    public void printMessage(String message) {
+        System.out.println(message);
     }
 }

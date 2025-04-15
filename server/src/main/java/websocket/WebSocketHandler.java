@@ -252,10 +252,9 @@ public class WebSocketHandler {
 
             // update the game
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-            if (gameData.whiteUsername() != null && gameData.whiteUsername().equals(username)) {
-                gameDAO.updateGame(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
-            } else if (gameData.whiteUsername() != null && gameData.blackUsername().equals(username)) {
-                gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+            if ((gameData.whiteUsername() != null && gameData.whiteUsername().equals(username))
+                    || (gameData.whiteUsername() != null && gameData.blackUsername().equals(username))) {
+                gameDAO.updateGame(gameData.gameID(), null, null, gameData.gameName(), gameData.game());
             } else {
                 String errorString = "Observers cannot resign from game.";
                 ErrorMessage errorMessage = new ErrorMessage(errorString);

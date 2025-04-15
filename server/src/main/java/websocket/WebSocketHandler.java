@@ -142,6 +142,11 @@ public class WebSocketHandler {
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
             ChessGame game = gameData.game();
 
+            // if player has resigned, don't allow move
+            if (gameData.whiteUsername() == null && gameData.blackUsername() == null) {
+                throw new InvalidMoveException("Cannot make move after resigning.");
+            }
+
             // if in checkmate or stalemate, don't allow a move
             if (game.isInCheckmate(ChessGame.TeamColor.WHITE)
                     || game.isInCheckmate(ChessGame.TeamColor.BLACK)
@@ -190,6 +195,7 @@ public class WebSocketHandler {
                 String checkmateReply = "You're in checkmate. Game over. Better luck next time!";
                 NotificationMessage checkmateMessage = new NotificationMessage(checkmateReply);
                 connectionManager.reply(username, checkmateMessage);
+                return;
             }
 
             // end game if in stalemate
@@ -203,6 +209,7 @@ public class WebSocketHandler {
                 String stalemateReply = "You're in stalemate. Game over. Better luck next time!";
                 NotificationMessage stalemateNotify = new NotificationMessage(stalemateReply);
                 connectionManager.reply(username, stalemateNotify);
+                return;
             }
 
             // notify if in check

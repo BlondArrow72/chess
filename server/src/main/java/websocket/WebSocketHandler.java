@@ -34,7 +34,7 @@ import com.google.gson.*;
 @WebSocket
 public class WebSocketHandler {
 
-    private final Map<Integer, ConnectionManager> connectionManagerMap = new HashMap<Integer, ConnectionManager>();
+    private final Map<Integer, ConnectionManager> connectionManagerMap = new HashMap<>();
     private final AuthDAO authDAO;
     private final GameDAO gameDAO;
 
@@ -101,7 +101,7 @@ public class WebSocketHandler {
             // add connection to game map
             connectionManager.add(username, session);
 
-            // update connetionManagerMap
+            // update connectionManagerMap
             connectionManagerMap.put(userGameCommand.getGameID(), connectionManager);
 
             // get game
@@ -116,7 +116,14 @@ public class WebSocketHandler {
             session.getRemote().sendString(loadGameJson);
 
             // broadcast all other clients that user joined
-            String notificationString = username + " has joined the game.";
+            String notificationString;
+            if (gameData.whiteUsername().equals(username)) {
+                notificationString = username + " has joined the game as white.";
+            } else if (gameData.blackUsername().equals(username)) {
+                notificationString = username + " has joined the game as black.";
+            } else {
+                notificationString = username + " has joined the game as an observer.";
+            }
             NotificationMessage notificationMessage = new NotificationMessage(notificationString);
             connectionManager.broadcast(username, notificationMessage);
         } catch (DataAccessException e) {
@@ -196,6 +203,19 @@ public class WebSocketHandler {
                 String stalemateReply = "You're in stalemate. Game over. Better luck next time!";
                 NotificationMessage stalemateNotify = new NotificationMessage(stalemateReply);
                 connectionManager.reply(username, stalemateNotify);
+            }
+
+            // notify if in check
+            if (game.isInCheck(ChessGame.TeamColor.WHITE) || game.isInCheck(ChessGame.TeamColor.BLACK)) {
+                // broadcast message
+                String checkBroadcast = username + " is in check. Oh no!";
+                NotificationMessage checkNotification = new NotificationMessage(checkBroadcast);
+                connectionManager.broadcast(username, checkNotification);
+
+                // reply to user
+                String checkReply = "You're in check. Get out!";
+                NotificationMessage checkNotify = new NotificationMessage(checkReply);
+                connectionManager.reply(username, checkNotify);
             }
         } catch (DataAccessException | InvalidMoveException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getMessage());

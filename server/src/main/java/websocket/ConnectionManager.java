@@ -23,6 +23,8 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
+    public void removeAll() { connections.clear(); }
+
     public void sendAll(LoadGameMessage loadGameMessage) throws IOException {
         String loadGameMessageJson = new Gson().toJson(loadGameMessage);
         for (Connection connection: connections.values()) {
@@ -46,6 +48,15 @@ public class ConnectionManager {
     public void reply(String username, ServerMessage serverMessage) throws IOException {
         String serverMessageJson = new Gson().toJson(serverMessage);
         connections.get(username).send(serverMessageJson);
+
+        cleanUp();
+    }
+
+    public void notifyAll(ServerMessage serverMessage) throws IOException {
+        String serverMessageJson = new Gson().toJson(serverMessage);
+        for (Connection connection: connections.values()) {
+            connection.send(serverMessageJson);
+        }
 
         cleanUp();
     }

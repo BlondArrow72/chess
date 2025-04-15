@@ -13,6 +13,7 @@ import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
 
+import org.eclipse.jetty.util.IO;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -57,10 +58,10 @@ public class WebSocketHandler {
 
             // send to sub methods
             switch (userGameCommand.getCommandType()) {
-                case CONNECT -> connect(session, authData.username(), userGameCommand);
+                case CONNECT   -> connect(session, authData.username(), userGameCommand);
                 case MAKE_MOVE -> makeMove(session, authData.username(), (MakeMoveCommand) userGameCommand);
-                case LEAVE -> leave(session, userGameCommand);
-                case RESIGN -> resign(session, userGameCommand);
+                case LEAVE     -> leave(session, authData.username(), userGameCommand);
+                case RESIGN    -> resign(session, authData.username(), userGameCommand);
             }
         } catch (NullPointerException | UnauthorizedUserError | DataAccessException | IOException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
@@ -198,11 +199,57 @@ public class WebSocketHandler {
         return "" + colChar + rowInt;
     }
 
-    private void leave(Session session, UserGameCommand userGameCommand) {
+    private void leave(Session session, String username, UserGameCommand userGameCommand) throws IOException {
+        try {
+            // update game to make sure username is null
+            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
 
+            if (gameData.whiteUsername().equals(username)) {
+                gameDAO.updateGame(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            } else if (gameData.blackUsername().equals(username)) {
+                gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+            } else {
+                String leaveReply = "You are not playing the game. Can't leave.";
+                NotificationMessage leaveNotification = new NotificationMessage(leaveReply);
+                connectionManager.reply(username, leaveNotification);
+                return;
+            }
+
+            // broadcast that user is leaving the game
+            String leaveString = username + " is leaving the game.";
+            NotificationMessage leaveMessage = new NotificationMessage(leaveString);
+            connectionManager.broadcast(username, leaveMessage);
+
+            // disconnect the user from the game
+            connectionManager.remove(username);
+        } catch (DataAccessException e) {
+            ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            String errorMessageJson = new Gson().toJson(errorMessage);
+            session.getRemote().sendString(errorMessageJson);
+        }
     }
 
-    private void resign(Session session, UserGameCommand userGameCommand) {
+    private void resign(Session session, String username, UserGameCommand userGameCommand) throws IOException {
+        try {
+            // broadcast resignation
+            String resignString = username + " is resigning from the game.";
+            NotificationMessage resignNotification = new NotificationMessage(resignString);
+            connectionManager.notifyAll(resignNotification);
 
+            // update the game
+            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
+            if (gameData.whiteUsername().equals(username)) {
+                gameDAO.updateGame(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            } else if (gameData.blackUsername().equals(username)) {
+                gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+            }
+
+            // remove user from connectionManager
+            connectionManager.remove(username);
+        } catch (DataAccessException e) {
+            ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            String errorMessageJson = new Gson().toJson(errorMessage);
+            session.getRemote().sendString(errorMessageJson);
+        }
     }
 }

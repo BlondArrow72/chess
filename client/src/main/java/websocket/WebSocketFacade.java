@@ -3,6 +3,7 @@ package websocket;
 import org.eclipse.jetty.server.Authentication;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 
 import chess.ChessMove;
@@ -39,10 +40,6 @@ public class WebSocketFacade {
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
-    }
-
-    @Override
-    public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
     public void connect(String authToken, int gameID) {

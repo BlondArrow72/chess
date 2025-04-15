@@ -4,7 +4,7 @@ import chess.ChessGame;
 import chess.ChessPosition;
 import chess.ChessMove;
 import chess.ChessPiece;
-import chess.InvalidMoveException;
+
 import websocket.WebSocketFacade;
 
 import java.util.InputMismatchException;
@@ -18,11 +18,9 @@ public class GameplayUI {
     private GameplayTicket gameplayTicket;
     private ChessGame chessGame;
 
-    public PostLoginTicket run(GameplayTicket gameplayTicket) {
-        // start WebSocketFacade
-        String url = "http://localhost:8080";
-        WebSocketFacade webSocketFacade = new WebSocketFacade(url);
+    private final WebSocketFacade webSocketFacade = new WebSocketFacade("http://localhost:8080");
 
+    public PostLoginTicket run(GameplayTicket gameplayTicket) {
         // connect to WebSocketFacade
         webSocketFacade.connect(gameplayTicket.authToken(), gameplayTicket.gameID());
 
@@ -83,7 +81,7 @@ public class GameplayUI {
         chessBoardUI.drawBoard(chessGame.getBoard(), reverse, null);
     }
 
-    private void makeMove() throws InvalidMoveException {
+    private void makeMove() {
         // redraw board for user
         printBoard();
 
@@ -115,11 +113,7 @@ public class GameplayUI {
         }
 
         // make the move
-        chessGame.makeMove(chessMove);
-
-        // TODO: use WebSocket to update game in server
-
-        // TODO: use WebSocket to broadcast move to all users
+        webSocketFacade.makeMove(gameplayTicket.authToken(), gameplayTicket.gameID(), chessMove);
     }
 
     private ChessMove pawnMove(ChessPosition startingPosition, ChessPosition endingPosition, ChessGame.TeamColor pieceColor) {
@@ -201,12 +195,15 @@ public class GameplayUI {
             }
         }
 
-        // TODO: use WebSocket to forfeit game
-
-        // TODO: use WebSocket to broadcast all players that user has resigned
+        // send resign to WebSocket
+        webSocketFacade.resign(gameplayTicket.authToken(), gameplayTicket.gameID());
     }
 
     private PostLoginTicket leave() {
+        // tell WebSocket you're leaving
+        webSocketFacade.leave(gameplayTicket.authToken(), gameplayTicket.gameID());
+
+        // send info to return to postLoginUI screen
         return new PostLoginTicket(gameplayTicket.authToken());
     }
 

@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class GameplayUI {
     private final Scanner scanner = new Scanner(System.in);
-    private final ChessBoardUI chessBoardUI = new ChessBoardUI();
+    private ChessBoardUI chessBoardUI;
 
     private GameplayTicket gameplayTicket;
     private ChessGame chessGame;
@@ -21,8 +21,11 @@ public class GameplayUI {
     private WebSocketFacade webSocketFacade;
 
     public GameplayTicket run(GameplayTicket gameplayTicket) {
+        // create new instance of ChessBoardUI
+        chessBoardUI = new ChessBoardUI();
+
+        // connect to WebSocket
         try {
-            // connect to WebSocketFacade
             webSocketFacade = new WebSocketFacade("http://localhost:8080", this);
             webSocketFacade.connect(gameplayTicket.authToken(), gameplayTicket.gameID());
         } catch (Exception e) {
@@ -257,16 +260,13 @@ public class GameplayUI {
         int colNum = colChar - 'A' + 1;
         int rowNum = userInput.charAt(1) - '0';
 
-        // transform row num to be accurate
-        rowNum *= -1;
-        rowNum +=  9;
-
         // put into ChessPosition object and return
         return new ChessPosition(rowNum, colNum);
     }
 
     public void updateGame(ChessGame chessGame) {
         this.chessGame = chessGame;
+        printBoard();
     }
 
     public void printMessage(String message) {

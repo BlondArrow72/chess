@@ -24,7 +24,7 @@ public class ChessBoardUI {
             EMPTY, " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", EMPTY
     ));
     private final List<String> rowStrings = new ArrayList<>(List.of(
-            " 8 ", " 7 ", " 6 ", " 5 ", " 4 ", " 3 ", " 2 ", " 1 "
+            " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 "
     ));
 
     private ChessBoard board;
@@ -53,13 +53,13 @@ public class ChessBoardUI {
 
     public synchronized void drawBoard(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
         // do setup
-        setup(board, reverse, highlightMoves);
+        setUp(board, reverse, highlightMoves);
 
         // print header
         printHeader();
 
         // print board
-        if (reverse) {
+        if (!reverse) {
             for (int i = 7; i > -1; i--) {
                 printRow(i);
             }
@@ -73,11 +73,11 @@ public class ChessBoardUI {
         // print header
         printHeader();
 
-        // clear highlighted positions
-        highlightedPositions.clear();
+        // cleanUp
+        cleanUp();
     }
 
-    private void setup(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
+    private void setUp(ChessBoard board, boolean reverse, Collection<ChessMove> highlightMoves) {
         // name printStream out and clear screen
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
@@ -95,10 +95,22 @@ public class ChessBoardUI {
         // reverse headers if needed
         if (reverse) {
             Collections.reverse(headerStrings);
+            Collections.reverse(rowStrings);
         }
 
         // store highlighted positions
         storeHighlightedPositions(highlightMoves);
+    }
+
+    private void cleanUp() {
+        // clear highlighted positions
+        highlightedPositions.clear();
+
+        // reset header and row strings
+        if (reverse) {
+            Collections.reverse(headerStrings);
+            Collections.reverse(rowStrings);
+        }
     }
 
     private void storeHighlightedPositions(Collection<ChessMove> highlightMoves) {
@@ -131,7 +143,11 @@ public class ChessBoardUI {
 
     private void printRow(int rowNum) {
         out.print(SET_BG_COLOR_DARK_GREEN);
-        out.print(rowStrings.get(rowNum));
+        if (reverse) {
+            out.print(rowStrings.get(7 - rowNum));
+        } else {
+            out.print(rowStrings.get(rowNum));
+        }
 
         switchTileColor();
 
@@ -153,7 +169,11 @@ public class ChessBoardUI {
         }
 
         out.print(SET_BG_COLOR_DARK_GREEN);
-        out.print(rowStrings.get(rowNum));
+        if (reverse) {
+            out.print(rowStrings.get(7 - rowNum));
+        } else {
+            out.print(rowStrings.get(rowNum));
+        }
 
         out.print(RESET_BG_COLOR);
         out.println();

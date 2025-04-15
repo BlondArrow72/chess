@@ -22,13 +22,9 @@ import com.google.gson.Gson;
 public class WebSocketFacade extends Endpoint {
 
     private final Session session;
-    private final GameplayUI gameplayUI;
 
     public WebSocketFacade(String url, GameplayUI gameplayUI) {
         try {
-            // initialize gameplayUI
-            this.gameplayUI = gameplayUI;
-
             // start WebSocket
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");

@@ -139,18 +139,12 @@ public class WebSocketHandler {
             if (game.isInCheckmate(ChessGame.TeamColor.WHITE)
                     || game.isInCheckmate(ChessGame.TeamColor.BLACK)
                     || game.isInStalemate(ChessGame.TeamColor.WHITE)
-                    || game.isInStalemate(ChessGame.TeamColor.BLACK)
-                    || gameData.whiteUsername() == null
-                    || gameData.blackUsername() == null) {
+                    || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
                 throw new InvalidMoveException("Game is over. Unable to make move.");
             }
 
             // check to make sure user making a move can make a move
-            ChessGame.TeamColor teamTurn = game.getTeamTurn();
-            if (teamTurn.equals(ChessGame.TeamColor.WHITE) && gameData.whiteUsername().equals(username)) {
-                // make move in game
-                game.makeMove(makeMoveCommand.getMove());
-            } else if (teamTurn.equals(ChessGame.TeamColor.BLACK) && gameData.blackUsername().equals(username)) {
+            if (gameData.whiteUsername().equals(username) || gameData.blackUsername().equals(username)) {
                 // make move in game
                 game.makeMove(makeMoveCommand.getMove());
             } else {

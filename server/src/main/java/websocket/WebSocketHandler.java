@@ -118,12 +118,33 @@ public class WebSocketHandler {
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
             ChessGame game = gameData.game();
 
-            // make move in game
-            game.makeMove(makeMoveCommand.getMove());
+            // if in checkmate or stalemate, don't allow a move
+            if (game.isInCheckmate(ChessGame.TeamColor.WHITE)
+                || game.isInCheckmate(ChessGame.TeamColor.BLACK)
+                || game.isInStalemate(ChessGame.TeamColor.WHITE)
+                || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+                throw new InvalidMoveException("Game is over. Unable to make move.");
+            }
+
+            // check to make sure user making a move can make a move
+            ChessGame.TeamColor teamTurn = game.getTeamTurn();
+            if (teamTurn.equals(ChessGame.TeamColor.WHITE) && gameData.whiteUsername().equals(username)) {
+                // make move in game
+                game.makeMove(makeMoveCommand.getMove());
+            } else if (teamTurn.equals(ChessGame.TeamColor.BLACK) && gameData.blackUsername().equals(username)) {
+                // make move in game
+                game.makeMove(makeMoveCommand.getMove());
+            } else {
+                // throw invalid move exception
+                throw new InvalidMoveException("Not your turn or you're an observer.");
+            }
 
             // load board for everyone
             LoadGameMessage loadGameMessage = new LoadGameMessage(game);
             connectionManager.sendAll(loadGameMessage);
+
+            // update game in database
+            gameDAO.updateGame(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
 
             // notify all players who didn't make the move
             String makeMoveMessage = username
@@ -134,6 +155,31 @@ public class WebSocketHandler {
             NotificationMessage notificationMessage = new NotificationMessage(makeMoveMessage);
             connectionManager.broadcast(username, notificationMessage);
 
+            // end game if in checkmate
+            if (game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                // broadcast message
+                String checkmateBroadcast = username + " is in checkmate. Game over!";
+                NotificationMessage checkmateNotification = new NotificationMessage(checkmateBroadcast);
+                connectionManager.broadcast(username, checkmateNotification);
+
+                // reply to user
+                String checkmateReply = "You're in checkmate. Game over. Better luck next time!";
+                NotificationMessage checkmateMessage = new NotificationMessage(checkmateReply);
+                connectionManager.reply(username, checkmateMessage);
+            }
+
+            // end game if in stalemate
+            if (game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+                // broadcast message
+                String stalemateBroadcast = username + " is in stalemate. Game over!";
+                NotificationMessage stalemateNotification = new NotificationMessage(stalemateBroadcast);
+                connectionManager.broadcast(username, stalemateNotification);
+
+                // reply to user
+                String stalemateReply = "You're in stalemate. Game over. Better luck next time!";
+                NotificationMessage stalemateNotify = new NotificationMessage(stalemateReply);
+                connectionManager.reply(username, stalemateNotify);
+            }
         } catch (DataAccessException | InvalidMoveException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
             String errorMessageJson = new Gson().toJson(errorMessage);
